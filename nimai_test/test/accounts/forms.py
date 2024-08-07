@@ -1,4 +1,5 @@
-from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm 
 
 from .models import User
 
@@ -13,3 +14,7 @@ class SignUpForm(UserCreationForm):
             "last_name",
             "birth_date",
         )
+
+class LoginFrom(AuthenticationForm):
+    class Meta:
+        model = User
