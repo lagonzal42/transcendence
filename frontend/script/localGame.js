@@ -1,9 +1,3 @@
-const gameBoard = document.querySelector("#gameBoard");
-const ctx = gameBoard.getContext("2d");
-const scoreText = document.querySelector("#scoreText");
-const resetButton = document.querySelector("#resetButton");
-const gameWidth = gameBoard.width;
-const gameHeight = gameBoard.height;
 const boardBackground = "forestgreen";
 const paddle1Color = "darkBlue";
 const paddle2Color = "red";
@@ -13,19 +7,20 @@ const ballRadius = 12.5;
 const paddleSpeed = 5;
 const paddleWidth = 25;
 const paddleHeight = 100;
-const downArrow = 40;
-const upArrow = 38;
-const keyW = 87;
-const keyS = 83;
+
+
 let intervalID;
 let ballSpeed = 1;
 let ballTouches = 0;
-let ballX = gameWidth / 2;
-let ballY = gameHeight / 2;
+let ballX;
+let ballY;
 let ballXDirection = 0;
 let ballYDirection = 0;
 let player1Score = 0;
 let player2Score = 0;
+
+let canvasVars = {};
+
 let paddle1 = 
 {
 	witdth: paddleWidth,
@@ -38,8 +33,8 @@ let paddle2 =
 {
 	witdth: paddleWidth,
 	height: paddleHeight,
-	x: gameWidth - paddleWidth,
-	y: gameHeight - paddleHeight
+
+
 };
 
 var keyState = 
@@ -51,13 +46,18 @@ var keyState =
 
 window.addEventListener("keydown", keyHandler);
 window.addEventListener("keyup", keyHandler);
-resetButton.addEventListener("click", resetGame);
+// resetButton.addEventListener("click", resetGame);
 
-gameStart();
-//drawPaddles();
-
-function gameStart()
+export function gameStart(canvas)
 {
+	canvasVars.gameBoard = document.querySelector("#gameBoard");
+	canvasVars.ctx = canvasVars.gameBoard.getContext("2d");
+	canvasVars.gameWidth = canvasVars.gameBoard.width;
+	canvasVars.gameHeight = canvasVars.gameBoard.height;
+	ballX = canvasVars.gameWidth / 2;
+	ballY = canvasVars.gameHeight / 2;
+	paddle2.x = canvasVars.gameWidth - paddleWidth;
+	paddle2.y = canvasVars.gameHeight - paddleHeight;
 	createBall();
 	nextTick();
 };
@@ -70,7 +70,7 @@ function nextTick()
 	{
 		paintBackground();
 		drawPaddles();
-		drawBall(ballX, ballY);
+		drawBall();
 		movePaddles();
 		moveBall();
 		checkCollision();
@@ -82,26 +82,25 @@ function nextTick()
 };
 function paintBackground()
 {
-	ctx.fillStyle = boardBackground;
-	ctx.fillRect(0, 0, gameWidth, gameHeight);
-	ctx.fillStyle = "white";
-	ctx.fillRect(0, 50, gameWidth, 10);
-	ctx.fillRect(0 , gameHeight - 60 , gameWidth, 10);
-	ctx.fillRect(125, 50, 10, gameHeight - 100);
-	ctx.fillRect(gameWidth - 125, 50, 10, gameHeight - 100);
-	ctx.fillRect(125, gameWidth / 2, gameWidth / 2, 10);
+	canvasVars.ctx.fillStyle = boardBackground;
+	canvasVars.ctx.fillRect(0, 0, canvasVars.gameWidth, canvasVars.gameHeight);
+	canvasVars.ctx.fillStyle = "white";
+	canvasVars.ctx.fillRect(0, 50, canvasVars.gameWidth, 10);
+	canvasVars.ctx.fillRect(0 , canvasVars.gameHeight - 60 , canvasVars.gameWidth, 10);
+	canvasVars.ctx.fillRect(125, 50, 10, canvasVars.gameHeight - 100);
+	canvasVars.ctx.fillRect(canvasVars.gameWidth - 125, 50, 10, canvasVars.gameHeight - 100);
+	canvasVars.ctx.fillRect(125, canvasVars.gameWidth / 2, canvasVars.gameWidth / 2, 10);
 };
 function drawPaddles(){
-	ctx.strokeStyle = borderColor;
+	canvasVars.ctx.strokeStyle = borderColor;
 	
-	ctx.fillStyle = paddle1Color;
-	ctx.fillRect(paddle1.x, paddle1.y, paddle1.witdth, paddle1.height);
-	ctx.strokeRect(paddle1.x, paddle1.y, paddle1.witdth, paddle1.height);
+	canvasVars.ctx.fillStyle = paddle1Color;
+	canvasVars.ctx.fillRect(paddle1.x, paddle1.y, paddle1.witdth, paddle1.height);
+	canvasVars.ctx.strokeRect(paddle1.x, paddle1.y, paddle1.witdth, paddle1.height);
 
-	ctx.fillStyle = paddle2Color;
-	console.log(paddle2.x)
-	ctx.fillRect(paddle2.x, paddle2.y, paddle2.witdth, paddle2.height);
-	ctx.strokeRect(paddle2.x, paddle2.y, paddle2.witdth, paddle2.height);
+	canvasVars.ctx.fillStyle = paddle2Color;
+	canvasVars.ctx.fillRect(paddle2.x, paddle2.y, paddle2.witdth, paddle2.height);
+	canvasVars.ctx.strokeRect(paddle2.x, paddle2.y, paddle2.witdth, paddle2.height);
 };
 function createBall()
 {
@@ -114,21 +113,21 @@ function createBall()
 		ballYDirection = 1;
 	else
 		ballYDirection = -1;
-	ballX = gameWidth / 2;
-	ballY = gameHeight / 2;
+	ballX = canvasVars.gameWidth / 2;
+	ballY = canvasVars.gameHeight / 2;
 	ballTouches = 0;
 };
 
-function drawBall(ballX, ballY)
+function drawBall()
 {
 
-	ctx.fillStyle = ballColor;
-	ctx.strokeStyle = borderColor;
-	ctx.lineWidth = 2;
-	ctx.beginPath();
-	ctx.arc(ballX, ballY, ballRadius, 0, 2 * Math.PI);
-	ctx.stroke();
-	ctx.fill();
+	canvasVars.ctx.fillStyle = ballColor;
+	canvasVars.ctx.strokeStyle = borderColor;
+	canvasVars.ctx.lineWidth = 2;
+	canvasVars.ctx.beginPath();
+	canvasVars.ctx.arc(ballX, ballY, ballRadius, 0, 2 * Math.PI);
+	canvasVars.ctx.stroke();
+	canvasVars.ctx.fill();
 };
 
 function moveBall()
@@ -141,7 +140,7 @@ function checkCollision()
 {
 	if (ballY <= 0 + ballRadius)
 		ballYDirection *= -1;
-	else if (ballY >= gameHeight - ballRadius)
+	else if (ballY >= canvasVars.gameHeight - ballRadius)
 		ballYDirection *= -1;
 	
 	if (ballX <= paddle1.x + paddleWidth + ballRadius
@@ -165,13 +164,13 @@ function checkCollision()
 	else if (ballX - ballRadius <= 0 && ballXDirection == -1)
 	{
 		player2Score += 1;
-		updateScore();
+		// updateScore();
 		createBall();
 	}
-	else if (ballX + ballRadius >= gameWidth && ballXDirection == 1)
+	else if (ballX + ballRadius >= canvasVars.gameWidth && ballXDirection == 1)
 	{
 		player1Score += 1;
-		updateScore();
+		// updateScore();
 		createBall();
 	}
 	if (ballTouches > 2)
@@ -310,7 +309,7 @@ function movePaddles()
 	}
 	if (keyState.down.keyS)
 	{
-		if (paddle1.y + paddleHeight < gameHeight)
+		if (paddle1.y + paddleHeight < canvasVars.gameHeight)
 			paddle1.y += paddleSpeed;
 	}
 	if (keyState.down.upArrow)
@@ -320,18 +319,18 @@ function movePaddles()
 	}
 	if (keyState.down.downArrow)
 	{
-		if (paddle2.y + paddleHeight < gameHeight)
+		if (paddle2.y + paddleHeight < canvasVars.gameHeight)
 					paddle2.y += paddleSpeed;	
 	}	
 
 };
-function updateScore()
-{
-	scoreText.textContent = `${player1Score} : ${player2Score}`;
-};
-function resetGame()
-{
-	ballSpeed = 1;
-	ballTouches = 1;
-	gameStart();
-};
+// function updateScore()
+// {
+// 	scoreText.textContent = `${player1Score} : ${player2Score}`;
+// };
+// function resetGame()
+// {
+// 	ballSpeed = 1;
+// 	ballTouches = 1;
+// 	gameStart();
+// };
