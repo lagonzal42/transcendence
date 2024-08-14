@@ -40,6 +40,7 @@ body
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	height: 100vh;
 }
 
 .button-area
@@ -50,6 +51,23 @@ body
 	max-width: 600px; /* Ancho máximo */
 	width: 100%; /* Ancho completo hasta el límite de max-width */
 	box-shadow: 0 4px 8px rgb(0, 0, 1); /* Sombra para profundidad */
+}
+
+.search-area {
+    padding: 15px; /* Padding around the buttons */
+    background-color: rgb(219, 219, 219); /* Gray background */
+    border-radius: 12px; /* Rounded borders */
+    max-width: 600px; /* Maximum width */
+    width: 100%; /* Full width up to the max-width limit */
+    box-shadow: 0 4px 8px rgb(0, 0, 1); /* Shadow for depth */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-area .btn
+{
+	background-color: #198c32;
 }
 
 .btn-custom
@@ -111,8 +129,6 @@ body
 	display: flex;
 	justify-content: center;
 	margin-top: auto;
-	width: 100%;
-
 }
 
 .custom-footer a

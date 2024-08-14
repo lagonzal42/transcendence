@@ -1,0 +1,34 @@
+.login-area {
+	padding: 15px; /* Padding alrededor de los botones */
+	background-color: rgb(219, 219, 219); /* Fondo gris */
+	border-radius: 12px; /* Bordes redondeados */
+	max-width: 600px; /* Ancho máximo */
+	width: 100%; /* Ancho completo hasta el límite de max-width */
+	box-shadow: 0 4px 8px rgb(0, 0, 1); /* Sombra para profundidad */
+    color:black;
+}
+
+.title
+{
+    align-items: center;
+}
+
+.login-title-text {
+    padding: 10px;
+    margin-bottom: 10px;
+    color: black;
+}
+
+.submit-login-btn
+{
+    background-color: rgb(220, 0, 0);
+    color: white;
+    font-size: 20px;
+}
+
+.submit-login-btn:hover
+{
+	
+	background-color: rgb(181, 0, 0); /* Verde más oscuro al pasar el cursor */
+	color: white
+}
