@@ -3,11 +3,21 @@ MODULES TO DO
 - Frontend (minor)
 - Backend (major)
 - DB (minor)
+__________________________
 - SUM (major)
+__________________________
 - Remote (major)
-- CyberSec complete (2 majors & 1 minor)
-- Devops complete (2 majors & 1 minor)
+___________________________________________
+- WAF/ModSecurity with Hardened Configuration and HashiCorp Vault for Secrets Management. (major)
+- GDPR Compliance Options with User Anonymization, Local Data Management, and Account Deletion (minor)
+- Two-Factor Authentication (2FA) and JWT (major)
+___________________________________________
+- Infrastructure Setup with ELK. (major)
+- Monitoring system with Prometheus and Grafana. (minor)
 
+___________________________________________
 TASKS:
 Start working with Django & DB dessing: Aiert & Nozomi
 Start working with Frontend: Victor & Larrain
+
+
