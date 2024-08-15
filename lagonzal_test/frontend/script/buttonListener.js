@@ -89,7 +89,7 @@ function loadLocalGame()
 function loadLoginPage()
 {
 	const mainContainer = document.getElementById('main-container');
-	mainContainer.innerHTML = "";
+	mainContainer.innerHTML = ""; 
 
 	const title = document.createElement('h2');
 	title.classList.add('login-title-text', 'text-center', 'mb-4');
@@ -102,7 +102,7 @@ function loadLoginPage()
 
 
 	const form = document.createElement('form');
-	form.id = 'login.form';
+	form.id = 'login-form';
 
 	const usernameDiv = document.createElement('div');
 	usernameDiv.classList.add('form-group');
@@ -147,8 +147,9 @@ function loadLoginPage()
 	form.appendChild(passwordDiv);
 	form.appendChild(loginButton);
 
+	loginArea.appendChild(title)
 	loginArea.appendChild(form);
 
-	mainContainer.appendChild(titleArea);
+	// mainContainer.appendChild(title);
 	mainContainer.appendChild(loginArea);
 }
