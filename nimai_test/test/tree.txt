@@ -1,0 +1,75 @@
+Project Root
+│
+├── docker-compose.yml
+│   ├── Service Definitions (Django, Postgres, NGINX, Vault)
+│   ├── Network Configuration
+│   └── Volumes Definition (Database, SSL, etc.)
+│
+├── .env (Environment Variables)
+│
+├── Containers
+│   ├── django (Django App Container)
+│   │   ├── Dockerfile
+│   │   ├── Project Code
+│   │   │   ├── settings.py
+│   │   │   │   ├── DATABASES (PostgreSQL Configuration)
+│   │   │   │   ├── Password Hashing (Django Built-in)
+│   │   │   │   ├── JWT/Authentication Configuration
+│   │   │   │   ├── 2FA Configuration (django-otp or similar)
+│   │   │   │   ├── GDPR Compliance Settings
+│   │   │   │   │   ├── User Data Anonymization
+│   │   │   │   │   ├── Account Deletion Mechanism
+│   │   │   │   │   └── Local Data Management (PostgreSQL Integration)
+│   │   │   │   └── Security Configurations
+│   │   │   │       ├── SQL Injection Protection (Django ORM)
+│   │   │   │       ├── XSS Prevention (CSP, Input Sanitization)
+│   │   │   │       ├── CSRF Protection (Django Built-in)
+│   │   │   │       └── Security Middleware (X-Frame-Options, etc.)
+│   │   │   └── Forms/Views
+│   │   │       ├── Form Validation
+│   │   │       ├── User Input Validation
+│   │   │       └── GDPR Compliance Features (Handled in Views/Forms)
+│   │   └── Static Files
+│   │
+│   ├── postgres (PostgreSQL Container)
+│   │   ├── Dockerfile (if customized)
+│   │   ├── Environment Variables (DB_USER, DB_PASSWORD)
+│   │   ├── Volumes (Persistent Data Storage)
+│   │   ├── Security Configurations
+│   │   │   ├── Data Encryption at Rest (File System Level)
+│   │   │   └── Secure Connections (SSL/TLS for DB Connections)
+│   │   └── GDPR Compliance
+│   │       ├── Data Retention Policies
+│   │       └── Anonymization/Deletion Procedures
+│   │
+│   ├── nginx (NGINX Container)
+│   │   ├── nginx.conf
+│   │   │   ├── SSL Configuration (Let's Encrypt)
+│   │   │   ├── HTTPS Redirect Configuration
+│   │   │   ├── Content Security Policy (CSP)
+│   │   │   ├── Security Headers (X-Frame-Options, etc.)
+│   │   │   └── ModSecurity Configuration (WAF)
+│   │   └── Volumes (SSL Certificates, Static Files)
+│   │
+│   ├── vault (HashiCorp Vault Container)
+│   │   ├── Vault Configuration
+│   │   │   ├── Dynamic Secrets (Database Credentials, API Keys)
+│   │   │   └── Secure Storage Backend Configuration
+│   │   ├── Access Control Policies
+│   │   └── Environment Variables for Django and Other Services
+│   │
+│   └── monitoring & logging (Optional Containers for Monitoring)
+│       ├── prometheus (Monitoring)
+│       │   └── Configuration Files
+│       ├── grafana (Dashboard)
+│       │   └── Dashboard Configuration
+│       └── elk-stack (Logging)
+│           ├── Elasticsearch (Centralized Log Storage)
+│           ├── Logstash (Log Processor)
+│           └── Kibana (Log Visualization)
+│
+└── CI/CD Pipeline
+    ├── Jenkins/GitLab CI/GitHub Actions Configuration
+    │   ├── Build and Test Stages
+    │   └── Deployment Scripts
+    └── Automated Deployment (Docker Containers)
