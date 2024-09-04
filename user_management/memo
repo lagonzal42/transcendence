@@ -1,0 +1,12 @@
+{
+"user_id": "OdaNobunaga",
+"password": "NobuNobu",
+"password_confirmation": "NobuNobu",
+"nickname": "Noburin"
+}
+
+// // Command
+
+curl -X POST http://localhost:8000/accounts/signup/ \
+-H "Content-Type: application/json" \
+-d '{"username": "person", "user_id": "user1", "nickname": "gente", "password": "password123", "password_confirmation": "password123"}'
