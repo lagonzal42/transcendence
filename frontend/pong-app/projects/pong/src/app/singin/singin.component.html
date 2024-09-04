@@ -1,0 +1,21 @@
+<h2 class="singin-title text-center mb-4">Sing in</h2>
+
+<div class="singin-area container-fluid d-flex justify-content-center align-items-center">
+  <form [formGroup]="singinForm" (ngSubmit)="onSubmit()">
+    <div class="formGroup">
+      <label for="username">Username</label>
+      <input id="username" formControlName="username">
+      <div *ngIf="singinForm.get('username')?.touched && singinForm.get('username')?.invalid">
+        <small class="text-danger">Invalid username</small>
+      </div>
+    </div>
+    <div class="formGroup">
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password">
+      <div *ngIf="singinForm.get('password')?.touched && singinForm.get('password')?.invalid">
+        <small class="text-danger">Invalid password</small>
+      </div>
+    </div>
+    <button class="submit-singin-btn" type="submit">singin</button>
+  </form>
+</div>
