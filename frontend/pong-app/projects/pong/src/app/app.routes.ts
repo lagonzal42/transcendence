@@ -16,7 +16,7 @@ export const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'login', component: LoginComponent },
-      { path: 'singin', component: SinginComponent },
+      { path: 'signup', component: SinginComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'search', component: SearchComponent },
       { path: 'tournament', component: TournamentComponent }
