@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-pd6ew_fx#dn^_h=ij$(dfvjw*zh(p(n+l-7+l8syd79ba#+w)!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -40,8 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
     # 'rest_framework_simplejwt',
 ]
+
+AUTH_USER_MODEL = 'accounts.User'
 
 ##### For JWT
 

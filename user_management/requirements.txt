@@ -3,5 +3,6 @@ psycopg2>=2.8
 markdown
 django-filter
 djangorestframework
-
+django-cors-headers
+Pillow
 djangorestframework-simplejwt
