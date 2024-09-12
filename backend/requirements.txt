@@ -1,0 +1,8 @@
+Django>=3.0,<4.0
+psycopg2>=2.8
+markdown
+django-filter
+djangorestframework
+django-cors-headers
+Pillow
+djangorestframework-simplejwt
