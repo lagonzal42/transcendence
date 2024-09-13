@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
-from .models import  User, AccessToken
+from .models import  User
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 # For JWT
