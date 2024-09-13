@@ -1,4 +1,4 @@
-**/node_modules/
+**/node_modules/*
 **/.git
 **/README.md
 **/.vscode
@@ -8,3 +8,4 @@
 **/.editorconfig
 **/.aws
 **/dist
+**/install.sh
