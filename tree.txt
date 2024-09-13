@@ -1,0 +1,20 @@
+Project Root
+│
+├── docker-compose.yml
+│
+├── .env (Environment Variables)
+│
+│
+├── frontend (Frontend Container)
+│   ├── Dockerfile
+│   ├── nginx.conf (Optional)
+│   └── Environment Variables
+│
+├── backend (Backend Container)
+│   └── Dockerfile
+│       └── settings.py
+│
+└── nginx (NGINX Container)
+    ├── nginx.conf
+    └── Volumes
+
