@@ -6,36 +6,38 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     lsb-release \
     git \
-    build-esential \
-    --no-install-recomends
+    build-essential \
+    --no-install-recommends
 
 #Install the nvm (Node version manager)
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 
 # download and install Node.js (you may need to restart the terminal)
-RUN nvm install 20
+ENV NVM_DIR=/root/.nvm
+ENV NODE_VERSION=20
+ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-# verifies the right Node.js version is in the environment should print `v22.6.0`
-RUN node -v
+# Install Node.js and npm using nvm and ensure it’s available for subsequent commands
+RUN bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION && nvm alias default $NODE_VERSION"
 
-# verifies the right npm version is in the environment should print `10.8.2`
-RUN npm -v
+# Verify the installed Node.js version
+RUN bash -c "source $NVM_DIR/nvm.sh && node -v"
 
-#install angular globaly
-RUN npm install -g @angular/cli@17
+# Verify the installed npm version
+RUN bash -c "source $NVM_DIR/nvm.sh && npm -v"
 
+# Install Angular CLI globally
+RUN bash -c "source $NVM_DIR/nvm.sh && npm install -g @angular/cli@17"
+
+# Set the working directory
 WORKDIR /app
 
-COPY package*.json ./
+# Copy the package.json files and install project dependencies
+COPY ./pong-app ./
+RUN bash -c "source $NVM_DIR/nvm.sh && npm install"
 
-RUN npm install
-
+# Copy the rest of the application
 COPY . .
 
-RUN npm run build
-
-FROM nginx:stable
-
-COPY --from=build /app/dist/pong /usr/share/nginx/html
-
-EXPOSE 80
+# Set the default command to run the Angular development server
+CMD ["bash", "-c", "source $NVM_DIR/nvm.sh && ng serve --host 0.0.0.0"]

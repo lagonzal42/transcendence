@@ -2,16 +2,16 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Import CommonModule
-import { HttpClient, HttpClientModule} from '@angular/common/http'
+import { HttpClient} from '@angular/common/http'
 
 @Component({
-  selector: 'app-singin',
+  selector: 'app-signup',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './singin.component.html',
-  styleUrl: './singin.component.css'
+  templateUrl: './signup.component.html',
+  styleUrl: './signup.component.css'
 })
-export class SinginComponent {
+export class SignupComponent {
   signupForm: FormGroup;
 
   constructor(private fb: FormBuilder, private httpClient:HttpClient) {
@@ -26,7 +26,7 @@ export class SinginComponent {
       const formData = this.signupForm.value;
 			console.log('Form Submitted!', this.signupForm.value);
 			//direction must be changed this is only for test
-			this.httpClient.post('http://localhost:4242', formData).suscribe({
+			this.httpClient.post('frontend-test:1234', formData).subscribe({
 				next: (response: any) =>
 				{
 					console.log("Server response: ", response);
