@@ -17,9 +17,9 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     avatar = models.ImageField(blank=True)
-    #username = models.CharField(max_length=100, unique=True)
+    username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(max_length=254)
-    #password = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
 
     def __str__(self):
         return self.username

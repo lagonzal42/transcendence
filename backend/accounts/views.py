@@ -67,19 +67,19 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class UserLogIn(ObtainAuthToken):
+# class UserLogIn(ObtainAuthToken):
     
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token = Token.objects.get(user=user)
-        return Response({
-            'token': token.key,
-            'id': user.pk,
-            'username': user.username
-        })
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.serializer_class(data=request.data,
+#                                            context={'request': request})
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.validated_data['user']
+#         token = Token.objects.get(user=user)
+#         return Response({
+#             'token': token.key,
+#             'id': user.pk,
+#             'username': user.username
+#         })
 
 # class RegisterView(APIView):
 #     @staticmethod
