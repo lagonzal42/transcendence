@@ -1,0 +1,26 @@
+{
+"user_id": "OdaNobunaga",
+"password": "NobuNobu",
+"password_confirmation": "NobuNobu",
+"nickname": "Noburin"
+}
+
+// // Command
+
+curl -X POST http://localhost:8000/accounts/signup/ \
+-H "Content-Type: application/json" \
+-d '{"username": "person", "user_id": "user1", "nickname": "gente", "password": "password123", "password_confirmation": "password123"}'
+
+
+// Command to migrate
+ docker-compose exec backend python backend/manage.py migrate
+
+
+// // Command to delete all for docker
+
+docker stop $(docker ps -aq)
+docker rm $(docker ps -aq)
+docker rmi $(docker images -q)
+docker volume rm $(docker volume ls -q)
+docker network rm $(docker network ls -q)
+docker system prune -a --volumes

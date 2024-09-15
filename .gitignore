@@ -9,3 +9,13 @@
 **/.aws
 **/dist
 **/install.sh
+*.o
+*.a
+*.exe
+*.out
+test
+*.rpt
+*.dSYM
+.DS_Store
+.vscode/*
+.gitattributes
