@@ -28,12 +28,15 @@ from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 from accounts.views import UserViewSet #UserLogIn
 
-router = DefaultRouter()
-router.register(r'accounts', UserViewSet)
+import accounts.urls
+
+# router = DefaultRouter()
+# router.register(r'accounts', UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(router.urls)),
+    #path('', include(accounts.urls, namespace='accounts')),
+    #path('api/v1/', include(router.urls)),
     #path('api-user-login/', UserLogIn.as_view()),
     path('accounts/', include('accounts.urls')),
     # authenticate users in the browsable API interface without having to manually set up a login system

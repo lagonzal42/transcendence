@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
-from .models import  User
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 # For JWT
@@ -23,7 +22,26 @@ from rest_framework.decorators import api_view
 from .models import User
 from .serializers import UserSerializer
 from django.db import IntegrityError
+from django.shortcuts import render
 
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView, DetailView
+
+def BaseView(request):
+    users = User.objects.all()
+    return render(request, 'accounts/base.html', {'users':users})
+
+class RegisterView(CreateView):
+    template_name = 'accounts/register.html'
+    form_class = UserCreationForm
+    success_url = reverse_lazy('accounts:account_list')
+
+class AccountDetail(DetailView):
+    model = User
+
+class AccountList(ListView):
+    model = User
 
 @api_view(['GET', 'POST'])
 def get_user(request):

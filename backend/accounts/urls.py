@@ -1,13 +1,13 @@
 from . import views
 from django.urls import path, include
-from .views import get_user, create_user, user_detail
 
-
+app_name = 'accounts'
 
 urlpatterns = [
-    path('', get_user, name='get_user'),
-    path('create_account/', create_user, name='create_user'),
-    path('account/<int:pk>', user_detail, name='user_detail')
+    path('', views.BaseView, name='BaseView'),
+    path('account_list/', views.AccountList.as_view(), name='AccountList'),
+    path('account_detail/<int:pk>', views.AccountDetail.as_view(), name='AccountDetail'),
+    path('register_account/', views.RegisterView.as_view(), name='RegisterView'),
     # path('signup/', views.RegisterView.as_view(), name='user-signup'), #new user registration
     # path('login/', views.LoginView.as_view(), name='user-login'),#login control
     # path('users/<str:user_id>/', views.UserDetailView.as_view(), name='user-detail'), # Obtain user info
