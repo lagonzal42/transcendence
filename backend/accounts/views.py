@@ -64,7 +64,8 @@ def user_detail(request, pk):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    # This is to confirm if it has the token
+    permission_classes = (IsAuthenticated,)
 
 
 class UserLogIn(ObtainAuthToken):
