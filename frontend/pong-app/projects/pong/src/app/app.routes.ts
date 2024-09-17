@@ -7,6 +7,7 @@ import { SignupComponent } from './signup/signup.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SearchComponent } from './search/search.component';
 import { TournamentComponent } from './tournament/tournament.component';
+import { LocalPlayComponent } from './local-play/local-play.component';
 
 
 export const routes: Routes = [
@@ -19,7 +20,8 @@ export const routes: Routes = [
       { path: 'signup', component: SignupComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'search', component: SearchComponent },
-      { path: 'tournament', component: TournamentComponent }
+      { path: 'tournament', component: TournamentComponent },
+      { path: 'local-play', component: LocalPlayComponent }
     ]
   }
 ];
