@@ -5,8 +5,8 @@ app_name = 'accounts'
 
 urlpatterns = [
     path('', views.BaseView, name='BaseView'),
-    path('account_list/', views.AccountList.as_view(), name='AccountList'),
-    path('account_detail/<int:pk>', views.AccountDetail.as_view(), name='AccountDetail'),
+    #path('account_list/', views.AccountList.as_view(), name='AccountList'),
+    path('account_detail/<int:pk>', views.UserDetailView.as_view(), name='UserDetailView'),
     path('register_account/', views.RegisterView.as_view(), name='RegisterView'),
     # path('signup/', views.RegisterView.as_view(), name='user-signup'), #new user registration
     # path('login/', views.LoginView.as_view(), name='user-login'),#login control
