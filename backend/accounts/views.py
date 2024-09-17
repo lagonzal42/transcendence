@@ -16,13 +16,17 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 
-from .models import User
+# from .models import User
 from .serializers import UserSerializer
 from django.db import IntegrityError
+
+# DEBUG
+# import pdb
 
 
 @api_view(['GET', 'POST'])
@@ -68,18 +72,37 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class UserLogIn(ObtainAuthToken):
-    
+    # print("hehehe")
+    # def post(self, request, *args, **kwargs):
+    #     print("hehehe2")
+    #     serializer = self.serializer_class(data=request.data,
+    #                                        context={'request': request})
+    #     serializer.is_valid(raise_exception=True)
+    #     print("hehehe3")
+    #     user = serializer.validated_data['user']
+    #     token = Token.objects.get(user=user)
+    #     return Response({
+    #         'token': token.key,
+    #         'id': user.pk,
+    #         'username': user.username
+    #     })
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
+        # pdb.set_trace()
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token = Token.objects.get(user=user)
+
+        try:
+            token = Token.objects.get(user=user)
+        except Token.DoesNotExist:
+            raise ValidationError({"detail": "Token not found for the user."})
+        
         return Response({
             'token': token.key,
             'id': user.pk,
             'username': user.username
         })
+
 
 # class RegisterView(APIView):
 #     @staticmethod

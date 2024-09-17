@@ -10,10 +10,6 @@ from django.db.models.signals import post_save
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import AbstractUser
 
-# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-# def create_auth_token(sender, instance=None, created=False, **kwargs):
-#     if created:
-#         Token.objects.create(user=instance)
 
 class User(AbstractUser):
     avatar = models.ImageField(blank=True)
@@ -27,6 +23,11 @@ class User(AbstractUser):
 def in_30_days():
     return timezone.now() + timedelta(days=30)
 
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+        
 # class AccessToken(models.Model):
 #     # tied user
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
