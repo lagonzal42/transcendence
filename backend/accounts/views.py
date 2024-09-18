@@ -1,7 +1,7 @@
 from .serializers import UserRegisterSerializer, LoginSerializer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
@@ -25,68 +25,53 @@ from django.shortcuts import render
 
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
+from django.contrib.auth import authenticate
+from django.core.mail import EmailMessage
 
 def BaseView(request):
     users = User.objects.all()
     return render(request, 'accounts/base.html', {'users':users})
 
-# class RegisterView(GenericAPIView):
-#     serializer_class = UserRegisterSerializer
-
-#     def post(self, request):
-#         serialized_data = self.serializer_class(data=request.data)
-#         if serialized_data.is_valid():
-#             print("I am in the register view class posttttTTTTTT")
-#         return Response(serialized_data.data, status=HTTP_200_OK)
-
-class UserViewSet(viewsets.ModelViewSet):
+class AccountList(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
-    permission_classes = [IsAuthenticated]
 
 
-class UserLogIn(ObtainAuthToken):
-    
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token = Token.objects.get(user=user)
-        return Response({
-            'token': token.key,
-            'id': user.pk,
-            'username': user.username
-        })
-
-
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 class RegisterView(APIView):
-    @staticmethod
-    @method_decorator(csrf_exempt)
-    def post(request, *args, **kwargs):
-        print("I entered the FUNCTIONNNNNNNNNNNNNN")
-        print(request.data)
-        serializer = UserRegisterSerializer(data=request.data)
+    serializer_class = UserRegisterSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            # If the password and confirmation password do not match
-            # if serializer.validated_data['password'] != request.data['password_confirmation']:
-            #     return Response({'error': 2}, status=HTTP_400_BAD_REQUEST)
+            serializer.save()
+            user = serializer.data
+            return Response({
+                'data':user,
+                'message': 'Thanks for signing up'
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # If the UserID has already been used
-            # if User.objects.filter(id=serializer.validated_data['id']).exists():
-            #     return Response({'error': 3}, status=HTTP_400_BAD_REQUEST)
+class UserDetailView(APIView):
+    # permission_classes = [IsAuthenticated]
+    def get(self, request, id):
+        # Obtain user info
+        user = User.objects.filter(pk=id).first()
 
-            # No error
-            try:
-                serializer.save()
-            except:
-                # database error
-                return Response({'error': 11}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+        if not user:
+            # If user doesn't exist
+            return Response({"message": "No User found"}, status=404)
 
-            return Response(serializer.data, status=HTTP_201_CREATED)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+        response_data = {
+            "message": "Found user",
+            "user": {
+                "username": user.username,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "id": user.id,
+            }
+        }
+        return Response(response_data, status=200)
 
 class LoginView(GenericAPIView):
     """API login class"""
@@ -96,50 +81,41 @@ class LoginView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            user = User.objects.get(user_id=serializer.validated_data["user_id"])
-            user_id = serializer.validated_data['user_id']
-            token = AccessToken.create(user)
-            return Response({'detail': "Login successful.", 'error': 0, 'token': token.token, 'user_id': user_id})
-        return Response({'error': 1}, status=HTTP_400_BAD_REQUEST)
-
-
-    def post(self, request, *args, **kwargs):
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
             user = authenticate(
                 username=serializer.validated_data['username'],
                 password=serializer.validated_data['password']
             )
             if user is not None:
-                refresh = RefreshToken.for_user(user)
                 return Response({
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }, status=status.HTTP_200_OK)
+                    'user_id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                }, status=200)
             else:
-                return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid credentials'}, status=400)
+        return Response(serializer.errors, status=400)
 
 
-class UserDetailView(APIView):
-    # permission_classes = [IsAuthenticated]
-    def get(self, request, id):
-        # Obtain user info
-        user = User.objects.filter(id=id).first()
+    # def post(self, request, *args, **kwargs):
+    #     serializer = LoginSerializer(data=request.data)
+    #     if serializer.is_valid(raise_exception=True):
+    #         user = authenticate(
+    #             username=serializer.validated_data['username'],
+    #             password=serializer.validated_data['password']
+    #         )
+    #         if user is not None:
+    #             refresh = RefreshToken.for_user(user)
+    #             return Response({
+    #                 'refresh': str(refresh),
+    #                 'access': str(refresh.access_token),
+    #             }, status=status.HTTP_200_OK)
+    #         else:
+    #             return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        if not user:
-            # If user doesn't exist
-            return Response({"message": "No User found"}, status=404)
 
-        response_data = {
-            "message": "User details by user_id",
-            "user": {
-                "username": user.username,
-                "id": user.id,
-            }
-        }
-
-        return Response(response_data, status=200)
 
 # class UserUpdateView(APIView):
 #     def patch(self, request, user_id):

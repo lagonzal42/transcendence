@@ -3,15 +3,45 @@ from .models import User
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=68, write_only=True)
+    password2 = serializers.CharField(max_length=68, write_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'first_name', 'last_name')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'password2')
+
+    def validate(self, attrs):
+        password = attrs.get('password', '')
+        password2 = attrs.get('password2', '')
+        if password != password2:
+            raise serializers.ValidationError('passwords do not match')
+        return attrs
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username = validated_data.get('username'),
+            email = validated_data.get('email'),
+            first_name = validated_data.get('first_name'),
+            last_name = validated_data.get('last_name'),
+            password = validated_data.get('password')
+        )
+        return user
+
+    
 
 class LoginSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=100)
-    email = serializers.EmailField(max_length=254)
-    password = serializers.CharField(max_length=100)
-    first_name = serializers.CharField(max_length=100)
-    last_name = serializers.CharField(max_length=100)
+    class Meta:
+        model = User
+        fields = ('username', 'password')
 
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+
+        if not username or not password:
+            raise serialzier.ValidationError("Both username and password are required.")
+        
+        return data

@@ -26,7 +26,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
-from accounts.views import UserViewSet #UserLogIn
 
 import accounts.urls
 
@@ -35,9 +34,6 @@ import accounts.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('', include(accounts.urls, namespace='accounts')),
-    #path('api/v1/', include(router.urls)),
-    #path('api-user-login/', UserLogIn.as_view()),
     path('accounts/', include('accounts.urls')),
     # authenticate users in the browsable API interface without having to manually set up a login system
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
