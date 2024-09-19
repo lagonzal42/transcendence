@@ -16,7 +16,7 @@ from django.contrib.auth.models import AbstractUser
 #         Token.objects.create(user=instance)
 
 class User(AbstractUser):
-    avatar = models.ImageField(blank=True)
+    avatar = models.ImageField(blank=True, )
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(max_length=254)
     password = models.CharField(max_length=100)

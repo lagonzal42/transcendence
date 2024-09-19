@@ -97,26 +97,6 @@ class LoginView(GenericAPIView):
                 return Response({'error': 'Invalid credentials'}, status=400)
         return Response(serializer.errors, status=400)
 
-
-    # def post(self, request, *args, **kwargs):
-    #     serializer = LoginSerializer(data=request.data)
-    #     if serializer.is_valid(raise_exception=True):
-    #         user = authenticate(
-    #             username=serializer.validated_data['username'],
-    #             password=serializer.validated_data['password']
-    #         )
-    #         if user is not None:
-    #             refresh = RefreshToken.for_user(user)
-    #             return Response({
-    #                 'refresh': str(refresh),
-    #                 'access': str(refresh.access_token),
-    #             }, status=status.HTTP_200_OK)
-    #         else:
-    #             return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
 # class UserUpdateView(APIView):
 #     def patch(self, request, user_id):
 #         # Obtain user info
@@ -149,14 +129,14 @@ class LoginView(GenericAPIView):
 #     def post(self, request, user_id):
 #         return Response({"message": "Method not allowed"}, status=405)
 
-# class CloseAccountView(APIView):
-#     def post(self, request, user_id):
-#         ## Remove account
-#         try:
-#             user = User.objects.filter(user_id=user_id).first()
-#             user.delete()
-#         except User.DoesNotExist:
-#             raise Response("No User found")
+class CloseAccountView(APIView):
+    def post(self, request, id):
+        ## Remove account
+        try:
+            user = User.objects.filter(id=id).first()
+            user.delete()
+        except User.DoesNotExist:
+            raise Response("No User found")
 
-#         return Response({"message": "Account and user successfully removed"}, status=200)
+        return Response({"message": "Account and user successfully removed"}, status=200)
         
