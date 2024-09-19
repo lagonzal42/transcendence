@@ -1,0 +1,46 @@
+version: '3.5'
+
+networks: 
+  prueba:
+    name: prueba
+    driver: bridge
+
+# volumes: 
+
+
+services:
+  
+  angular:
+    container_name: angular
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - test
+    # image: angular
+    ports:
+      - "4200:4200"
+    restart: always
+    networks:
+      - prueba
+    
+  test:
+    container_name: test
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    # image: server_test
+    restart: always
+    networks:
+      - prueba
+    expose:
+      - 1234
+
+  # nginx:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.nginx
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - angular

@@ -1,3 +1,14 @@
+**/node_modules/*
+**/.git
+**/README.md
+**/.vscode
+**/npm-debug.log
+**/coverage
+**/.env
+**/.editorconfig
+**/.aws
+**/dist
+**/install.sh
 *.o
 *.a
 *.exe
