@@ -36,9 +36,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     # authenticate users in the browsable API interface without having to manually set up a login system
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api-root'), permanent=False)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api-root'), permanent=False)),
+]# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [
 #     path("admin/", admin.site.urls), #admin form

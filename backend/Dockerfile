@@ -12,6 +12,7 @@ COPY requirements.txt /code/backend/
 COPY run.sh /code/backend/
 
 # Install dependencies
+RUN pip install --upgrade pip
 RUN pip install -r /code/backend/requirements.txt
 
 # Give permission
