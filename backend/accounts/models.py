@@ -1,4 +1,4 @@
-# from django.db import models
+from django.db import models
 from django.db import models
 import hashlib
 from datetime import timedelta
@@ -12,10 +12,12 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(blank=True)
-    #username = models.CharField(max_length=100, unique=True)
+    avatar = models.ImageField(blank=True, )
+    username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(max_length=254)
-    #password = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.username
