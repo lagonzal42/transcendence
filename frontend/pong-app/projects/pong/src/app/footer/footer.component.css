@@ -1,0 +1,29 @@
+.custom-footer
+{
+	background-color:rgb(16, 168, 52);
+	box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	display: flex;
+	justify-content: center;
+}
+
+.custom-footer a
+{
+	color: white;
+	text-decoration: none;
+	font-size: 16px;
+	margin: 20px;
+}
+
+.custom-footer a:hover
+{
+	color: rgb(0, 247, 255);
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.footer-copy
+{
+	margin: 20px;
+	color: white;
+}
