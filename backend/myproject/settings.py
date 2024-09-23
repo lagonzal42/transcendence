@@ -43,12 +43,23 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    # 'rest_framework_simplejwt',
+    'rest_framework_simplejwt',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
 
 ##### For JWT
+
+REST_FRAMEWORK = {
+    # JWT authentication
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),  
+}
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT'),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+}
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_AUTHENTICATION_CLASSES': (

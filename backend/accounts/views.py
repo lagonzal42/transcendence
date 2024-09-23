@@ -41,6 +41,7 @@ class AccountList(ListAPIView):
 class RegisterView(APIView):
     serializer_class = UserRegisterSerializer
 
+
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
