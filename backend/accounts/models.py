@@ -18,6 +18,11 @@ class User(AbstractUser):
     password = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    tournament_name = models.CharField(max_length=100, default="noob")
+    is_online = models.BooleanField(default=False)
+    games_played = models.PositiveIntegerField(default=0)
+    games_won = models.PositiveIntegerField(default=0)
+    games_lost = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.username
