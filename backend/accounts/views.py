@@ -26,6 +26,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate
 from django.core.mail import EmailMessage
 
+from .services import send_activation_email
+
 def BaseView(request):
     users = User.objects.all()
     return render(request, 'accounts/base.html', {'users':users})
@@ -43,6 +45,11 @@ class RegisterView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
+
+            # Send the activation email using the service
+            send_activation_email(user, from_email="noreply@essencecatch.com")
+            
+            # Prepare the response data
             user = serializer.data
             return Response({
                 'data':user,

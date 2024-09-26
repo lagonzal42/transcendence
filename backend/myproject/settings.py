@@ -180,3 +180,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
+
+# To display the email in the console
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

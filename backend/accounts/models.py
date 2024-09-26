@@ -1,5 +1,6 @@
 from django.db import models
-from django.db import models
+import uuid
+# from django.db import models
 import hashlib
 from datetime import timedelta
 from django.utils import timezone
@@ -29,6 +30,49 @@ def in_30_days():
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+# For further activation and token creation
+class AccountActivateTokensManager(models.Manager):
+
+    def activate_user_by_token(self, activate_token):
+        # 有効期限内のトークンを取得
+        user_activate_token = self.filter(
+            activate_token=activate_token,
+            expired_at__gte=timezone.now()  # 有効期限内のトークンを取得
+        ).first()
+
+        # トークンが存在する場合はアカウントを有効化する
+        if user_activate_token:
+            user = user_activate_token.user
+            user.is_active = True
+            user.save()
+            return user
+        else:
+            raise self.model.DoesNotExist
+
+    def create_token(self, user):
+        # トークンを作成
+        token = self.model(user=user)
+        token.set_expiration_date()
+        token.save()
+        return token
+
+# Make activation token
+class AccountActivateToken(models.Model):
+    token = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE,
+                                related_name='activate_token')
+    activate_token = models.UUIDField(default=uuid.uuid4)
+    expired_at = models.DateTimeField()
+    objects = AccountActivateTokensManager()
+
+    def set_expiration_date(self):
+        self.expired_at = timezone.now() + timedelta(days=10)
+        self.save()
+        return self.expired_at
+    
+
         
 # class AccessToken(models.Model):
 #     # tied user
