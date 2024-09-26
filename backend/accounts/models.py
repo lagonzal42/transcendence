@@ -9,12 +9,14 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
+import secrets
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(blank=True, )
+    avatar = models.ImageField(default="noob.png")
     username = models.CharField(max_length=100, unique=True)
-    email = models.EmailField(max_length=254)
+    email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -23,18 +25,62 @@ class User(AbstractUser):
     games_played = models.PositiveIntegerField(default=0)
     games_won = models.PositiveIntegerField(default=0)
     games_lost = models.PositiveIntegerField(default=0)
+    friends = models.ManyToManyField('self', blank=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.username
+    
+        # Helper method to add a friend
+    def add_friend(self, user):
+        """Add a friend to the user's friend list."""
+        self.friends.add(user)
+
+    # Helper method to remove a friend
+    def remove_friend(self, user):
+        """Remove a friend from the user's friend list."""
+        self.friends.remove(user)
+
+    # Check if someone is a friend
+    def is_friend(self, user):
+        """Check if a user is a friend."""
+        return self.friends.filter(id=user.id).exists()
 
 def in_30_days():
     return timezone.now() + timedelta(days=30)
 
+class OtpToken(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="otps")
+    otp_code = models.CharField(max_length=6, default=secrets.token_hex(3))
+    tp_created_at = models.DateTimeField(auto_now_add=True)
+    otp_expires_at = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
+def create_token(sender, instance=None, created=False, **kwargs):
     if created:
-        Token.objects.create(user=instance)
+        if instance.is_superuser:
+            pass
         
+        else:
+            OtpToken.objects.create((user=instance, otp_expires_at=)timezone.now() + timezone.timedelta(minutes=2))
+            instance.is_active=False
+            instance.save()
+
+        otp = OtpToken.objects.filter(user=instance).last()
+        subject="Email Verification"
+        message = f"""
+                            Hi {instance.username}, here is your OTP {otp.otp_code}
+                            it expires in 5 minutes, use the url below to redirect back to the website
+                            http://0.0.0.0:8000/verify_email/{instance.username}
+
+                            """
+        sender = "otxoboy64@gmail.com"
+        
+
 # class AccessToken(models.Model):
 #     # tied user
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)

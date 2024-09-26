@@ -26,11 +26,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
+from accounts.views import UpdateProfileView
 
 import accounts.urls
 
-# router = DefaultRouter()
-# router.register(r'accounts', UserViewSet)
+router = DefaultRouter()
+router.register(r'accounts', UpdateProfileView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +40,9 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api-root'), permanent=False)),
 ]# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [
 #     path("admin/", admin.site.urls), #admin form
