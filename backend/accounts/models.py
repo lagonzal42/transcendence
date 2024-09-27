@@ -12,7 +12,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 import secrets
 
-
 class User(AbstractUser):
     avatar = models.ImageField(default="noob.png")
     username = models.CharField(max_length=100, unique=True)
@@ -57,29 +56,7 @@ class OtpToken(models.Model):
     otp_expires_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.user.username
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        if instance.is_superuser:
-            pass
-        
-        else:
-            OtpToken.objects.create((user=instance, otp_expires_at=)timezone.now() + timezone.timedelta(minutes=2))
-            instance.is_active=False
-            instance.save()
-
-        otp = OtpToken.objects.filter(user=instance).last()
-        subject="Email Verification"
-        message = f"""
-                            Hi {instance.username}, here is your OTP {otp.otp_code}
-                            it expires in 5 minutes, use the url below to redirect back to the website
-                            http://0.0.0.0:8000/verify_email/{instance.username}
-
-                            """
-        sender = "otxoboy64@gmail.com"
-        
+        return self.user.username      
 
 # class AccessToken(models.Model):
 #     # tied user

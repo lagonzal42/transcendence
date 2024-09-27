@@ -19,6 +19,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, action
+from django.contrib.auth.decorators import login_required
 
 from .models import User
 from django.db import IntegrityError
@@ -28,10 +29,29 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate
 from django.core.mail import EmailMessage
+from django.core.mail import send_mail
+from django.conf import settings
 
-def BaseView(request):
-    users = User.objects.all()
-    return render(request, 'accounts/base.html', {'users':users})
+def test_email(request):
+    context = {}
+
+    if request.method == 'POST':
+        address = request.POST.get('address')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+
+        if address and subject and message:
+            try:
+                send_mail(subject, message, settings.EMAIL_HOST_USER, [address])
+                context['result'] = 'Email sent successfully'
+            except Exception as e:
+                context['result'] = f'Error sending email: {e}'
+        else:
+            context['result'] = 'All fields are required'
+    
+    return render(request, "accounts/base.html", context)
+
+#def VerifyEmail(request):
 
 class AccountList(ListAPIView):
     queryset = User.objects.all()
@@ -49,7 +69,9 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            print("NOW IT SHOULD BE TRIGGERED")
+            serializer.save()   
+            print("USER SAVED")
             user = serializer.data
             return Response({'data':user, 'message': 'Thanks for signing up'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
