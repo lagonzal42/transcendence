@@ -7,9 +7,6 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 # For JWT
 # from rest_framework_simplejwt.tokens import RefreshToken
-# from django.contrib.auth import authenticate
-# from rest_framework.permissions import IsAuthenticated
-
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -31,6 +28,7 @@ from django.contrib.auth import authenticate
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.conf import settings
+from .decorators import user_not_authenticated
 
 def test_email(request):
     context = {}
@@ -62,7 +60,23 @@ class AccountList(ListAPIView):
         serializer = self.serializer_class(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+def activateEmail(request, user, to_email):
+    mail_subject = "Activate your user account."
+    message = render_to_string("template_activate_account.html", {
+        'user': user.username,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+        "protocol": 'https' if request.is_secure() else 'http'
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if email.send():
+        messages.success(request, f'Dear <b>{user}</b>, please go to you email <b>{to_email}</b> inbox and click on \
+                received activation link to confirm and complete the registration. <b>Note:</b> Check your spam folder.')
+    else:
+        messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
 
+#   @user_not_authenticated
 class RegisterView(APIView):
     serializer_class = UserRegisterSerializer
 
@@ -70,9 +84,10 @@ class RegisterView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             print("NOW IT SHOULD BE TRIGGERED")
-            serializer.save()   
-            print("USER SAVED")
-            user = serializer.data
+            user = serializer.save()
+            user.is_active = False
+            user.save()
+            activateEmail(request, user, serializer.cleaned_data.get('email'))
             return Response({'data':user, 'message': 'Thanks for signing up'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -91,8 +106,6 @@ class UserDetailView(APIView):
             "user": {
                 "username": user.username,
                 "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
                 "id": user.id,
                 "tournament_name": user.tournament_name,
                 #"avatar": user.avatar,

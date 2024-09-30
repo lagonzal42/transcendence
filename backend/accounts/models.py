@@ -14,11 +14,9 @@ import secrets
 
 class User(AbstractUser):
     avatar = models.ImageField(default="noob.png")
-    username = models.CharField(max_length=100, unique=True)
-    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=100, unique=True, null=True)
+    email = models.EmailField(unique=True, null=True)
     password = models.CharField(max_length=100)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
     tournament_name = models.CharField(max_length=100, default="noob")
     is_online = models.BooleanField(default=False)
     games_played = models.PositiveIntegerField(default=0)
@@ -27,6 +25,9 @@ class User(AbstractUser):
     friends = models.ManyToManyField('self', blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(default=timezone.now)
+
+    #USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.username
@@ -49,14 +50,22 @@ class User(AbstractUser):
 def in_30_days():
     return timezone.now() + timedelta(days=30)
 
-class OtpToken(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="otps")
-    otp_code = models.CharField(max_length=6, default=secrets.token_hex(3))
-    tp_created_at = models.DateTimeField(auto_now_add=True)
-    otp_expires_at = models.DateTimeField(blank=True, null=True)
+class Tournament(models.Model):
+    name =  models.CharField(max_length=100, null=True)
+    max_players = models.PositiveIntegerField(default=0)
+    players = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
-        return self.user.username      
+        return self.name
+
+# class OtpToken(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="otps")
+#     otp_code = models.CharField(max_length=6, default=secrets.token_hex(3))
+#     tp_created_at = models.DateTimeField(auto_now_add=True)
+#     otp_expires_at = models.DateTimeField(blank=True, null=True)
+
+#     def __str__(self):
+#         return self.user.username      
 
 # class AccessToken(models.Model):
 #     # tied user
