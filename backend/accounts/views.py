@@ -28,7 +28,6 @@ from django.contrib.auth import authenticate
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.conf import settings
-from .decorators import user_not_authenticated
 
 def test_email(request):
     context = {}
@@ -73,6 +72,7 @@ def send_code_to_user(email):
     ).send()
 
 
+#   @user_not_authenticated
 class RegisterView(APIView):
     serializer_class = UserRegisterSerializer
 
@@ -100,6 +100,8 @@ class UserDetailView(APIView):
             "user": {
                 "username": user.username,
                 "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
                 "id": user.id,
                 "tournament_name": user.tournament_name,
                 #"avatar": user.avatar,

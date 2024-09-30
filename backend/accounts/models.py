@@ -28,6 +28,9 @@ class User(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(default=timezone.now)
 
+    #USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
     def __str__(self):
         return self.username
     
@@ -49,14 +52,13 @@ class User(AbstractUser):
 def in_30_days():
     return timezone.now() + timedelta(days=30)
 
-class OtpToken(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="otps")
-    otp_code = models.CharField(max_length=6, default=secrets.token_hex(3))
-    tp_created_at = models.DateTimeField(auto_now_add=True)
-    otp_expires_at = models.DateTimeField(blank=True, null=True)
+class Tournament(models.Model):
+    name =  models.CharField(max_length=100, null=True)
+    max_players = models.PositiveIntegerField(default=0)
+    players = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return self.user.username      
 
 # class AccessToken(models.Model):
 #     # tied user
