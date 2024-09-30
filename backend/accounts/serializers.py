@@ -7,7 +7,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'password2', 'id', 'tournament_name', 'avatar', 'friends', 'last_login', 'date_joined')
+        fields = ('username', 'email', 'password', 'password2', 'id', 'tournament_name', 'avatar', 'friends', 'last_login', 'date_joined', 'first_name', 'last_name')
 
     def validate(self, attrs):
         password = attrs.get('password', '')
@@ -54,7 +54,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'id', 'friends', 'tournament_name', 'date_joined', 'last_login')
+        fields = ('username', 'email', 'id', 'friends', 'tournament_name', 'date_joined', 'last_login')
         extra_kwargs = {
             'first_name': {'required': True},
             'last_name': {'required': True},

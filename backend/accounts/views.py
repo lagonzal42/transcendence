@@ -7,9 +7,6 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 # For JWT
 # from rest_framework_simplejwt.tokens import RefreshToken
-# from django.contrib.auth import authenticate
-# from rest_framework.permissions import IsAuthenticated
-
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -21,7 +18,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, action
 from django.contrib.auth.decorators import login_required
 
-from .models import User
+from .models import User, OtpToken
 from django.db import IntegrityError
 from django.shortcuts import render
 
@@ -31,6 +28,7 @@ from django.contrib.auth import authenticate
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.conf import settings
+from .decorators import user_not_authenticated
 
 def test_email(request):
     context = {}
@@ -62,6 +60,18 @@ class AccountList(ListAPIView):
         serializer = self.serializer_class(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+def send_code_to_user(email):
+    user = User.objects.get(email=email)
+
+    otp = OtpToken.objects.create(user=user)
+
+    EmailMessage(
+        subject = 'Account Verification',
+        body = f"Hi {user.first_name},\nThanks for signing up on our site.\nPlease verify your email with the following one time password:\n\n{otp.otp_code}\n\n\n",
+        from_email = settings.EMAIL_HOST_USER,
+        to = [user.email]
+    ).send()
+
 
 class RegisterView(APIView):
     serializer_class = UserRegisterSerializer
@@ -69,11 +79,10 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            print("NOW IT SHOULD BE TRIGGERED")
-            serializer.save()   
-            print("USER SAVED")
+            serializer.save()
             user = serializer.data
-            return Response({'data':user, 'message': 'Thanks for signing up'}, status=status.HTTP_201_CREATED)
+            send_code_to_user(user['email'])
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(APIView):
@@ -91,8 +100,6 @@ class UserDetailView(APIView):
             "user": {
                 "username": user.username,
                 "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
                 "id": user.id,
                 "tournament_name": user.tournament_name,
                 #"avatar": user.avatar,

@@ -14,11 +14,11 @@ import secrets
 
 class User(AbstractUser):
     avatar = models.ImageField(default="noob.png")
-    username = models.CharField(max_length=100, unique=True)
-    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=100, unique=True, null=True)
+    email = models.EmailField(unique=True, null=True)
     password = models.CharField(max_length=100)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100, default="noob")
+    last_name = models.CharField(max_length=100, default="noob")
     tournament_name = models.CharField(max_length=100, default="noob")
     is_online = models.BooleanField(default=False)
     games_played = models.PositiveIntegerField(default=0)
@@ -31,20 +31,20 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
     
-        # Helper method to add a friend
-    def add_friend(self, user):
-        """Add a friend to the user's friend list."""
-        self.friends.add(user)
+    #     # Helper method to add a friend
+    # def add_friend(self, user):
+    #     """Add a friend to the user's friend list."""
+    #     self.friends.add(user)
 
-    # Helper method to remove a friend
-    def remove_friend(self, user):
-        """Remove a friend from the user's friend list."""
-        self.friends.remove(user)
+    # # Helper method to remove a friend
+    # def remove_friend(self, user):
+    #     """Remove a friend from the user's friend list."""
+    #     self.friends.remove(user)
 
-    # Check if someone is a friend
-    def is_friend(self, user):
-        """Check if a user is a friend."""
-        return self.friends.filter(id=user.id).exists()
+    # # Check if someone is a friend
+    # def is_friend(self, user):
+    #     """Check if a user is a friend."""
+    #     return self.friends.filter(id=user.id).exists()
 
 def in_30_days():
     return timezone.now() + timedelta(days=30)
@@ -56,7 +56,7 @@ class OtpToken(models.Model):
     otp_expires_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.user.username      
+        return self.user.username
 
 # class AccessToken(models.Model):
 #     # tied user
