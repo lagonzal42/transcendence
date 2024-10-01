@@ -1,4 +1,5 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -10,7 +11,11 @@ import { isPlatformBrowser } from '@angular/common';
 export class PongGameComponent implements OnInit, AfterViewInit {
   @ViewChild('pongCanvas', { static: false }) pongCanvas!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D | null;
-  private isGameInitialized: boolean = false;
+  public isGameInitialized: boolean = false;
+
+  // Nombres de los jugadores
+  public leftPlayerName: string = '';
+  public rightPlayerName: string = '';
 
   // Paddle settings
   private paddleHeight: number = 75;
@@ -27,8 +32,8 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   private dy: number = -2;
 
   // Score
-  private leftPlayerScore: number = 0;
-  private rightPlayerScore: number = 0;
+  public leftPlayerScore: number = 0;
+  public rightPlayerScore: number = 0;
   private winningScore: number = 3;
   private gameEnded: boolean = false;
 
@@ -38,12 +43,19 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   private rightPaddleUp: boolean = false;
   private rightPaddleDown: boolean = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.ctx = null;
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      const players = navigation.extras.state['players'];
+      if (players) {
+        this.leftPlayerName = players.leftPlayerName;
+        this.rightPlayerName = players.rightPlayerName;
+      }
+    }
   }
 
   ngOnInit(): void {
-    console.log("PongGameComponent initialized.");
+    console.log("PongGameComponent initialized with players:", this.leftPlayerName, this.rightPlayerName);
   }
 
   ngAfterViewInit(): void {
@@ -51,33 +63,36 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.ctx = this.pongCanvas.nativeElement.getContext('2d');
         if (this.ctx) {
-          console.log("Canvas successfully retrieved.", this.pongCanvas.nativeElement);
           this.initializeGame();
+          this.startGame();  // Asegúrate de que este método se está llamando
         } else {
           console.error("Failed to retrieve the canvas context.");
         }
       }, 0);
     }
-  }
+  }  
 
   initializeGame(): void {
     this.x = this.pongCanvas.nativeElement.width / 2;
     this.y = this.pongCanvas.nativeElement.height / 2;
-
+  
     this.leftPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
     this.rightPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
-
-    this.isGameInitialized = true;
-    this.startGame();
+  
+    this.leftPlayerScore = 0; // Resetea la puntuación al inicio
+    this.rightPlayerScore = 0; // Resetea la puntuación al inicio
+    this.gameEnded = false; // Resetea el estado del juego
+  
+    this.isGameInitialized = true; // Marcar el juego como inicializado
   }
 
   startGame(): void {
     if (this.isGameInitialized && this.ctx) {
       window.addEventListener('keydown', this.keyHandler.bind(this));
       window.addEventListener('keyup', this.keyHandler.bind(this));
-      requestAnimationFrame(this.draw.bind(this));
+      requestAnimationFrame(this.draw.bind(this)); // Asegúrate de que se llama a draw
     }
-  }
+  }  
 
   keyHandler(event: KeyboardEvent): void {
     const isKeyDown = event.type === 'keydown';  // Detect if the event is keydown or keyup
@@ -204,11 +219,14 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       this.ctx.font = '30px Arial';
       this.ctx.fillStyle = '#FFFFFF';
 
-      if (this.leftPlayerScore >= this.winningScore) {
-        this.ctx.fillText('Left Player Wins with ' + this.leftPlayerScore + ' points!', this.pongCanvas.nativeElement.width / 2 - 160, this.pongCanvas.nativeElement.height / 2);
-      } else {
-        this.ctx.fillText('Right Player Wins with ' + this.rightPlayerScore + ' points!', this.pongCanvas.nativeElement.width / 2 - 170, this.pongCanvas.nativeElement.height / 2);
-      }
+      const winnerName = this.leftPlayerScore >= this.winningScore ? this.leftPlayerName : this.rightPlayerName;
+      const winnerMessage = `${winnerName} wins!`;
+
+      const textWidth = this.ctx.measureText(winnerMessage).width;
+      const xPosition = (this.pongCanvas.nativeElement.width - textWidth) / 2;
+      const yPosition = this.pongCanvas.nativeElement.height / 2;
+
+      this.ctx.fillText(winnerMessage, xPosition, yPosition);
     }
   }
 }

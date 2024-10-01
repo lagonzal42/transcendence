@@ -29,26 +29,21 @@ export class LocalPlayComponent {
 
   onSubmit() {
     if (this.localPlayForm.valid) {
-      console.log('Form Submitted!', this.localPlayForm.value);
-      const players: Array<string> = [
-        this.localPlayForm.get('player1')?.value,
-        this.localPlayForm.get('player2')?.value
-      ];
-  
-      console.log('Players:', players);
-      this.router.navigate(['/pong-game']);
-  
-      // Aquí podrías realizar cualquier lógica que necesites para el juego local
-    } else {
-      console.log('Form is invalid');
-      // Marca todos los controles como tocados para mostrar mensajes de validación
-      this.localPlayForm.markAllAsTouched();
-    }
-  }  
+      const players = {
+        leftPlayerName: this.localPlayForm.get('player1')?.value,
+        rightPlayerName: this.localPlayForm.get('player2')?.value
+      };
 
-  shuffleArray(array: Array<any>): Array<any> 
-  {
-    const shuffled = array.sort(() => Math.random() - 0.5);
-    return shuffled;
+      // Navegar a pong-game pasando el estado de los jugadores
+      this.router.navigate(['/pong-game'], { state: { players } });
+    } else {
+      this.localPlayForm.markAllAsTouched();
+    } 
   }
+
+//  shuffleArray(array: Array<any>): Array<any> 
+//  {
+//    const shuffled = array.sort(() => Math.random() - 0.5);
+//    return shuffled;
+//  }
 }
