@@ -8,6 +8,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { SearchComponent } from './search/search.component';
 import { TournamentComponent } from './tournament/tournament.component';
 import { LocalPlayComponent } from './local-play/local-play.component';
+import { PongGameComponent } from './pong-game/pong-game.component';
 
 
 export const routes: Routes = [
@@ -21,7 +22,8 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileComponent },
       { path: 'search', component: SearchComponent },
       { path: 'tournament', component: TournamentComponent },
-      { path: 'local-play', component: LocalPlayComponent }
+      { path: 'local-play', component: LocalPlayComponent },
+      { path: 'pong-game', component: PongGameComponent }
     ]
   }
 ];

@@ -1,0 +1,31 @@
+/* Asegúrate de que el canvas tenga un tamaño fijo */
+canvas {
+  background-color: black; /* Color de fondo del canvas */
+  display: block; /* Evita el espacio debajo del canvas */
+}
+
+/* Estilos para el marcador */
+.score {
+  font-family: 'Arial Black', sans-serif; /* Tipo de letra */
+  color: white; /* Color de texto */
+  font-size: 30px; /* Tamaño de letra */
+  position: absolute; /* Posicionamiento */
+  top: 10px; /* Espaciado desde la parte superior */
+}
+
+.left-score {
+  left: calc(50% - 100px); /* Posiciona la puntuación a la izquierda */
+}
+
+.right-score {
+  left: calc(50% + 50px); /* Posiciona la puntuación a la derecha */
+}
+
+/* Estilos para el mensaje del ganador */
+.winner-message {
+  font-family: 'Arial Black', sans-serif; /* Tipo de letra */
+  color: white; /* Color de texto */
+  font-size: 40px; /* Tamaño de letra */
+  text-align: center; /* Centra el texto */
+  margin-top: 20px; /* Espacio arriba del mensaje */
+}
