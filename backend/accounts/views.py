@@ -49,15 +49,16 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            user_mail = serializer.save()
+            # the model instance, to send activation mail
+            user_insta = serializer.save()
 
-            # Prepare the response data
-            user = serializer.data
+            # serialized representation of the data to return to frontend
+            user_data = serializer.data
             # Send the activation email using the service
-            send_activation_email(user_mail, from_email="noreply@essencecatch.com")
+            send_activation_email(user_insta, from_email="noreply@essencecatch.com")
             
             return Response({
-                'data':user,
+                'data':user_data,
                 'message': 'Thanks for signing up'
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -164,4 +165,17 @@ class CloseAccountView(APIView):
             raise Response("No User found")
 
         return Response({"message": "Account and user successfully removed"}, status=200)
-        
+
+# mail sending test
+from django.core.mail import send_mail
+from django.http import HttpResponse
+
+def send_test_email(request):
+    subject = 'Test Email'
+    message = 'This is a test email from Django!'
+    from_email = config('EMAIL_HOST_USER')  # Your Gmail address
+    recipient_list = ['recipient@example.com']  # Change to your recipient's email
+
+    send_mail(subject, message, from_email, recipient_list)
+
+    return HttpResponse('Test email sent!')

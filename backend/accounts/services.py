@@ -14,12 +14,12 @@ def send_activation_email(user, from_email):
 
     subject = 'Essence Catch : Account Activation'
     message = f'''
-    このメールは Essence Catch から送信されています。
-    以下のリンクをクリックしてアカウントを有効化してください。
+    This email is sent from Essence Catch.
+    Please click the link below to activate your account.
     {url}
 
-    このメールに心当たりがない場合は、このメールを無視してください。
-    また, 送信専用のアドレスのため, このメールに返信しないでください。
+    If you did not request this email, please ignore it.
 
     '''
+
     send_mail(subject, message, from_email, [email])

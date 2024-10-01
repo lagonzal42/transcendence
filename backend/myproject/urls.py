@@ -28,6 +28,7 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 
+
 import accounts.urls
 
 # router = DefaultRouter()
@@ -43,6 +44,7 @@ urlpatterns = [
     path('api-auth/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # reobtain JWT token
     path('api-auth/jwt/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+   
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [
@@ -53,5 +55,4 @@ urlpatterns = [
 #     # # reobtain jwt-token
 #     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 # ]
-
 
