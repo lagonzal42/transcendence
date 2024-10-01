@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 import secrets
+import random
 
 class User(AbstractUser):
     avatar = models.ImageField(default="noob.png")
@@ -33,6 +34,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Only modify tournament_name for new instances
+            random_number = random.randint(1, 1000)
+            self.tournament_name = f"noob{random_number}"
+        super().save(*args, **kwargs)
     
     #     # Helper method to add a friend
     # def add_friend(self, user):

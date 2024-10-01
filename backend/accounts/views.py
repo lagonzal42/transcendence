@@ -139,11 +139,19 @@ class UpdateProfileView(UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UpdateUserSerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
 
     def get(self, request, id):
         user = User.objects.filter(pk=id).first()
         if not user:
             return Response({"message": "No User found"}, status=404)
+        return Response({
+                    'user_id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                }, status=200)
         
     # @action(detail=True, methods=['post'])
     # def add_friend(self, request, pk=None):

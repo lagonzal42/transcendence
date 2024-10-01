@@ -71,11 +71,12 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         if User.objects.exclude(pk=user.pk).filter(username=value).exists():
             raise serializers.ValidationError({"username": "This username is already in use."})
         return value
-
+    
     def update(self, instance, validated_data):
         instance.email = validated_data['email']
         instance.username = validated_data['username']
         instance.tournament_name = validated_data['tournament_name']
+        instance.avatar = validated_data['avatar']
 
         instance.save()
 
