@@ -183,3 +183,6 @@ CORS_ALLOWED_ORIGINS = [
 
 # To display the email in the console
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Temporally Activation URL
+ACTIVATE_URL = 'http://localhost:8000/accounts'

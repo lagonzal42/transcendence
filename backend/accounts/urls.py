@@ -12,6 +12,8 @@ urlpatterns = [
     path('account_login/', views.LoginView.as_view(), name='LoginView'),
     path('account_close/', views.CloseAccountView.as_view(), name='CloseAccountView'),
     path('account_update/<int:pk>', views.UpdateProfileView.as_view(), name='auth_update_profile'),
+    path('activation/', views.ActivateAccountView.as_view(), name='activate_account'),
+
     # path('signup/', views.RegisterView.as_view(), name='user-signup'), #new user registration
     # path('login/', views.LoginView.as_view(), name='user-login'),#login control
     # path('users/<str:user_id>/', views.UserDetailView.as_view(), name='user-detail'), # Obtain user info
@@ -22,4 +24,3 @@ urlpatterns = [
     # # reobtain jwt-token
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
-
