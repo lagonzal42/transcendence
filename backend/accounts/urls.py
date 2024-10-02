@@ -14,6 +14,7 @@ urlpatterns = [
     path('account_update/<int:pk>', views.UpdateProfileView.as_view(), name='auth_update_profile'),
     path('activation/', views.ActivateAccountView.as_view(), name='activate_account'),
     path('send-test-email/', views.send_test_email, name='send_test_email'),
+    
     # path('signup/', views.RegisterView.as_view(), name='user-signup'), #new user registration
     # path('login/', views.LoginView.as_view(), name='user-login'),#login control
     # path('users/<str:user_id>/', views.UserDetailView.as_view(), name='user-detail'), # Obtain user info

@@ -76,7 +76,7 @@ class ActivateAccountView(APIView):
 
             # If the user is successfully activated
             if user:
-                logger.info('アカウントが有効化されました')  # Account activated
+                logger.info('Account has been activated.')  # Account activated
 
                 # Delete the activation token after successful activation
                 AccountActivateToken.objects.filter(user=user).delete()
@@ -148,6 +148,11 @@ class LoginView(GenericAPIView):
             else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# WORK IN PROGRESS
+
+
+
 
 class UpdateProfileView(UpdateAPIView):
 

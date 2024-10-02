@@ -44,7 +44,7 @@ urlpatterns = [
     path('api-auth/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # reobtain JWT token
     path('api-auth/jwt/refresh', TokenRefreshView.as_view(), name='token_refresh'),
-   
+   path('', include('two_factor.urls', 'two_factor')),  # Include the 2FA URLs
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [

@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'rest_framework_simplejwt',
+    'django_otp',
+    'django_otp.plugins.otp_email',
+    'two_factor',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -89,6 +92,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django_otp.middleware.OTPMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -187,6 +191,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Temporally Activation URL
 ACTIVATE_URL = 'http://localhost:8000/accounts'
+
+# Setting to send a mail to gmail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

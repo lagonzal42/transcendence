@@ -8,3 +8,5 @@ Pillow
 djangorestframework-simplejwt
 importlib_metadata==8.4.0
 python-decouple
+django-otp
+django-two-factor-auth

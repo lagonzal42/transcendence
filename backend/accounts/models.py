@@ -23,25 +23,25 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-def in_30_days():
-    return timezone.now() + timedelta(days=30)
+# def in_30_days():
+#     return timezone.now() + timedelta(days=30)
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
+# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+# def create_auth_token(sender, instance=None, created=False, **kwargs):
+#     if created:
+#         Token.objects.create(user=instance)
 
 # For further activation and token creation
 class AccountActivateTokensManager(models.Manager):
 
     def activate_user_by_token(self, activate_token):
-        # 有効期限内のトークンを取得
+        # Obtain tokens within the validity period.
         user_activate_token = self.filter(
             activate_token=activate_token,
-            expired_at__gte=timezone.now()  # 有効期限内のトークンを取得
+            expired_at__gte=timezone.now()
         ).first()
 
-        # トークンが存在する場合はアカウントを有効化する
+        # Activate the account if a token exists
         if user_activate_token:
             user = user_activate_token.user
             user.is_active = True
@@ -51,7 +51,6 @@ class AccountActivateTokensManager(models.Manager):
             raise self.model.DoesNotExist
 
     def create_token(self, user):
-        # トークンを作成
         token = self.model(user=user)
         token.set_expiration_date()
         token.save()
@@ -68,7 +67,7 @@ class AccountActivateToken(models.Model):
     objects = AccountActivateTokensManager()
 
     def set_expiration_date(self):
-        self.expired_at = timezone.now() + timedelta(days=10)
+        self.expired_at = timezone.now() + timedelta(minutes=10)
         self.save()
         return self.expired_at
     
