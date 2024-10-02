@@ -5,7 +5,7 @@ from accounts.views import UpdateProfileView
 app_name = 'accounts'
 
 urlpatterns = [
-    path('', views.test_email, name='test_email'),
+    #path('', views.test_email, name='test_email'),
     path('account_list/', views.AccountList.as_view(), name='AccountList'),
     path('account_register/', views.RegisterView.as_view(), name='RegisterView'),
     path('account_detail/<int:id>', views.UserDetailView.as_view(), name='UserDetailView'),
