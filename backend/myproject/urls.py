@@ -13,8 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+# from django.contrib import admin
+# from django.urls import path, include
 # For JWT
 # from rest_framework_simplejwt import views
 from rest_framework_simplejwt.views import (
@@ -44,7 +44,6 @@ urlpatterns = [
     path('api-auth/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # reobtain JWT token
     path('api-auth/jwt/refresh', TokenRefreshView.as_view(), name='token_refresh'),
-   path('', include('two_factor.urls', 'two_factor')),  # Include the 2FA URLs
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [

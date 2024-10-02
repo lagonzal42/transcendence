@@ -28,6 +28,11 @@ from django.core.mail import EmailMessage
 from .models import AccountActivateToken
 import logging
 
+import random
+from datetime import timedelta
+from django.utils import timezone
+from django.conf import settings
+
 from .services import send_activation_email
 
 # Set up a logger
@@ -119,6 +124,42 @@ class UserDetailView(APIView):
         }
         return Response(response_data, status=200)
 
+# # # # # --- LoginView old version --- # # # # # 
+#
+# class LoginView(GenericAPIView):
+#     """API login class"""
+#     permission_classes = [AllowAny]
+#     serializer_class = LoginSerializer
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             user = authenticate(
+#                 username=serializer.validated_data['username'],
+#                 password=serializer.validated_data['password']
+#             )
+#             if user is not None:
+#                 # Create JWT token
+#                 refresh = RefreshToken.for_user(user)
+
+#                 return Response({
+#                     'user_id': user.id,
+#                     'username': user.username,
+#                     'email': user.email,
+#                     'first_name': user.first_name,
+#                     'last_name': user.last_name,
+#                     # "refresh" and "access" are JWT tokens
+#                     'refresh': str(refresh),
+#                     'access': str(refresh.access_token),
+#                 }, status=200)
+#             else:
+#                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# # # # # --- LoginView old version --- # # # # # 
+
+
+# WORK IN PROGRESS
 class LoginView(GenericAPIView):
     """API login class"""
     permission_classes = [AllowAny]
@@ -132,26 +173,61 @@ class LoginView(GenericAPIView):
                 password=serializer.validated_data['password']
             )
             if user is not None:
-                # Create JWT token
-                refresh = RefreshToken.for_user(user)
+                # Generate a random 2FA code
+                code = random.randint(100000, 999999)
+
+                # Store the code in the session
+                request.session['2fa_code'] = code
+                request.session['2fa_code_expiry'] = timezone.now() + timezone.timedelta(minutes=5)
+
+                # Send the code via email
+                send_mail(
+                    'Your 2FA Code',
+                    f'Your verification code is: {code}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=False,
+                )
 
                 return Response({
-                    'user_id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    # "refresh" and "access" are JWT tokens
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
+                    'message': '2FA code sent to your email. Please verify to complete login.'
                 }, status=200)
             else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# WORK IN PROGRESS
 
+class Verify2FAView(GenericAPIView):
+    """API 2FA verification class"""
+    permission_classes = [AllowAny]
 
+    def post(self, request, *args, **kwargs):
+        code = request.data.get('code')
+
+        if code and code == str(request.session.get('2fa_code')) and timezone.now() < request.session.get('2fa_code_expiry'):
+            # Get the user from the session
+            user_id = request.session.get('user_id')  # Store user ID in the session after successful authentication
+            user = User.objects.get(id=user_id)
+
+            # Create JWT token
+            refresh = RefreshToken.for_user(user)
+
+            # Clear the session
+            del request.session['2fa_code']
+            del request.session['2fa_code_expiry']
+            del request.session['user_id']
+
+            return Response({
+                'user_id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=200)
+        else:
+            return Response({'error': 'Invalid or expired 2FA code'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateProfileView(UpdateAPIView):
