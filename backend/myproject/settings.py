@@ -181,7 +181,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
 TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
 
-BASE_DIR = "http://0.0.0.0:8000"
+#BASE_DIR = "http://0.0.0.0:8000"
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -199,4 +199,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'otxoboy64@gmail.com'
 EMAIL_HOST_PASSWORD = 'qkhw doyy kojf exss' 
 EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+EMAIL_USE_SSL = False   
