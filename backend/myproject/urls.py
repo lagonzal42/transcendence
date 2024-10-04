@@ -39,6 +39,7 @@ router.register(r'accounts', UpdateProfileView)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
+    path('friends/', include('friends.urls')),
     path('', home_screen_view, name='home'),
     # authenticate users in the browsable API interface without having to manually set up a login system
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
