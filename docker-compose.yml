@@ -36,7 +36,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      - frontend-app:/usr/src/app  # Montar el directorio local en el contenedor
+      - frontend/pong-app:/usr/src/app  # Montar el directorio local en el contenedor
     ports:
       - "4200:4200"
     command: npm run start  # Angular Dev Server
@@ -60,3 +60,8 @@ networks:
 volumes:
   postgres-data:
   frontend-app:
+    name: frontend-app
+      driver_opts:
+        device: /home/vzayas-s/transcendence/frontend/pong-app/
+        o: bind
+        type: none 
