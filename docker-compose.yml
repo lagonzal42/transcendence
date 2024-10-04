@@ -35,8 +35,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    volumes:
+      - frontend-app:/usr/src/app  # Montar el directorio local en el contenedor
     ports:
       - "4200:4200"
+    command: npm run start  # Angular Dev Server
     depends_on:
       - backend
     networks:
@@ -56,3 +59,4 @@ networks:
 
 volumes:
   postgres-data:
+  frontend-app:

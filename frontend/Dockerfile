@@ -1,43 +1,22 @@
-FROM debian:bullseye as build
+# Usar la imagen oficial de Node.js como base (versión 20, para compatibilidad con Angular 17)
+FROM node:20 as build
 
-RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg \
-    ca-certificates \
-    lsb-release \
-    git \
-    build-essential \
-    --no-install-recommends
+# Establecer el directorio de trabajo dentro del contenedor
+WORKDIR /usr/src/app
 
-#Install the nvm (Node version manager)
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+# Copiar el archivo package.json y package-lock.json (si existe)
+COPY ./pong-app/package*.json /usr/src/app/
 
-# download and install Node.js (you may need to restart the terminal)
-ENV NVM_DIR=/root/.nvm
-ENV NODE_VERSION=20
-ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+#RUN chmod -R 777 /usr/src/app 
 
-# Install Node.js and npm using nvm and ensure it’s available for subsequent commands
-RUN bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION && nvm alias default $NODE_VERSION"
+# Instalar las dependencias del proyecto
+RUN npm install
 
-# Verify the installed Node.js version
-RUN bash -c "source $NVM_DIR/nvm.sh && node -v"
+# Copiar el resto del código de la aplicación Angular
+COPY ./pong-app /usr/src/app
 
-# Verify the installed npm version
-RUN bash -c "source $NVM_DIR/nvm.sh && npm -v"
+# Exponer el puerto en el que se ejecutará el servidor de desarrollo de Angular
+EXPOSE 4200
 
-# Install Angular CLI globally
-RUN bash -c "source $NVM_DIR/nvm.sh && npm install -g @angular/cli@17"
-
-# Set the working directory
-WORKDIR /app
-
-# Copy the package.json files and install project dependencies
-COPY ./pong-app ./
-RUN bash -c "source $NVM_DIR/nvm.sh && npm install"
-
-# Copy the rest of the application
-COPY . .
-
-# Set the default command to run the Angular development server
-CMD ["bash", "-c", "source $NVM_DIR/nvm.sh && ng serve --host 0.0.0.0"]
+# Ejecutar el servidor de desarrollo de Angular
+CMD ["npm", "run", "start"]
