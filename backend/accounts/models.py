@@ -12,6 +12,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 import secrets
 import random
+from friends.models import FriendList, FriendRequest    
 
 class User(AbstractUser):
     avatar = models.ImageField(default="noob.png")
@@ -25,9 +26,10 @@ class User(AbstractUser):
     games_played = models.PositiveIntegerField(default=0)
     games_won = models.PositiveIntegerField(default=0)
     games_lost = models.PositiveIntegerField(default=0)
-    friends = models.ManyToManyField('self', blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(default=timezone.now)
+    friends = models.ManyToManyField('self', through='Friendship', symmetrical=False, related_name='added_friends')
+    friend_requests = models.ManyToManyField('self', through='FriendRequest', symmetrical=False, related_name='received_requests')
 
     #USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -41,20 +43,34 @@ class User(AbstractUser):
             self.tournament_name = f"noob{random_number}"
         super().save(*args, **kwargs)
     
-    #     # Helper method to add a friend
-    # def add_friend(self, user):
-    #     """Add a friend to the user's friend list."""
-    #     self.friends.add(user)
+class FriendshipRequest(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_sender')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_receiver')
+    sender_uuid = models.CharField(max_length=255, null=True, blank=True)
+    receiver_uuid = models.CharField(max_length=255, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
 
-    # # Helper method to remove a friend
-    # def remove_friend(self, user):
-    #     """Remove a friend from the user's friend list."""
-    #     self.friends.remove(user)
+    class Meta:
+        unique_together = ['sender', 'receiver'] 
 
-    # # Check if someone is a friend
-    # def is_friend(self, user):
-    #     """Check if a user is a friend."""
-    #     return self.friends.filter(id=user.id).exists()
+    def __str__(self):
+        return f'{self.sender} has sent a friend request to {self.receiver}'
+
+class Friendship(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_creator')
+    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_receiver')
+    user_uuid = models.CharField(max_length=255, null=True, blank=True)
+    friend_uuid = models.CharField(max_length=255, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['user', 'friend'] 
+
+    def __str__(self):
+        return f'{self.user} is friends with {self.friend}'
 
 def in_30_days():
     return timezone.now() + timedelta(days=30)
