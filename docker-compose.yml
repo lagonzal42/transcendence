@@ -18,6 +18,8 @@ services:
       - .:/code
     ports:
       - "8000:8000"
+    # expose:
+    #   - "8000"
     environment:
       - DB_NAME=postgres
       - DB_USER=postgres
@@ -29,16 +31,18 @@ services:
     networks:
       - app-network
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "4200:4200"
-  #   depends_on:
-  #     - backend
-  #   networks:
-  #     - app-network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - frontend-app:/usr/src/app  # Montar el directorio local en el contenedor
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
   # nginx:
   #   image: nginx:latest
@@ -53,4 +57,10 @@ networks:
     driver: bridge
 
 volumes:
+  frontend-app:
+    name: frontend-app
+    driver_opts:
+      device: '/home/larrain/Desktop/transcendence/frontend/pong-app'
+      o: bind
+      type: none 
   postgres-data:
