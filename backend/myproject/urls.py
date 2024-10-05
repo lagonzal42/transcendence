@@ -30,6 +30,7 @@ from rest_framework.routers import DefaultRouter
 
 
 import accounts.urls
+from two_factor.urls import urlpatterns as tf_urls
 
 # router = DefaultRouter()
 # router.register(r'accounts', UserViewSet)
@@ -44,6 +45,7 @@ urlpatterns = [
     path('api-auth/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # reobtain JWT token
     path('api-auth/jwt/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+    path('', include(tf_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [

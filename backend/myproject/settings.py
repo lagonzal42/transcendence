@@ -45,9 +45,17 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'rest_framework_simplejwt',
+    # 'django_otp',
+    # 'django_otp.plugins.otp_email',
+    # 'two_factor',
     'django_otp',
-    'django_otp.plugins.otp_email',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_email',  # <- if you want email capability.
     'two_factor',
+    # 'two_factor.plugins.phonenumber',  # <- if you want phone number capability.
+    'two_factor.plugins.email',  # <- if you want email capability.
+    # 'two_factor.plugins.yubikey',  # <- for yubikey capability.
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -199,3 +207,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Gmail address (in .env file)
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Gmail app password (in .env file)
+
+LOGIN_URL = 'two_factor:login'
+
