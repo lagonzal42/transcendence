@@ -7,7 +7,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password2', 'id', 'tournament_name', 'avatar', 'last_login', 'date_joined', 'first_name', 'last_name')
+        fields = ('username', 'email', 'password', 'password2', 'id', 'tournament_name', 'avatar', 'last_login', 'date_joined', 'games_played', 'games_won', 'games_lost', 'friends')
 
     def validate(self, attrs):
         password = attrs.get('password', '')
@@ -23,8 +23,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username = validated_data.get('username'),
             email = validated_data.get('email'),
-            first_name = validated_data.get('first_name'),
-            last_name = validated_data.get('last_name'),
         )
         user.set_password(password)
         user.save()
@@ -54,11 +52,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'id', 'tournament_name', 'date_joined', 'last_login')
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True},
-        }
+        fields = ('username', 'email', 'tournament_name', 'friends')
 
     def validate_email(self, value):
         user = self.context['request'].user
@@ -76,7 +70,6 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         instance.email = validated_data['email']
         instance.username = validated_data['username']
         instance.tournament_name = validated_data['tournament_name']
-        instance.avatar = validated_data['avatar']
 
         instance.save()
 

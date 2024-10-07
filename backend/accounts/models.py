@@ -11,16 +11,13 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 import secrets
-import random
-from friends.models import FriendList, FriendRequest    
+import random    
 
 class User(AbstractUser):
     avatar = models.ImageField(default="noob.png")
     username = models.CharField(max_length=100, unique=True, null=True)
     email = models.EmailField(unique=True, null=True)
     password = models.CharField(max_length=100)
-    first_name = models.CharField(max_length=100, default="noob")
-    last_name = models.CharField(max_length=100, default="noob")
     tournament_name = models.CharField(max_length=100, default="noob")
     is_online = models.BooleanField(default=False)
     games_played = models.PositiveIntegerField(default=0)
@@ -28,8 +25,7 @@ class User(AbstractUser):
     games_lost = models.PositiveIntegerField(default=0)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(default=timezone.now)
-    friends = models.ManyToManyField('self', through='Friendship', symmetrical=False, related_name='added_friends')
-    friend_requests = models.ManyToManyField('self', through='FriendRequest', symmetrical=False, related_name='received_requests')
+    friends = models.ManyToManyField('self', blank=True, symmetrical=True)
 
     #USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -43,34 +39,34 @@ class User(AbstractUser):
             self.tournament_name = f"noob{random_number}"
         super().save(*args, **kwargs)
     
-class FriendshipRequest(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_sender')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_receiver')
-    sender_uuid = models.CharField(max_length=255, null=True, blank=True)
-    receiver_uuid = models.CharField(max_length=255, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
+# class FriendshipRequest(models.Model):
+#     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_sender')
+#     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_receiver')
+#     sender_uuid = models.CharField(max_length=255, null=True, blank=True)
+#     receiver_uuid = models.CharField(max_length=255, null=True, blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#     is_active = models.BooleanField(default=True)
 
-    class Meta:
-        unique_together = ['sender', 'receiver'] 
+#     class Meta:
+#         unique_together = ['sender', 'receiver'] 
 
-    def __str__(self):
-        return f'{self.sender} has sent a friend request to {self.receiver}'
+#     def __str__(self):
+#         return f'{self.sender} has sent a friend request to {self.receiver}'
 
-class Friendship(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_creator')
-    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_receiver')
-    user_uuid = models.CharField(max_length=255, null=True, blank=True)
-    friend_uuid = models.CharField(max_length=255, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+# class Friendship(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_creator')
+#     friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_receiver')
+#     user_uuid = models.CharField(max_length=255, null=True, blank=True)
+#     friend_uuid = models.CharField(max_length=255, null=True, blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        unique_together = ['user', 'friend'] 
+#     class Meta:
+#         unique_together = ['user', 'friend'] 
 
-    def __str__(self):
-        return f'{self.user} is friends with {self.friend}'
+#     def __str__(self):
+#         return f'{self.user} is friends with {self.friend}'
 
 def in_30_days():
     return timezone.now() + timedelta(days=30)

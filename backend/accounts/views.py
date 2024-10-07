@@ -125,11 +125,9 @@ class UpdateProfileView(UpdateAPIView):
         if not user:
             return Response({"message": "No User found"}, status=404)
         return Response({
-                    'user_id': user.id,
                     'username': user.username,
                     'email': user.email,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
+                    'tournament_name': user.tournament_name,
                 }, status=200)
         
     # @action(detail=True, methods=['post'])
