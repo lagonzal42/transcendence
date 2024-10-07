@@ -178,7 +178,11 @@ class LoginView(GenericAPIView):
 
                 # Store the code in the session
                 request.session['2fa_code'] = code
-                request.session['2fa_code_expiry'] = timezone.now() + timezone.timedelta(minutes=5)
+
+                # Convert datetime to string before storing in session
+                expiry_time = timezone.now() + timezone.timedelta(minutes=5)
+                request.session['2fa_code_expiry'] = expiry_time.isoformat()
+                # request.session['2fa_code_expiry'] = timezone.now() + timezone.timedelta(minutes=5)
 
                 # Send the code via email
                 send_mail(
@@ -197,6 +201,7 @@ class LoginView(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class Verify2FAView(GenericAPIView):
     """API 2FA verification class"""
     permission_classes = [AllowAny]
@@ -204,28 +209,46 @@ class Verify2FAView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         code = request.data.get('code')
 
-        if code and code == str(request.session.get('2fa_code')) and timezone.now() < request.session.get('2fa_code_expiry'):
+        # Retrieve stored 2FA code and expiry from session
+        stored_code = request.session.get('2fa_code')
+        expiry_time_str = request.session.get('2fa_code_expiry')
+
+        # Convert expiry_time back to a datetime object
+        if expiry_time_str:
+            expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
+        else:
+            return Response({'error': '2FA session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Verify 2FA code and expiry
+        if code and code == str(stored_code) and timezone.now() < expiry_time:
             # Get the user from the session
-            user_id = request.session.get('user_id')  # Store user ID in the session after successful authentication
-            user = User.objects.get(id=user_id)
+            user_id = request.session.get('user_id')  # Ensure user ID is stored after successful authentication
+            if user_id:
+                try:
+                    user = User.objects.get(id=user_id)
 
-            # Create JWT token
-            refresh = RefreshToken.for_user(user)
+                    # Create JWT token
+                    refresh = RefreshToken.for_user(user)
 
-            # Clear the session
-            del request.session['2fa_code']
-            del request.session['2fa_code_expiry']
-            del request.session['user_id']
+                    # Clear the session data
+                    del request.session['2fa_code']
+                    del request.session['2fa_code_expiry']
+                    del request.session['user_id']
 
-            return Response({
-                'user_id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }, status=200)
+                    # Return user information and tokens
+                    return Response({
+                        'user_id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    }, status=200)
+                except User.DoesNotExist:
+                    return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                return Response({'error': 'User session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({'error': 'Invalid or expired 2FA code'}, status=status.HTTP_400_BAD_REQUEST)
 

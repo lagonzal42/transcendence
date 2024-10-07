@@ -23,8 +23,8 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-# def in_30_days():
-#     return timezone.now() + timedelta(days=30)
+def in_30_days():
+    return timezone.now() + timedelta(days=30)
 
 # @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 # def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -79,7 +79,7 @@ class AccountActivateToken(models.Model):
 #     # Access token (max_length is set to 40 because the token is set to a hashed string in sha1).
 #     token = models.CharField(max_length=40)
 #     # access date and time
-#     access_datetime = models.DateTimeField(default=in_30_days)
+#     access_ = models.DateTimeField(default=in_30_days)
 
 #     def str(self):
 #         # Set the email address, access date and time and token to be visible.
