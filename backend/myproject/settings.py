@@ -100,7 +100,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django_otp.middleware.OTPMiddleware',
+    # 'django_otp.middleware.OTPMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -209,4 +209,9 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Gmail address (in .env file)
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Gmail app password (in .env file)
 
 LOGIN_URL = 'two_factor:login'
+
+# session engine setup in settings.py
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Or 'cache', 'file', etc.
+SESSION_COOKIE_SECURE = False  # Disable for local development, use True in production with HTTPS
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 

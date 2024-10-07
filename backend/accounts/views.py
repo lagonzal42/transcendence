@@ -160,6 +160,7 @@ class UserDetailView(APIView):
 
 
 # WORK IN PROGRESS
+
 class LoginView(GenericAPIView):
     """API login class"""
     permission_classes = [AllowAny]
@@ -178,11 +179,25 @@ class LoginView(GenericAPIView):
 
                 # Store the code in the session
                 request.session['2fa_code'] = code
-
+                
                 # Convert datetime to string before storing in session
                 expiry_time = timezone.now() + timezone.timedelta(minutes=5)
                 request.session['2fa_code_expiry'] = expiry_time.isoformat()
-                # request.session['2fa_code_expiry'] = timezone.now() + timezone.timedelta(minutes=5)
+
+                request.session.save() # Explicitly save the session
+
+                # Debug: Log session data
+                print(f"Session key: {request.session.session_key}")
+                print(f"Stored 2FA code: {request.session.get('2fa_code')}")
+                print(f"Expiry time: {request.session.get('2fa_code_expiry')}")
+
+                # # Retrieve stored 2FA code and expiry from session
+                # test_code = request.session.get('2fa_code')
+                # test_expiry_time_str = request.session.get('2fa_code_expiry')
+
+                # # Debugging logs
+                # print(f"TEST** Stored 2FA code: {test_code}")
+                # print(f"TEST** Expiry time string from session: {test_expiry_time_str}")
 
                 # Send the code via email
                 send_mail(
@@ -201,7 +216,6 @@ class LoginView(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class Verify2FAView(GenericAPIView):
     """API 2FA verification class"""
     permission_classes = [AllowAny]
@@ -209,15 +223,34 @@ class Verify2FAView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         code = request.data.get('code')
 
+
         # Retrieve stored 2FA code and expiry from session
         stored_code = request.session.get('2fa_code')
         expiry_time_str = request.session.get('2fa_code_expiry')
 
+        # Debugging logs
+        print(f"Stored 2FA code: {stored_code}")
+        print(f"Received 2FA code: {code}")
+        print(f"Expiry time string from session: {expiry_time_str}")
+
         # Convert expiry_time back to a datetime object
         if expiry_time_str:
-            expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
+            try:
+                expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
+                print(f"Converted expiry time: {expiry_time}")
+                print(f"Current time: {timezone.now()}")
+            except Exception as e:
+                print(f"Error converting expiry time: {e}")
+                return Response({'error': 'Error parsing 2FA expiry time'}, status=status.HTTP_400_BAD_REQUEST)
         else:
+            print("Expiry time not found in session")
             return Response({'error': '2FA session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # # Convert expiry_time back to a datetime object
+        # if expiry_time_str:
+        #     expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
+        # else:
+        #     return Response({'error': '2FA session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Verify 2FA code and expiry
         if code and code == str(stored_code) and timezone.now() < expiry_time:
