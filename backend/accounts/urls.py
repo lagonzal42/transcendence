@@ -2,7 +2,7 @@ from . import views
 from django.urls import path, include
 from accounts.views import UpdateProfileView
 from rest_framework.routers import DefaultRouter
-#from .views import send_friend_request, accept_friend_request
+from .views import ListFriendsView, AddFriendView
 
 app_name = 'accounts'
 
@@ -16,7 +16,8 @@ urlpatterns = [
     path('account_login/', views.LoginView.as_view(), name='LoginView'),
     path('account_close/', views.CloseAccountView.as_view(), name='CloseAccountView'),
     path('account_update/<int:id>', views.UpdateProfileView.as_view(), name='auth_update_profile'),
-    path('friends/', views.FriendshipViewSet.as_view(), name='FriendshipViewSet'),
+    path('list_friends/<int:id>', ListFriendsView.as_view(), name='ListFriendsView'),
+    path('add_friend/<int:id>', AddFriendView.as_view(), name="AddFriendView"),
 ]
 
 #urlpatterns += router.urls

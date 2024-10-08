@@ -27,6 +27,7 @@ class User(AbstractUser):
     last_login = models.DateTimeField(default=timezone.now)
     friends = models.ManyToManyField('self', blank=True, symmetrical=True)
 
+
     #USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -42,6 +43,10 @@ class User(AbstractUser):
 class FriendRequest(models.Model):
     from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
     to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
+    time_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+	    return "From {}, to {}".format(self.from_user.username, self.to_user.username)
 
 # class FriendshipRequest(models.Model):
 #     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_sender')

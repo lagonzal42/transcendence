@@ -28,7 +28,7 @@ from django.contrib.auth import authenticate
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 class AccountList(ListAPIView):
     queryset = User.objects.all()
@@ -142,30 +142,49 @@ class CloseAccountView(APIView):
 
         return Response({"message": "Account and user successfully removed"}, status=200)
     
+class ListFriendsView(APIView):
+    permission_classes = [IsAuthenticated]
 
-from .serializers import FriendSerializer
+    def get(self, request, id=None):
+        friends_json = {}
+        user = User.objects.get(id=id)
+        friends = user.friends.all()
 
-class FriendshipViewSet(APIView):
-    queryset = FriendRequest.objects.all()
-    serializer_class = FriendSerializer
+        if id is None:
+            for friend in friends:
+                friends_json[friend.id] = get_user_data(friend)
+        else:
+            try:
+                friend = User.objects.get(id=id)
+                friends_json[friend.id] = get_user_data(friend)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "User not found."}, status=404)
 
-    print("entrando auqi")
-    def create(self, request, *args, **kwargs):
-        to_user_id = request.data.get('to_user')
-        if to_user_id and request.user.id != to_user_id:
-            friendship = FriendRequest.objects.create(from_user=request.user, to_user_id=to_user_id)
-            serializer = self.get_serializer(friendship)
-            return Response(serializer.data, status=201)
-        return Response({"error": "Invalid request"}, status=400)
+        print(friends_json)
+        return JsonResponse(friends_json)
 
-    def destroy(self, request, *args, **kwargs):
-        friendship = self.get_object()
-        if friendship.from_user == request.user or friendship.to_user == request.user:
-            friendship.delete()
-            return Response(status=204)
-        return Response({"error": "You do not have permission to delete this friendship"}, status=403)
+def get_user_data(user):
+    return  {
+                'username': user.username,
+                'email': user.email,
+                'tournament_name': user.tournament_name,
+                'friends': list(user.friends.values_list('username', flat=True)),
+            }
 
-    def list(self, request, *args, **kwargs):
-        friends = FriendRequest.objects.filter(from_user=request.user) | FriendRequest.objects.filter(to_user=request.user)
-        serializer = self.get_serializer(friends, many=True)
-        return Response(serializer.data)
+class AddFriendView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+        user = User.objects.get(id=request.user.id)
+        friend_id = request.data.get('friend_id')
+
+        if friend_id is None:
+            return Response({'error': "No friend id provided."}, status=400)
+
+        try:
+            friend = User.objects.get(id=friend_id)
+        except User.DoesNotExists:
+            return Response({'error': 'User not found'}, status=404)
+        
+        user.friends.add(friend)
+        return Response({'message': "Friend successfully added"}, status=200)
