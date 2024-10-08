@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, FriendRequest
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, write_only=True)
@@ -77,7 +77,6 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
 class FriendSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'username', 'friends']
-        read_only_fields = ['id', 'username']
+        model = FriendRequest
+        fields = ['from_user', 'to_user']
 

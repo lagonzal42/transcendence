@@ -143,51 +143,29 @@ class CloseAccountView(APIView):
         return Response({"message": "Account and user successfully removed"}, status=200)
     
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+from .serializers import FriendSerializer
+
+class FriendshipViewSet(APIView):
+    queryset = FriendRequest.objects.all()
     serializer_class = FriendSerializer
-    lookup_field = 'username'
 
-    @action(detail=True, methods=['post'], url_path='add_friend')
-    def add_friend(self, request, username=None):
-        """Add a friend to the user's friend list."""
-        user = self.get_object()
-        friend_id = request.data.get('friend_id')
+    print("entrando auqi")
+    def create(self, request, *args, **kwargs):
+        to_user_id = request.data.get('to_user')
+        if to_user_id and request.user.id != to_user_id:
+            friendship = FriendRequest.objects.create(from_user=request.user, to_user_id=to_user_id)
+            serializer = self.get_serializer(friendship)
+            return Response(serializer.data, status=201)
+        return Response({"error": "Invalid request"}, status=400)
 
-        try:
-            friend = User.objects.get(pk=friend_id)
-        except User.DoesNotExist:
-            return Response({'detail': 'Friend not found'}, status=status.HTTP_404_NOT_FOUND)
+    def destroy(self, request, *args, **kwargs):
+        friendship = self.get_object()
+        if friendship.from_user == request.user or friendship.to_user == request.user:
+            friendship.delete()
+            return Response(status=204)
+        return Response({"error": "You do not have permission to delete this friendship"}, status=403)
 
-        if friend not in user.friends.all():
-            user.friends.add(friend)
-            user.save()
-            return Response({'detail': f'{friend.username} added to friends.'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'detail': 'User is already a friend.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=True, methods=['post'], url_path='remove_friend')
-    def remove_friend(self, request, username=None):
-        """Remove a friend from the user's friend list."""
-        user = self.get_object()
-        friend_id = request.data.get('friend_id')
-
-        try:
-            friend = User.objects.get(pk=friend_id)
-        except User.DoesNotExist:
-            return Response({'detail': 'Friend not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        if friend in user.friends.all():
-            user.friends.remove(friend)
-            user.save()
-            return Response({'detail': f'{friend.username} removed from friends.'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'detail': 'User is not a friend.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=True, methods=['get'], url_path='list_friends')
-    def list_friends(self, request, username=None):
-        """List all friends of the user."""
-        user = self.get_object()
-        friends = user.friends.all()
-        serializer = FriendSerializer(friends, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def list(self, request, *args, **kwargs):
+        friends = FriendRequest.objects.filter(from_user=request.user) | FriendRequest.objects.filter(to_user=request.user)
+        serializer = self.get_serializer(friends, many=True)
+        return Response(serializer.data)
