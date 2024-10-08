@@ -38,7 +38,11 @@ class User(AbstractUser):
             random_number = random.randint(1, 1000)
             self.tournament_name = f"noob{random_number}"
         super().save(*args, **kwargs)
-    
+
+class FriendRequest(models.Model):
+    from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
+
 # class FriendshipRequest(models.Model):
 #     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_sender')
 #     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_receiver')

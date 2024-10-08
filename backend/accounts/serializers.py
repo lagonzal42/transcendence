@@ -74,3 +74,10 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+class FriendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'friends']
+        read_only_fields = ['id', 'username']
+

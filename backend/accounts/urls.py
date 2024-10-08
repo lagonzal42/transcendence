@@ -1,8 +1,13 @@
 from . import views
 from django.urls import path, include
-from accounts.views import UpdateProfileView
+from accounts.views import UpdateProfileView, UserViewSet
+from rest_framework.routers import DefaultRouter
+#from .views import send_friend_request, accept_friend_request
 
 app_name = 'accounts'
+
+router = DefaultRouter()
+router.register(r'accounts', UserViewSet, basename='user')
 
 urlpatterns = [
     path('account_list/', views.AccountList.as_view(), name='AccountList'),
@@ -12,3 +17,5 @@ urlpatterns = [
     path('account_close/', views.CloseAccountView.as_view(), name='CloseAccountView'),
     path('account_update/<int:id>', views.UpdateProfileView.as_view(), name='auth_update_profile'),
 ]
+
+urlpatterns += router.urls

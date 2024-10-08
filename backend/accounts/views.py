@@ -1,4 +1,4 @@
-from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer
+from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer, FriendSerializer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView
@@ -18,7 +18,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, action
 from django.contrib.auth.decorators import login_required
 
-from .models import User, OtpToken
+from .models import User, OtpToken, FriendRequest
 from django.db import IntegrityError
 from django.shortcuts import render
 
@@ -28,6 +28,7 @@ from django.contrib.auth import authenticate
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import HttpResponse
 
 class AccountList(ListAPIView):
     queryset = User.objects.all()
@@ -140,4 +141,53 @@ class CloseAccountView(APIView):
             raise Response("No User found")
 
         return Response({"message": "Account and user successfully removed"}, status=200)
-        
+    
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = FriendSerializer
+    lookup_field = 'username'
+
+    @action(detail=True, methods=['post'], url_path='add_friend')
+    def add_friend(self, request, username=None):
+        """Add a friend to the user's friend list."""
+        user = self.get_object()
+        friend_id = request.data.get('friend_id')
+
+        try:
+            friend = User.objects.get(pk=friend_id)
+        except User.DoesNotExist:
+            return Response({'detail': 'Friend not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if friend not in user.friends.all():
+            user.friends.add(friend)
+            user.save()
+            return Response({'detail': f'{friend.username} added to friends.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'User is already a friend.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'], url_path='remove_friend')
+    def remove_friend(self, request, username=None):
+        """Remove a friend from the user's friend list."""
+        user = self.get_object()
+        friend_id = request.data.get('friend_id')
+
+        try:
+            friend = User.objects.get(pk=friend_id)
+        except User.DoesNotExist:
+            return Response({'detail': 'Friend not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if friend in user.friends.all():
+            user.friends.remove(friend)
+            user.save()
+            return Response({'detail': f'{friend.username} removed from friends.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'User is not a friend.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'], url_path='list_friends')
+    def list_friends(self, request, username=None):
+        """List all friends of the user."""
+        user = self.get_object()
+        friends = user.friends.all()
+        serializer = FriendSerializer(friends, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
