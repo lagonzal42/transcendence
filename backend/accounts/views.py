@@ -175,6 +175,12 @@ class AddFriendView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, id):
+        print("la linea de debajo porfa")
+        print(request.user.is_authenticated)
+        print("printea las request.user.id--->")
+        print(request.user.id)
+        print("printea la id normal--->")
+        print(id)
         user = User.objects.get(id=request.user.id)
         friend_id = request.data.get('friend_id')
 
@@ -183,8 +189,10 @@ class AddFriendView(APIView):
 
         try:
             friend = User.objects.get(id=friend_id)
-        except User.DoesNotExists:
+        except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
-        
-        user.friends.add(friend)
-        return Response({'message': "Friend successfully added"}, status=200)
+        if friend_id != user.id:
+            user.friends.add(friend)
+            return Response({'message': "Friend successfully added"}, status=200)
+        else:
+            return Response({'message': "Users cant add themselves as friends"})
