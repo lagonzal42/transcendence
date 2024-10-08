@@ -129,27 +129,6 @@ class UpdateProfileView(UpdateAPIView):
                     'email': user.email,
                     'tournament_name': user.tournament_name,
                 }, status=200)
-        
-    # @action(detail=True, methods=['post'])
-    # def add_friend(self, request, pk=None):
-    #     """Add a friend."""
-    #     user = self.get_object()
-    #     request.user.add_friend(user)
-    #     return Response({'status': 'friend added'})
-
-    # @action(detail=True, methods=['post'])
-    # def remove_friend(self, request, pk=None):
-    #     """Remove a friend."""
-    #     user = self.get_object()
-    #     request.user.remove_friend(user)
-    #     return Response({'status': 'friend removed'})
-
-    # @action(detail=True, methods=['get'])
-    # def is_friend(self, request, pk=None):
-    #     """Check if the user is a friend."""
-    #     user = self.get_object()
-    #     is_friend = request.user.is_friend(user)
-    #     return Response({'is_friend': is_friend})
 
 class CloseAccountView(APIView):
     def post(self, request, id):
