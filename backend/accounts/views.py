@@ -182,13 +182,7 @@ class AddFriendView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, id):
-        print("la linea de debajo porfa")
-        print(request.user.is_authenticated)
-        print("printea las request.user.id--->")
-        print(request.user.id)
-        print("printea la id normal--->")
-        print(id)
-        user = User.objects.get(id=request.user.id)
+        user = User.objects.get(id=id)
         friend_id = request.data.get('friend_id')
 
         if friend_id is None:
@@ -198,8 +192,41 @@ class AddFriendView(APIView):
             friend = User.objects.get(id=friend_id)
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
-        if friend_id != user.id:
-            user.friends.add(friend)
-            return Response({'message': "Friend successfully added"}, status=200)
-        else:
+        if friend_id == user.id:
             return Response({'message': "Users cant add themselves as friends"})
+        
+         # Check if friend request already exists
+        if FriendRequest.objects.filter(from_user=user, to_user=friend).exists():
+            return Response({'error': 'Friend request already sent.'}, status=400)
+
+        # Create a friend request
+        friend_request = FriendRequest.objects.create(from_user=user, to_user=friend)
+        
+        print("friend_request.id")
+        print(friend_request.id)
+
+        return Response({'message': 'Friend request sent successfully.'}, status=200)
+    
+class AcceptFriendRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+        user = User.objects.get(id=id)
+        request_id = request.data.get('request_id')
+
+        if request_id is None:
+            return Response({'error': "No request id provided."}, status=400)
+
+        try:
+            friend_request = FriendRequest.objects.get(id=request_id, to_user=user)
+        except FriendRequest.DoesNotExist:
+            return Response({'error': 'Friend request not found.'}, status=404)
+
+        # Add each other as friends
+        user.friends.add(friend_request.from_user)
+        friend_request.from_user.friends.add(user)
+
+        # Delete the friend request after acceptance
+        friend_request.delete()
+
+        return Response({'message': 'Friend request accepted successfully.'}, status=200)
