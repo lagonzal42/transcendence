@@ -160,7 +160,45 @@ class UserDetailView(APIView):
 
 
 # WORK IN PROGRESS
+# class LoginView(GenericAPIView):
+#     """API login class"""
+#     permission_classes = [AllowAny]
+#     serializer_class = LoginSerializer
 
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             user = authenticate(
+#                 username=serializer.validated_data['username'],
+#                 password=serializer.validated_data['password']
+#             )
+#             if user is not None:
+#                 # Generate a random 2FA code
+#                 code = random.randint(100000, 999999)
+
+#                 # Store the code in the session
+#                 request.session['2fa_code'] = code
+
+#                 # Convert datetime to string before storing in session
+#                 expiry_time = timezone.now() + timezone.timedelta(minutes=5)
+#                 request.session['2fa_code_expiry'] = expiry_time.isoformat()
+#                 # request.session['2fa_code_expiry'] = timezone.now() + timezone.timedelta(minutes=5)
+
+#                 # Send the code via email
+#                 send_mail(
+#                     'Your 2FA Code',
+#                     f'Your verification code is: {code}',
+#                     settings.DEFAULT_FROM_EMAIL,
+#                     [user.email],
+#                     fail_silently=False,
+#                 )
+
+#                 return Response({
+#                     'message': '2FA code sent to your email. Please verify to complete login.'
+#                 }, status=200)
+#             else:
+#                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class LoginView(GenericAPIView):
     """API login class"""
     permission_classes = [AllowAny]
@@ -183,6 +221,9 @@ class LoginView(GenericAPIView):
                 # Convert datetime to string before storing in session
                 expiry_time = timezone.now() + timezone.timedelta(minutes=5)
                 request.session['2fa_code_expiry'] = expiry_time.isoformat()
+                print(f"Session data before saving: {request.session.items()}")
+
+
 
                 request.session.save() # Explicitly save the session
 
@@ -222,13 +263,16 @@ class Verify2FAView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         code = request.data.get('code')
-
+        # In Verify2FAView
+        print(f"Session data in Verify2FAView: {request.session.items()}")
 
         # Retrieve stored 2FA code and expiry from session
         stored_code = request.session.get('2fa_code')
         expiry_time_str = request.session.get('2fa_code_expiry')
 
         # Debugging logs
+        print(f"Session key: {request.session.session_key}")
+
         print(f"Stored 2FA code: {stored_code}")
         print(f"Received 2FA code: {code}")
         print(f"Expiry time string from session: {expiry_time_str}")
@@ -316,3 +360,14 @@ def send_test_email(request):
     send_mail(subject, message, from_email, recipient_list)
 
     return HttpResponse('Test email sent!')
+
+
+# from django.http import JsonResponse
+
+# def set_session(request):
+#     request.session['test_key'] = 'test_value'
+#     return JsonResponse({'message': 'Session set'})
+
+# def get_session(request):
+#     test_value = request.session.get('test_key', 'Session not found')
+#     return JsonResponse({'test_key': test_value})

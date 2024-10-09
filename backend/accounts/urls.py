@@ -17,7 +17,11 @@ urlpatterns = [
     # This is a test url to put 2fa
     path('login/', views.LoginView.as_view(), name='login'),
     path('verify-2fa/', views.Verify2FAView.as_view(), name='verify_2fa'),
-    
+    # path('set-session/', views.set_session, name='set_session'),
+    # path('get-session/', views.get_session, name='get_session'),
+
+
+
     # path('signup/', views.RegisterView.as_view(), name='user-signup'), #new user registration
     # path('login/', views.LoginView.as_view(), name='user-login'),#login control
     # path('users/<str:user_id>/', views.UserDetailView.as_view(), name='user-detail'), # Obtain user info

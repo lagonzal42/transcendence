@@ -11,3 +11,5 @@ python-decouple
 django-otp
 django-two-factor-auth
 phonenumbers
+redis
+django-redis
