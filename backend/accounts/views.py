@@ -104,12 +104,14 @@ class LoginView(GenericAPIView):
                 password=serializer.validated_data['password']
             )
             if user is not None:
+                token, created = Token.objects.get_or_create(user=user)
                 return Response({
                     'user_id': user.id,
                     'username': user.username,
                     'email': user.email,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
+                    'token': token.key,
                 }, status=200)
             else:
                 return Response({'error': 'Invalid credentials'}, status=400)
@@ -146,6 +148,11 @@ class ListFriendsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id=None):
+        print(request.META)
+        print("==========================================")
+        print("==========================================")
+        print("==========================================")
+        print(request.META.get('HTTP_AUTHORIZATION'))
         friends_json = {}
         user = User.objects.get(id=id)
         friends = user.friends.all()
@@ -160,7 +167,7 @@ class ListFriendsView(APIView):
             except User.DoesNotExist:
                 return JsonResponse({"error": "User not found."}, status=404)
 
-        print(friends_json)
+        #print(friends_json)
         return JsonResponse(friends_json)
 
 def get_user_data(user):

@@ -198,3 +198,7 @@ EMAIL_HOST_USER = 'otxoboy64@gmail.com'
 EMAIL_HOST_PASSWORD = 'qkhw doyy kojf exss' 
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
