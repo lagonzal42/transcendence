@@ -8,15 +8,18 @@ urlpatterns = [
     path('', views.BaseView, name='BaseView'),
     path('account_list/', views.AccountList.as_view(), name='AccountList'),
     path('account_register/', views.RegisterView.as_view(), name='RegisterView'),
+    path('account_login/', views.LoginView.as_view(), name='LoginView'),
     path('account_detail/<int:id>', views.UserDetailView.as_view(), name='UserDetailView'),
-    # path('account_login/', views.LoginView.as_view(), name='LoginView'),
     path('account_close/', views.CloseAccountView.as_view(), name='CloseAccountView'),
     path('account_update/<int:pk>', views.UpdateProfileView.as_view(), name='auth_update_profile'),
     path('activation/', views.ActivateAccountView.as_view(), name='activate_account'),
     # path('send-test-email/', views.send_test_email, name='send_test_email'),
+
+    path('login/', views.LoginView.as_view(), name='LoginView'),
+
     # This is a test url to put 2fa
-    path('login/', views.LoginView.as_view(), name='login'),
-    path('verify-2fa/', views.Verify2FAView.as_view(), name='verify_2fa'),
+    # path('login/', views.LoginView.as_view(), name='login'),
+    # path('verify-2fa/', views.Verify2FAView.as_view(), name='verify_2fa'),
     # path('set-session/', views.set_session, name='set_session'),
     # path('get-session/', views.get_session, name='get_session'),
 

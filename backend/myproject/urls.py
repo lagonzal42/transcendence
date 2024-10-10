@@ -30,6 +30,7 @@ from rest_framework.routers import DefaultRouter
 
 
 import accounts.urls
+import two_factor_auth.urls
 from two_factor.urls import urlpatterns as tf_urls
 
 # router = DefaultRouter()
@@ -38,6 +39,7 @@ from two_factor.urls import urlpatterns as tf_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
+    path('two_factor_auth/', include('two_factor_auth.urls')),
     # authenticate users in the browsable API interface without having to manually set up a login system
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api-root'), permanent=False)),

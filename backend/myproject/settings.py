@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
 
 INSTALLED_APPS = [
     'accounts',
+    'two_factor_auth',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

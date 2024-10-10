@@ -35,6 +35,8 @@ from django.conf import settings
 
 from .services import send_activation_email
 
+from django.shortcuts import redirect
+
 # Set up a logger
 logger = logging.getLogger(__name__)
 
@@ -124,81 +126,8 @@ class UserDetailView(APIView):
         }
         return Response(response_data, status=200)
 
-# # # # # --- LoginView old version --- # # # # # 
-#
-# class LoginView(GenericAPIView):
-#     """API login class"""
-#     permission_classes = [AllowAny]
-#     serializer_class = LoginSerializer
+# # # # --- LoginView separated 2fa version --- # # # # # 
 
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             user = authenticate(
-#                 username=serializer.validated_data['username'],
-#                 password=serializer.validated_data['password']
-#             )
-#             if user is not None:
-#                 # Create JWT token
-#                 refresh = RefreshToken.for_user(user)
-
-#                 return Response({
-#                     'user_id': user.id,
-#                     'username': user.username,
-#                     'email': user.email,
-#                     'first_name': user.first_name,
-#                     'last_name': user.last_name,
-#                     # "refresh" and "access" are JWT tokens
-#                     'refresh': str(refresh),
-#                     'access': str(refresh.access_token),
-#                 }, status=200)
-#             else:
-#                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# # # # # --- LoginView old version --- # # # # # 
-
-
-# WORK IN PROGRESS
-# class LoginView(GenericAPIView):
-#     """API login class"""
-#     permission_classes = [AllowAny]
-#     serializer_class = LoginSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             user = authenticate(
-#                 username=serializer.validated_data['username'],
-#                 password=serializer.validated_data['password']
-#             )
-#             if user is not None:
-#                 # Generate a random 2FA code
-#                 code = random.randint(100000, 999999)
-
-#                 # Store the code in the session
-#                 request.session['2fa_code'] = code
-
-#                 # Convert datetime to string before storing in session
-#                 expiry_time = timezone.now() + timezone.timedelta(minutes=5)
-#                 request.session['2fa_code_expiry'] = expiry_time.isoformat()
-#                 # request.session['2fa_code_expiry'] = timezone.now() + timezone.timedelta(minutes=5)
-
-#                 # Send the code via email
-#                 send_mail(
-#                     'Your 2FA Code',
-#                     f'Your verification code is: {code}',
-#                     settings.DEFAULT_FROM_EMAIL,
-#                     [user.email],
-#                     fail_silently=False,
-#                 )
-
-#                 return Response({
-#                     'message': '2FA code sent to your email. Please verify to complete login.'
-#                 }, status=200)
-#             else:
-#                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class LoginView(GenericAPIView):
     """API login class"""
     permission_classes = [AllowAny]
@@ -212,122 +141,88 @@ class LoginView(GenericAPIView):
                 password=serializer.validated_data['password']
             )
             if user is not None:
-                # Generate a random 2FA code
-                code = random.randint(100000, 999999)
-
-                # Store the code in the session
-                request.session['2fa_code'] = code
-                
-                # Convert datetime to string before storing in session
-                expiry_time = timezone.now() + timezone.timedelta(minutes=5)
-                request.session['2fa_code_expiry'] = expiry_time.isoformat()
-                print(f"Session data before saving: {request.session.items()}")
-
-
-
-                request.session.save() # Explicitly save the session
-
-                # Debug: Log session data
-                print(f"Session key: {request.session.session_key}")
-                print(f"Stored 2FA code: {request.session.get('2fa_code')}")
-                print(f"Expiry time: {request.session.get('2fa_code_expiry')}")
-
-                # # Retrieve stored 2FA code and expiry from session
-                # test_code = request.session.get('2fa_code')
-                # test_expiry_time_str = request.session.get('2fa_code_expiry')
-
-                # # Debugging logs
-                # print(f"TEST** Stored 2FA code: {test_code}")
-                # print(f"TEST** Expiry time string from session: {test_expiry_time_str}")
-
-                # Send the code via email
-                send_mail(
-                    'Your 2FA Code',
-                    f'Your verification code is: {code}',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    fail_silently=False,
-                )
-
-                return Response({
-                    'message': '2FA code sent to your email. Please verify to complete login.'
-                }, status=200)
+                #Store user info for 2FA verification
+                request.session['user_id'] = user.id
+# Redirect to 2FA service
+                return redirect('two_factor_auth:send_2fa_code', user_id=user.id)
             else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# # # # --- LoginView separated 2fa version --- # # # # # 
 
-class Verify2FAView(GenericAPIView):
-    """API 2FA verification class"""
-    permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        code = request.data.get('code')
-        # In Verify2FAView
-        print(f"Session data in Verify2FAView: {request.session.items()}")
+# class Verify2FAView(GenericAPIView):
+#     """API 2FA verification class"""
+#     permission_classes = [AllowAny]
 
-        # Retrieve stored 2FA code and expiry from session
-        stored_code = request.session.get('2fa_code')
-        expiry_time_str = request.session.get('2fa_code_expiry')
+#     def post(self, request, *args, **kwargs):
+#         code = request.data.get('code')
+#         # In Verify2FAView
+#         print(f"Session data in Verify2FAView: {request.session.items()}")
 
-        # Debugging logs
-        print(f"Session key: {request.session.session_key}")
+#         # Retrieve stored 2FA code and expiry from session
+#         stored_code = request.session.get('2fa_code')
+#         expiry_time_str = request.session.get('2fa_code_expiry')
 
-        print(f"Stored 2FA code: {stored_code}")
-        print(f"Received 2FA code: {code}")
-        print(f"Expiry time string from session: {expiry_time_str}")
+#         # Debugging logs
+#         print(f"Session key: {request.session.session_key}")
 
-        # Convert expiry_time back to a datetime object
-        if expiry_time_str:
-            try:
-                expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
-                print(f"Converted expiry time: {expiry_time}")
-                print(f"Current time: {timezone.now()}")
-            except Exception as e:
-                print(f"Error converting expiry time: {e}")
-                return Response({'error': 'Error parsing 2FA expiry time'}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            print("Expiry time not found in session")
-            return Response({'error': '2FA session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
+#         print(f"Stored 2FA code: {stored_code}")
+#         print(f"Received 2FA code: {code}")
+#         print(f"Expiry time string from session: {expiry_time_str}")
 
-        # # Convert expiry_time back to a datetime object
-        # if expiry_time_str:
-        #     expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
-        # else:
-        #     return Response({'error': '2FA session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
+#         # Convert expiry_time back to a datetime object
+#         if expiry_time_str:
+#             try:
+#                 expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
+#                 print(f"Converted expiry time: {expiry_time}")
+#                 print(f"Current time: {timezone.now()}")
+#             except Exception as e:
+#                 print(f"Error converting expiry time: {e}")
+#                 return Response({'error': 'Error parsing 2FA expiry time'}, status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             print("Expiry time not found in session")
+#             return Response({'error': '2FA session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verify 2FA code and expiry
-        if code and code == str(stored_code) and timezone.now() < expiry_time:
-            # Get the user from the session
-            user_id = request.session.get('user_id')  # Ensure user ID is stored after successful authentication
-            if user_id:
-                try:
-                    user = User.objects.get(id=user_id)
+#         # # Convert expiry_time back to a datetime object
+#         # if expiry_time_str:
+#         #     expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
+#         # else:
+#         #     return Response({'error': '2FA session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
 
-                    # Create JWT token
-                    refresh = RefreshToken.for_user(user)
+#         # Verify 2FA code and expiry
+#         if code and code == str(stored_code) and timezone.now() < expiry_time:
+#             # Get the user from the session
+#             user_id = request.session.get('user_id')  # Ensure user ID is stored after successful authentication
+#             if user_id:
+#                 try:
+#                     user = User.objects.get(id=user_id)
 
-                    # Clear the session data
-                    del request.session['2fa_code']
-                    del request.session['2fa_code_expiry']
-                    del request.session['user_id']
+#                     # Create JWT token
+#                     refresh = RefreshToken.for_user(user)
 
-                    # Return user information and tokens
-                    return Response({
-                        'user_id': user.id,
-                        'username': user.username,
-                        'email': user.email,
-                        'first_name': user.first_name,
-                        'last_name': user.last_name,
-                        'refresh': str(refresh),
-                        'access': str(refresh.access_token),
-                    }, status=200)
-                except User.DoesNotExist:
-                    return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-            else:
-                return Response({'error': 'User session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({'error': 'Invalid or expired 2FA code'}, status=status.HTTP_400_BAD_REQUEST)
+#                     # Clear the session data
+#                     del request.session['2fa_code']
+#                     del request.session['2fa_code_expiry']
+#                     del request.session['user_id']
+
+#                     # Return user information and tokens
+#                     return Response({
+#                         'user_id': user.id,
+#                         'username': user.username,
+#                         'email': user.email,
+#                         'first_name': user.first_name,
+#                         'last_name': user.last_name,
+#                         'refresh': str(refresh),
+#                         'access': str(refresh.access_token),
+#                     }, status=200)
+#                 except User.DoesNotExist:
+#                     return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+#             else:
+#                 return Response({'error': 'User session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             return Response({'error': 'Invalid or expired 2FA code'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateProfileView(UpdateAPIView):
