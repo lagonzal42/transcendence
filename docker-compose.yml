@@ -31,16 +31,18 @@ services:
     networks:
       - app-network
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "4200:4200"
-  #   depends_on:
-  #     - backend
-  #   networks:
-  #     - app-network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - frontend-app:/usr/src/app  # Montar el directorio local en el contenedor
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
   # nginx:
   #   image: nginx:latest
@@ -55,4 +57,10 @@ networks:
     driver: bridge
 
 volumes:
+  frontend-app:
+    name: frontend-app
+    driver_opts:
+      device: '/home/vzayas/transcendence/frontend/pong-app'
+      o: bind
+      type: none 
   postgres-data:
