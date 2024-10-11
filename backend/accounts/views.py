@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 # For JWT
-# from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -56,6 +56,7 @@ def send_code_to_user(email):
 class RegisterView(APIView):
     serializer_class = UserRegisterSerializer
 
+
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -66,7 +67,7 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     def get(self, request, username):
         # Obtain user info
         user = User.objects.filter(username=username).first()
@@ -104,21 +105,26 @@ class LoginView(GenericAPIView):
                 password=serializer.validated_data['password']
             )
             if user is not None:
-                token, created = Token.objects.get_or_create(user=user)
+                # Create JWT token
+                refresh = RefreshToken.for_user(user)
+
                 return Response({
                     'user_id': user.id,
                     'username': user.username,
                     'email': user.email,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
-                    'token': token.key,
+                    # "refresh" and "access" are JWT tokens
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
                 }, status=200)
             else:
-                return Response({'error': 'Invalid credentials'}, status=400)
-        return Response(serializer.errors, status=400)
+                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UpdateProfileView(UpdateAPIView):
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
     serializer_class = UpdateUserSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'username'
@@ -143,7 +149,6 @@ class CloseAccountView(APIView):
             raise Response("No User found")
 
         return Response({"message": "Account and user successfully removed"}, status=200)
-
 class ListFriendsView(APIView):
     permission_classes = [IsAuthenticated]
 

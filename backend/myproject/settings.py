@@ -46,35 +46,39 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    # 'rest_framework_simplejwt',
+    'rest_framework_simplejwt',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
 
 ##### For JWT
+REST_FRAMEWORK = {
+    # JWT authentication
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),  
+}
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     ),
-# }
-
-
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-#     'ROTATE_REFRESH_TOKENS': True,
-#     'BLACKLIST_AFTER_ROTATION': True,
-#     'ALGORITHM': 'HS256',
-#     'SIGNING_KEY': SECRET_KEY,
-#     'VERIFYING_KEY': None,
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-#     'USER_ID_FIELD': 'id',
-#     'USER_ID_CLAIM': 'user_id',
-#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-#     'TOKEN_TYPE_CLAIM': 'token_type',
-#     'JTI_CLAIM': 'jti',
-# }
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    # Every time a refresh token is used to generate a new access token, 
+    # a new refresh token is also issued to the user.
+    'ROTATE_REFRESH_TOKENS': True,
+    # Old refresh tokens are blacklisted after they are replaced with new ones.
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256', # default
+    # SHOULD CHANGE the SECRET_KEY when submit to security reason
+    'SIGNING_KEY': SECRET_KEY,
+    # Public key used to verify JWT tokens, if I use HS256 algo, it's set to none
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id', # Default, Uses 'id' as the unique identifier in JWT payload
+    'USER_ID_CLAIM': 'user_id',# Default, User ID will be stored under 'user_id' in the token
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',), # default
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'JTI_CLAIM': 'jti',
+}
 ##### For JWT
 
 
