@@ -1,0 +1,115 @@
+/* Contenedor del perfil */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    width: 100%; /* Ancho completo del contenedor */
+    height: auto; /* Cambiado de 100vh para evitar que se centre todo */
+}
+
+/* Marco alrededor de la imagen de perfil */
+.profile-image {
+    width: 180px; /* Aumentar el ancho del marco */
+    height: 180px; /* Aumentar la altura del marco */
+    border-radius: 20px; /* Bordes redondeados */
+    border: 5px solid #10a834; /* Marco alrededor de la imagen */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Para asegurar que la imagen no se salga del marco */
+}
+
+.profile-image img {
+    width: 100%; /* Para que la imagen ocupe el 100% del marco */
+    height: 100%; /* Para que la imagen ocupe el 100% del marco */
+    object-fit: cover; /* Para recortar la imagen en lugar de estirarla */
+}
+
+/* Espaciar más el contenido dentro del header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%; /* Mantener ancho relativo */
+    margin-bottom: 60px;
+}
+
+/* Detalles del jugador */
+.profile-details {
+    margin-left: 80px; /* Separación mayor de la imagen */
+    text-align: left;
+}
+
+.player-name {
+    font-size: 26px;
+    margin-bottom: 15px;
+}
+
+.player-stats {
+    font-size: 18px;
+    color: #555;
+}
+
+.player-stats p {
+    margin: 8px 0;
+}
+
+/* Contenido del cuerpo con mayor separación */
+.profile-body {
+    display: flex;
+    justify-content: space-between;
+    width: 90%; /* Aumentar el ancho total del cuerpo */
+    margin-top: 40px;
+}
+
+/* Aumentar el ancho de las secciones de amigos y partidos */
+.friends-list, .match-history {
+    flex: 1; /* Dejar que ambos se expandan igualmente */
+    margin: 0 10px; /* Separación horizontal entre secciones */
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ccc; /* Marco alrededor de cada sección */
+    height: auto; /* Dejar que crezca en altura si es necesario */
+    min-width: 300px; /* Establecer un ancho mínimo */
+}
+
+/* Estilo del título para que ocupe solo una línea */
+.friends-list h3, .match-history h3 {
+    font-size: 24px; /* Tamaño del título */
+    white-space: nowrap; /* Evitar que el texto se desborde a la siguiente línea */
+    overflow: hidden; /* Ocultar el desbordamiento */
+    text-overflow: ellipsis; /* Agregar puntos suspensivos si el texto es demasiado largo */
+}
+
+/* Eliminar los puntos de la lista */
+.friends-list ul, .match-history ul {
+    list-style-type: none; /* Eliminar puntos de la lista */
+    padding: 0; /* Sin padding */
+}
+
+/* Estilo para las separaciones entre los partidos */
+.match-history ul li {
+    position: relative;
+    padding: 10px 0;
+}
+
+.separator {
+    border: 0;
+    border-top: 1px solid #16a085; /* Cambia el color de la barra */
+    margin: 10px 0;
+}
+
+/* Estilo de las barras de partidos */
+.match {
+    font-size: 18px;
+    display: block;
+}
+
+/* Ajustar el margen superior de las listas */
+.friends-list ul, .match-history ul {
+    margin-top: 20px; /* Separar la lista del título */
+}
