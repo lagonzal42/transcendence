@@ -36,6 +36,8 @@ from django.conf import settings
 from .services import send_activation_email
 
 from django.shortcuts import redirect
+from django.urls import reverse
+import requests
 
 # Set up a logger
 logger = logging.getLogger(__name__)
@@ -132,6 +134,8 @@ class LoginView(GenericAPIView):
     """API login class"""
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
+    print("Entered LoginView")
+
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -140,11 +144,16 @@ class LoginView(GenericAPIView):
                 username=serializer.validated_data['username'],
                 password=serializer.validated_data['password']
             )
+            print(f"user data in LoginView: {user.username}")
+
             if user is not None:
                 #Store user info for 2FA verification
                 request.session['user_id'] = user.id
-# Redirect to 2FA service
-                return redirect('two_factor_auth:send_2fa_code', user_id=user.id)
+                # Prepare to call the send_2fa_code endpoint in the two_factor_auth app
+                url = reverse('two_factor_auth:send_2fa_code', kwargs={'user_id': user.id})
+                response = requests.post(request.build_absolute_uri(url))
+                # Return the response from the 2FA service
+                return Response(response.json(), status=response.status_code)
             else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
