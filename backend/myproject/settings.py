@@ -22,9 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+#SECRET_KEY = os.environ.get("SECRET_KEY")
+
 SECRET_KEY = 'django-insecure-pd6ew_fx#dn^_h=ij$(dfvjw*zh(p(n+l-7+l8syd79ba#+w)!'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+#SECURITY WARNING: don't run with debug turned on in production!
+#DEBUG = bool(os.environ.get("DEBUG", default=0))
 DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
@@ -95,7 +98,7 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -168,15 +171,38 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'media'),
+]
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+#TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
+
+#BASE_DIR = "http://0.0.0.0:8000"
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Allow the frontend domain
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
+]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'otxoboy64@gmail.com'
+EMAIL_HOST_PASSWORD = 'qkhw doyy kojf exss' 
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
 ]

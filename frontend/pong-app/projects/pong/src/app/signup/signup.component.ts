@@ -26,7 +26,7 @@ export class SignupComponent {
       const formData = this.signupForm.value;
 			console.log('Form Submitted!', this.signupForm.value);
 			//direction must be changed this is only for test
-			this.httpClient.post('http://localhost:8000/accounts/account_login/', formData).subscribe({
+			this.httpClient.post('http://localhost:8000/accounts/account_register/', formData).subscribe({
 				next: (response: any) =>
 				{
 					console.log("Server response: ", response);
