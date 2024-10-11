@@ -19,3 +19,4 @@ test
 .DS_Store
 .vscode/*
 .gitattributes
+**/migrations/*

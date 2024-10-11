@@ -28,7 +28,7 @@ export class LoginComponent {
 		{
 			const formData = this.loginForm.value;
 			console.log('Form Submitted!', this.loginForm.value);
-			//direction must be changed this is only for test
+			//direction must be changed this is only for test	
 			this.httpClient.post('http://localhost:8000/accounts/account_login/', formData).subscribe({
 				next: (response: any) =>
 				{
