@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, FriendRequest
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, write_only=True)
@@ -7,7 +7,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'password2')
+        fields = ('username', 'email', 'password', 'password2', 'id', 'tournament_name', 'avatar', 'last_login', 'date_joined', 'games_played', 'games_won', 'games_lost', 'friends')
 
     def validate(self, attrs):
         password = attrs.get('password', '')
@@ -51,14 +51,11 @@ class LoginSerializer(serializers.ModelSerializer):
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
+    friends = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email')
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True},
-        }
+        fields = ('username', 'email', 'tournament_name', 'friends')
 
     def validate_email(self, value):
         user = self.context['request'].user
@@ -71,13 +68,18 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         if User.objects.exclude(pk=user.pk).filter(username=value).exists():
             raise serializers.ValidationError({"username": "This username is already in use."})
         return value
-
+    
     def update(self, instance, validated_data):
-        instance.first_name = validated_data['first_name']
-        instance.last_name = validated_data['last_name']
         instance.email = validated_data['email']
         instance.username = validated_data['username']
+        instance.tournament_name = validated_data['tournament_name']
 
         instance.save()
 
         return instance
+
+class FriendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FriendRequest
+        fields = ['from_user', 'to_user']
+

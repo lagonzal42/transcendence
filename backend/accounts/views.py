@@ -1,4 +1,4 @@
-from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer
+from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer, FriendSerializer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView
@@ -14,9 +14,10 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
+from django.contrib.auth.decorators import login_required
 
-from .models import User
+from .models import User, OtpToken, FriendRequest
 from django.db import IntegrityError
 from django.shortcuts import render
 
@@ -45,12 +46,33 @@ logger = logging.getLogger(__name__)
 def BaseView(request):
     users = User.objects.all()
     return render(request, 'accounts/base.html', {'users':users})
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import HttpResponse, JsonResponse
 
 class AccountList(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
 
+    def get(self, request):
+        users = self.get_queryset()
+        serializer = self.serializer_class(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
+def send_code_to_user(email):
+    user = User.objects.get(email=email)
+
+    otp = OtpToken.objects.create(user=user)
+
+    EmailMessage(
+        subject = 'Account Verification',
+        body = f"Hi {user.first_name},\nThanks for signing up on our site.\nPlease verify your email with the following one time password:\n\n{otp.otp_code}\n\n\n",
+        from_email = settings.EMAIL_HOST_USER,
+        to = [user.email]
+    ).send()
+
+
+#   @user_not_authenticated
 class RegisterView(APIView):
     serializer_class = UserRegisterSerializer
 
@@ -58,18 +80,22 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            # the model instance, to send activation mail
-            user_insta = serializer.save()
+            # # the model instance, to send activation mail
+            # user_insta = serializer.save()
 
-            # serialized representation of the data to return to frontend
-            user_data = serializer.data
-            # Send the activation email using the service
-            send_activation_email(user_insta, from_email="noreply@essencecatch.com")
+            # # serialized representation of the data to return to frontend
+            # user_data = serializer.data
+            # # Send the activation email using the service
+            # send_activation_email(user_insta, from_email="noreply@essencecatch.com")
             
-            return Response({
-                'data':user_data,
-                'message': 'Thanks for signing up'
-            }, status=status.HTTP_201_CREATED)
+            # return Response({
+            #     'data':user_data,
+            #     'message': 'Thanks for signing up'
+            # }, status=status.HTTP_201_CREATED)
+            serializer.save()
+            user = serializer.data
+            send_code_to_user(user['email'])
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -108,9 +134,9 @@ class ActivateAccountView(APIView):
 
 class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]
-    def get(self, request, id):
+    def get(self, request, username):
         # Obtain user info
-        user = User.objects.filter(pk=id).first()
+        user = User.objects.filter(username=username).first()
 
         if not user:
             # If user doesn't exist
@@ -124,6 +150,10 @@ class UserDetailView(APIView):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "id": user.id,
+                "tournament_name": user.tournament_name,
+                #"avatar": user.avatar,
+                "last_login": user.last_login,
+                "date_joined": user.date_joined,
             }
         }
         return Response(response_data, status=200)
@@ -138,7 +168,7 @@ class LoginView(GenericAPIView):
 
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data) 
         if serializer.is_valid(raise_exception=True):
             user = authenticate(
                 username=serializer.validated_data['username'],
@@ -235,10 +265,21 @@ class LoginView(GenericAPIView):
 
 
 class UpdateProfileView(UpdateAPIView):
-
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = UpdateUserSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'username'
+
+    def get(self, request, username):
+        user = User.objects.filter(username=username).first()
+        if not user:
+            return Response({"message": "No User found"}, status=404)
+        return Response({
+                    'username': user.username,
+                    'email': user.email,
+                    'tournament_name': user.tournament_name,
+                }, status=200)
 
 class CloseAccountView(APIView):
     def post(self, request, id):
@@ -250,28 +291,168 @@ class CloseAccountView(APIView):
             raise Response("No User found")
 
         return Response({"message": "Account and user successfully removed"}, status=200)
+class ListFriendsView(APIView):
+    permission_classes = [IsAuthenticated]
 
-# mail sending test
-from django.core.mail import send_mail
-from django.http import HttpResponse
+    def get(self, request, username=None):
+        friends_json = {}
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found."}, status=404)
 
-def send_test_email(request):
-    subject = 'Test Email'
-    message = 'This is a test email from Django!'
-    from_email = config('EMAIL_HOST_USER')  # Your Gmail address
-    recipient_list = ['recipient@example.com']  # Change to your recipient's email
+        friends = user.friends.all()
 
-    send_mail(subject, message, from_email, recipient_list)
+        if username is None:
+            for friend in friends:
+                friends_json[friend.username] = get_user_data(friend)
+        else:
+            try:
+                friend = User.objects.get(username=username)
+                friends_json[friend.username] = get_user_data(friend)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "Friend not found."}, status=404)
 
-    return HttpResponse('Test email sent!')
+        return JsonResponse(friends_json)
+
+# class ListFriendsView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request, id=None):
+#         friends_json = {}
+#         user = User.objects.get(id=id)
+#         friends = user.friends.all()
+
+#         if id is None:
+#             for friend in friends:
+#                 friends_json[friend.id] = get_user_data(friend)
+#         else:
+#             try:
+#                 friend = User.objects.get(id=id)
+#                 friends_json[friend.id] = get_user_data(friend)
+#             except User.DoesNotExist:
+#                 return JsonResponse({"error": "User not found."}, status=404)
+
+#         #print(friends_json)
+#         return JsonResponse(friends_json)
+
+def get_user_data(user):
+    return  {
+                'username': user.username,
+                'email': user.email,
+                'tournament_name': user.tournament_name,
+                'friends': list(user.friends.values_list('username', flat=True)),
+            }
+
+class AddFriendView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, username):
+        user = User.objects.get(username=username)
+        friend_username = request.data.get('friend_username')
+
+        if friend_username is None:
+            return Response({'error': "No friend username provided."}, status=400)
+
+        try:
+            friend = User.objects.get(username=friend_username)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+
+        if friend.username == user.username:
+            return Response({'error': "Users cannot send friend requests to themselves."}, status=400)
+
+        # Check if friend request already exists
+        if FriendRequest.objects.filter(from_user=user, to_user=friend).exists():
+            return Response({'error': 'Friend request already sent.'}, status=400)
+
+        # Create a friend request
+        friend_request = FriendRequest.objects.create(from_user=user, to_user=friend)
+        print(friend_request.id)
+
+        return Response({'message': 'Friend request sent successfully.'}, status=200)
+
+# class AcceptFriendRequestView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def post(self, request, id):
+#         user = User.objects.get(id=id)
+#         request_id = request.data.get('request_id')
+
+#         if request_id is None:
+#             return Response({'error': "No request id provided."}, status=400)
+
+#         try:
+#             friend_request = FriendRequest.objects.get(id=request_id, to_user=user)
+#         except FriendRequest.DoesNotExist:
+#             return Response({'error': 'Friend request not found.'}, status=404)
+
+#         # Add each other as friends
+#         user.friends.add(friend_request.from_user)
+#         friend_request.from_user.friends.add(user)
+
+#         # Delete the friend request after acceptance
+#         friend_request.delete()
+
+#         return Response({'message': 'Friend request accepted successfully.'}, status=200)
 
 
-# from django.http import JsonResponse
+# class AddFriendView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-# def set_session(request):
-#     request.session['test_key'] = 'test_value'
-#     return JsonResponse({'message': 'Session set'})
+#     def post(self, request, id):
+#         user = User.objects.get(id=id)
+#         request_id = request.data.get('request_id')
 
-# def get_session(request):
-#     test_value = request.session.get('test_key', 'Session not found')
-#     return JsonResponse({'test_key': test_value})
+#         if request_id is None:
+#             return Response({'error': "No friend id provided."}, status=400)
+
+#         try:
+#             friend = User.objects.get(id=request_id)
+#         except User.DoesNotExist:
+#             return Response({'error': 'User not found'}, status=404)
+#         if request_id == user.id:
+#             return Response({'message': "Users cant add themselves as friends"})
+        
+#          # Check if friend request already exists
+#         if FriendRequest.objects.filter(from_user=user, to_user=friend).exists():
+#             return Response({'error': 'Friend request already sent.'}, status=400)
+
+#         # Create a friend request
+#         friend_request = FriendRequest.objects.create(from_user=user, to_user=friend)
+        
+#         print("friend_request.id")
+#         print(friend_request.id)
+
+#         return Response({'message': 'Friend request sent successfully.'}, status=200)
+    
+class AcceptFriendRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, username):
+        user = User.objects.get(username=username)
+        request_id = request.data.get('request_id')
+
+        if request_id is None:
+            return Response({'error': "No request id provided."}, status=400)
+
+        try:
+            friend_request = FriendRequest.objects.get(id=request_id, to_user=user)
+        except FriendRequest.DoesNotExist:
+            return Response({'error': 'Friend request not found.'}, status=404)
+
+        # Add each other as friends
+        user.friends.add(friend_request.from_user)
+        friend_request.from_user.friends.add(user)
+
+        # Delete the friend request after acceptance
+        friend_request.delete()
+
+        return Response({'message': 'Friend request accepted successfully.'}, status=200)
+
+class RemoveFriendView(APIView):
+    def post(self, request, username):
+        user = User.objects.get(username=username)
+        user_to_remove = request.data.get('user_to_remove')
+    
+

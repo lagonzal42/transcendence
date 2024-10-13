@@ -13,3 +13,4 @@ django-two-factor-auth
 phonenumbers
 
 requests
+gunicorn
