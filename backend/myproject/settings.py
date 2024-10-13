@@ -245,14 +245,14 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 #         }
 #     }
 # }
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'otxoboy64@gmail.com'
-EMAIL_HOST_PASSWORD = 'qkhw doyy kojf exss' 
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'otxoboy64@gmail.com'
+# EMAIL_HOST_PASSWORD = 'qkhw doyy kojf exss' 
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
