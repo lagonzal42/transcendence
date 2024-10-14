@@ -76,26 +76,28 @@ def send_code_to_user(email):
 class RegisterView(APIView):
     serializer_class = UserRegisterSerializer
 
-
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             # # the model instance, to send activation mail
-            # user_insta = serializer.save()
+            user_insta = serializer.save()
+
+            # Send the activation email using the service
+            send_activation_email(user_insta, from_email="noreply@essencecatch.com")
 
             # # serialized representation of the data to return to frontend
-            # user_data = serializer.data
-            # # Send the activation email using the service
-            # send_activation_email(user_insta, from_email="noreply@essencecatch.com")
-            
-            # return Response({
-            #     'data':user_data,
-            #     'message': 'Thanks for signing up'
-            # }, status=status.HTTP_201_CREATED)
-            serializer.save()
             user = serializer.data
-            send_code_to_user(user['email'])
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Print all the items in the user dictionary
+            print("User data after registration:")
+            for key, value in user.items():
+                print(f"{key}: {value}")
+
+#### another send email function                
+            # send_code_to_user(user['email'])
+#### another send email function                
+
+            
+            return Response(user, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -168,6 +170,8 @@ class LoginView(GenericAPIView):
 
 
     def post(self, request, *args, **kwargs):
+        # Print the received request data (username and password)
+        print(f"Received data in LoginView: {request.data}")
         serializer = self.get_serializer(data=request.data) 
         if serializer.is_valid(raise_exception=True):
             user = authenticate(

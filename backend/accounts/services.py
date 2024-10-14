@@ -14,6 +14,7 @@ def send_activation_email(user, from_email):
 
     subject = 'Essence Catch : Account Activation'
     message = f'''
+    Hi {user.username},
     This email is sent from Essence Catch.
     Please click the link below to activate your account.
     {url}
