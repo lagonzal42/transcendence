@@ -1,16 +1,20 @@
 services:
   db:
     image: postgres
+    container_name: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
     networks:
       - app-network
 
   backend:
+    container_name: backend
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -32,6 +36,7 @@ services:
       - app-network
 
   frontend:
+    container_name: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -89,9 +94,22 @@ services:
      - '3000:3000'
     volumes:
       - grafana-storage:/var/lib/grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
     - GF_SECURITY_ADMIN_USER=admin
     - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - app-network
+  
+  pg_exporter:
+    image: wrouesnel/postgres_exporter
+    container_name: pg-exporter
+    restart: always
+    ports:
+      - '9187:9187'
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres:5432/postgres?sslmode=disable
     networks:
       - app-network
 
