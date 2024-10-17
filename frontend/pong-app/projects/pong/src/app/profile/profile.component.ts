@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { UserProfileService } from '../userProfileService';
 
 @Component({
   selector: 'app-profile',
@@ -7,25 +7,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  friends: any[] = [];
-  matches: any[] = [];
+  userProfile: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private userProfileService: UserProfileService) {}
 
   ngOnInit(): void {
-    this.getFriends();
-    this.getMatchHistory();
+    this.loadUserProfile();
   }
 
-  getFriends() {
-    this.http.get('/api/friends').subscribe((data: any) => {
-      this.friends = data;
-    });
-  }
-
-  getMatchHistory() {
-    this.http.get('/api/match-history').subscribe((data: any) => {
-      this.matches = data;
-    });
+  // Método para cargar el perfil del usuario
+  loadUserProfile(): void {
+    this.userProfileService.getUserProfile().subscribe(
+      data => {
+        this.userProfile = data; // Guardar los datos recibidos
+      },
+      error => {
+        console.error('Error al cargar el perfil', error);
+      }
+    );
   }
 }
