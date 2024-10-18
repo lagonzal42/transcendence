@@ -9,6 +9,7 @@ import { SearchComponent } from './search/search.component';
 import { TournamentComponent } from './tournament/tournament.component';
 import { LocalPlayComponent } from './local-play/local-play.component';
 import { PongGameComponent } from './pong-game/pong-game.component';
+import { AuthenticationGuard } from './auth/authentication.guard';
 
 
 export const routes: Routes = [
@@ -19,8 +20,8 @@ export const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'login', component: LoginComponent },
       { path: 'signup', component: SignupComponent },
-      { path: 'profile', component: ProfileComponent },
-      { path: 'search', component: SearchComponent },
+      { path: 'profile', component: ProfileComponent , canActivate: [AuthenticationGuard]},
+      { path: 'search', component: SearchComponent, canActivate: [AuthenticationGuard] },
       { path: 'tournament', component: TournamentComponent },
       { path: 'local-play', component: LocalPlayComponent },
       { path: 'pong-game', component: PongGameComponent }
