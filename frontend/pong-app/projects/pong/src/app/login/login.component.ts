@@ -2,7 +2,8 @@ import { Component} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Import CommonModule
-import { HttpClient} from '@angular/common/http'
+import { HttpClient} from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-login',
@@ -14,7 +15,7 @@ import { HttpClient} from '@angular/common/http'
 export class LoginComponent {
 	loginForm: FormGroup;
 
-	constructor(private fb: FormBuilder, private httpClient: HttpClient)
+	constructor(private fb: FormBuilder, private httpClient: HttpClient, private router: Router)
 	{
 		this.loginForm = this.fb.group({
 			username: ['', Validators.required],
@@ -32,6 +33,7 @@ export class LoginComponent {
 			this.httpClient.post('http://localhost:8000/accounts/account_login/', formData).subscribe({
 				next: (response: any) =>
 				{
+					this.router.navigate(['']); // home, see routes.app
 					console.log("Server response: ", response);
 				},
 				error: (err: any) => {

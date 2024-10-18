@@ -60,7 +60,7 @@ volumes:
   frontend-app:
     name: frontend-app
     driver_opts:
-      device: '/home/vzayas/transcendence/frontend/pong-app'
+      device: '/sgoinfre/students/vzayas-s/transcendence/frontend/pong-app' #change this with env variable
       o: bind
       type: none 
   postgres-data:
