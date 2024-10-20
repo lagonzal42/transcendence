@@ -1,0 +1,1119 @@
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.004) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.001) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.001) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('accounts', '0004_auto_20241020_0901', '2024-10-20T09:01:42.609705+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('accounts', '0004_auto_20241020_0901', datetime.datetime(2024, 10, 20, 9, 1, 42, 609705, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.002) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'accounts'; args=('accounts',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'user') LIMIT 21; args=('accounts', 'user')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'otptoken') LIMIT 21; args=('accounts', 'otptoken')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'friendrequest') LIMIT 21; args=('accounts', 'friendrequest')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'accountactivatetoken') LIMIT 21; args=('accounts', 'accountactivatetoken')
+(0.002) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (1, 2, 3, 4) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(1, 2, 3, 4)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'accounts'; args=('accounts',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'admin'; args=('admin',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'admin' AND "django_content_type"."model" = 'logentry') LIMIT 21; args=('admin', 'logentry')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (5) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(5,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'admin'; args=('admin',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'auth'; args=('auth',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'auth' AND "django_content_type"."model" = 'permission') LIMIT 21; args=('auth', 'permission')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'auth' AND "django_content_type"."model" = 'group') LIMIT 21; args=('auth', 'group')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (6, 7) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(6, 7)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'auth'; args=('auth',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'contenttypes'; args=('contenttypes',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'contenttypes' AND "django_content_type"."model" = 'contenttype') LIMIT 21; args=('contenttypes', 'contenttype')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (8) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(8,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'contenttypes'; args=('contenttypes',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'sessions'; args=('sessions',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'sessions' AND "django_content_type"."model" = 'session') LIMIT 21; args=('sessions', 'session')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (9) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(9,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'sessions'; args=('sessions',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'authtoken'; args=('authtoken',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'authtoken' AND "django_content_type"."model" = 'token') LIMIT 21; args=('authtoken', 'token')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'authtoken' AND "django_content_type"."model" = 'tokenproxy') LIMIT 21; args=('authtoken', 'tokenproxy')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (10, 11) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(10, 11)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'authtoken'; args=('authtoken',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'rest_framework_simplejwt'; args=('rest_framework_simplejwt',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'rest_framework_simplejwt'; args=('rest_framework_simplejwt',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'django_otp'; args=('django_otp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'django_otp'; args=('django_otp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_static'; args=('otp_static',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_static' AND "django_content_type"."model" = 'staticdevice') LIMIT 21; args=('otp_static', 'staticdevice')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_static' AND "django_content_type"."model" = 'statictoken') LIMIT 21; args=('otp_static', 'statictoken')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (12, 13) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(12, 13)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_static'; args=('otp_static',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_totp'; args=('otp_totp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_totp' AND "django_content_type"."model" = 'totpdevice') LIMIT 21; args=('otp_totp', 'totpdevice')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (14) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(14,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_totp'; args=('otp_totp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_email'; args=('otp_email',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_email' AND "django_content_type"."model" = 'emaildevice') LIMIT 21; args=('otp_email', 'emaildevice')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (15) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(15,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_email'; args=('otp_email',)
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.001) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.001) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('accounts', '0005_auto_20241020_0902', '2024-10-20T09:02:33.795696+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('accounts', '0005_auto_20241020_0902', datetime.datetime(2024, 10, 20, 9, 2, 33, 795696, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.002) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'accounts'; args=('accounts',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'user') LIMIT 21; args=('accounts', 'user')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'otptoken') LIMIT 21; args=('accounts', 'otptoken')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'friendrequest') LIMIT 21; args=('accounts', 'friendrequest')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'accountactivatetoken') LIMIT 21; args=('accounts', 'accountactivatetoken')
+(0.002) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (1, 2, 3, 4) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(1, 2, 3, 4)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'accounts'; args=('accounts',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'admin'; args=('admin',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'admin' AND "django_content_type"."model" = 'logentry') LIMIT 21; args=('admin', 'logentry')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (5) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(5,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'admin'; args=('admin',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'auth'; args=('auth',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'auth' AND "django_content_type"."model" = 'permission') LIMIT 21; args=('auth', 'permission')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'auth' AND "django_content_type"."model" = 'group') LIMIT 21; args=('auth', 'group')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (6, 7) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(6, 7)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'auth'; args=('auth',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'contenttypes'; args=('contenttypes',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'contenttypes' AND "django_content_type"."model" = 'contenttype') LIMIT 21; args=('contenttypes', 'contenttype')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (8) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(8,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'contenttypes'; args=('contenttypes',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'sessions'; args=('sessions',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'sessions' AND "django_content_type"."model" = 'session') LIMIT 21; args=('sessions', 'session')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (9) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(9,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'sessions'; args=('sessions',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'authtoken'; args=('authtoken',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'authtoken' AND "django_content_type"."model" = 'token') LIMIT 21; args=('authtoken', 'token')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'authtoken' AND "django_content_type"."model" = 'tokenproxy') LIMIT 21; args=('authtoken', 'tokenproxy')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (10, 11) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(10, 11)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'authtoken'; args=('authtoken',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'rest_framework_simplejwt'; args=('rest_framework_simplejwt',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'rest_framework_simplejwt'; args=('rest_framework_simplejwt',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'django_otp'; args=('django_otp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'django_otp'; args=('django_otp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_static'; args=('otp_static',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_static' AND "django_content_type"."model" = 'staticdevice') LIMIT 21; args=('otp_static', 'staticdevice')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_static' AND "django_content_type"."model" = 'statictoken') LIMIT 21; args=('otp_static', 'statictoken')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (12, 13) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(12, 13)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_static'; args=('otp_static',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_totp'; args=('otp_totp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_totp' AND "django_content_type"."model" = 'totpdevice') LIMIT 21; args=('otp_totp', 'totpdevice')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (14) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(14,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_totp'; args=('otp_totp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_email'; args=('otp_email',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_email' AND "django_content_type"."model" = 'emaildevice') LIMIT 21; args=('otp_email', 'emaildevice')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (15) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(15,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_email'; args=('otp_email',)
+(0.006) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.002) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.015) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'accounts'; args=('accounts',)
+(0.002) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'user') LIMIT 21; args=('accounts', 'user')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'otptoken') LIMIT 21; args=('accounts', 'otptoken')
+(0.002) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'friendrequest') LIMIT 21; args=('accounts', 'friendrequest')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'accountactivatetoken') LIMIT 21; args=('accounts', 'accountactivatetoken')
+(0.010) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (1, 2, 3, 4) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(1, 2, 3, 4)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'accounts'; args=('accounts',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'admin'; args=('admin',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'admin' AND "django_content_type"."model" = 'logentry') LIMIT 21; args=('admin', 'logentry')
+(0.002) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (5) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(5,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'admin'; args=('admin',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'auth'; args=('auth',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'auth' AND "django_content_type"."model" = 'permission') LIMIT 21; args=('auth', 'permission')
+(0.002) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'auth' AND "django_content_type"."model" = 'group') LIMIT 21; args=('auth', 'group')
+(0.002) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (6, 7) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(6, 7)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'auth'; args=('auth',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'contenttypes'; args=('contenttypes',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'contenttypes' AND "django_content_type"."model" = 'contenttype') LIMIT 21; args=('contenttypes', 'contenttype')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (8) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(8,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'contenttypes'; args=('contenttypes',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'sessions'; args=('sessions',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'sessions' AND "django_content_type"."model" = 'session') LIMIT 21; args=('sessions', 'session')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (9) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(9,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'sessions'; args=('sessions',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'authtoken'; args=('authtoken',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'authtoken' AND "django_content_type"."model" = 'token') LIMIT 21; args=('authtoken', 'token')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'authtoken' AND "django_content_type"."model" = 'tokenproxy') LIMIT 21; args=('authtoken', 'tokenproxy')
+(0.002) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (10, 11) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(10, 11)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'authtoken'; args=('authtoken',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'rest_framework_simplejwt'; args=('rest_framework_simplejwt',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'rest_framework_simplejwt'; args=('rest_framework_simplejwt',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'django_otp'; args=('django_otp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'django_otp'; args=('django_otp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_static'; args=('otp_static',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_static' AND "django_content_type"."model" = 'staticdevice') LIMIT 21; args=('otp_static', 'staticdevice')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_static' AND "django_content_type"."model" = 'statictoken') LIMIT 21; args=('otp_static', 'statictoken')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (12, 13) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(12, 13)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_static'; args=('otp_static',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_totp'; args=('otp_totp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_totp' AND "django_content_type"."model" = 'totpdevice') LIMIT 21; args=('otp_totp', 'totpdevice')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (14) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(14,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_totp'; args=('otp_totp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_email'; args=('otp_email',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_email' AND "django_content_type"."model" = 'emaildevice') LIMIT 21; args=('otp_email', 'emaildevice')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (15) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(15,)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_email'; args=('otp_email',)
+(0.005) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+CREATE TABLE "django_migrations" ("id" serial NOT NULL PRIMARY KEY, "app" varchar(255) NOT NULL, "name" varchar(255) NOT NULL, "applied" timestamp with time zone NOT NULL); (params None)
+(0.015) CREATE TABLE "django_migrations" ("id" serial NOT NULL PRIMARY KEY, "app" varchar(255) NOT NULL, "name" varchar(255) NOT NULL, "applied" timestamp with time zone NOT NULL); args=None
+CREATE TABLE "django_content_type" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(100) NOT NULL, "app_label" varchar(100) NOT NULL, "model" varchar(100) NOT NULL); (params None)
+(0.004) CREATE TABLE "django_content_type" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(100) NOT NULL, "app_label" varchar(100) NOT NULL, "model" varchar(100) NOT NULL); args=None
+ALTER TABLE "django_content_type" ADD CONSTRAINT "django_content_type_app_label_model_76bd3d3b_uniq" UNIQUE ("app_label", "model"); (params ())
+(0.002) ALTER TABLE "django_content_type" ADD CONSTRAINT "django_content_type_app_label_model_76bd3d3b_uniq" UNIQUE ("app_label", "model"); args=()
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.003) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('contenttypes', '0001_initial', '2024-10-20T15:45:12.772898+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('contenttypes', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 12, 772898, tzinfo=<UTC>))
+ALTER TABLE "django_content_type" ALTER COLUMN "name" DROP NOT NULL; (params [])
+(0.002) ALTER TABLE "django_content_type" ALTER COLUMN "name" DROP NOT NULL; args=[]
+ALTER TABLE "django_content_type" DROP COLUMN "name" CASCADE; (params ())
+(0.003) ALTER TABLE "django_content_type" DROP COLUMN "name" CASCADE; args=()
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('contenttypes', '0002_remove_content_type_name', '2024-10-20T15:45:12.805490+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('contenttypes', '0002_remove_content_type_name', datetime.datetime(2024, 10, 20, 15, 45, 12, 805490, tzinfo=<UTC>))
+CREATE TABLE "auth_permission" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(50) NOT NULL, "content_type_id" integer NOT NULL, "codename" varchar(100) NOT NULL); (params None)
+(0.005) CREATE TABLE "auth_permission" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(50) NOT NULL, "content_type_id" integer NOT NULL, "codename" varchar(100) NOT NULL); args=None
+CREATE TABLE "auth_group" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(80) NOT NULL UNIQUE); (params None)
+(0.004) CREATE TABLE "auth_group" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(80) NOT NULL UNIQUE); args=None
+CREATE TABLE "auth_group_permissions" ("id" serial NOT NULL PRIMARY KEY, "group_id" integer NOT NULL, "permission_id" integer NOT NULL); (params None)
+(0.003) CREATE TABLE "auth_group_permissions" ("id" serial NOT NULL PRIMARY KEY, "group_id" integer NOT NULL, "permission_id" integer NOT NULL); args=None
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0001_initial', '2024-10-20T15:45:12.857714+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 12, 857714, tzinfo=<UTC>))
+ALTER TABLE "auth_permission" ADD CONSTRAINT "auth_permission_content_type_id_codename_01ab375a_uniq" UNIQUE ("content_type_id", "codename"); (params ())
+(0.002) ALTER TABLE "auth_permission" ADD CONSTRAINT "auth_permission_content_type_id_codename_01ab375a_uniq" UNIQUE ("content_type_id", "codename"); args=()
+ALTER TABLE "auth_permission" ADD CONSTRAINT "auth_permission_content_type_id_2f476e4b_fk_django_co" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.007) ALTER TABLE "auth_permission" ADD CONSTRAINT "auth_permission_content_type_id_2f476e4b_fk_django_co" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "auth_permission_content_type_id_2f476e4b" ON "auth_permission" ("content_type_id"); (params ())
+(0.003) CREATE INDEX "auth_permission_content_type_id_2f476e4b" ON "auth_permission" ("content_type_id"); args=()
+CREATE INDEX "auth_group_name_a6ea08ec_like" ON "auth_group" ("name" varchar_pattern_ops); (params ())
+(0.002) CREATE INDEX "auth_group_name_a6ea08ec_like" ON "auth_group" ("name" varchar_pattern_ops); args=()
+ALTER TABLE "auth_group_permissions" ADD CONSTRAINT "auth_group_permissions_group_id_permission_id_0cd325b0_uniq" UNIQUE ("group_id", "permission_id"); (params ())
+(0.002) ALTER TABLE "auth_group_permissions" ADD CONSTRAINT "auth_group_permissions_group_id_permission_id_0cd325b0_uniq" UNIQUE ("group_id", "permission_id"); args=()
+ALTER TABLE "auth_group_permissions" ADD CONSTRAINT "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id" FOREIGN KEY ("group_id") REFERENCES "auth_group" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.002) ALTER TABLE "auth_group_permissions" ADD CONSTRAINT "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id" FOREIGN KEY ("group_id") REFERENCES "auth_group" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+ALTER TABLE "auth_group_permissions" ADD CONSTRAINT "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm" FOREIGN KEY ("permission_id") REFERENCES "auth_permission" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.004) ALTER TABLE "auth_group_permissions" ADD CONSTRAINT "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm" FOREIGN KEY ("permission_id") REFERENCES "auth_permission" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "auth_group_permissions_group_id_b120cbf9" ON "auth_group_permissions" ("group_id"); (params ())
+(0.002) CREATE INDEX "auth_group_permissions_group_id_b120cbf9" ON "auth_group_permissions" ("group_id"); args=()
+CREATE INDEX "auth_group_permissions_permission_id_84c5c92e" ON "auth_group_permissions" ("permission_id"); (params ())
+(0.002) CREATE INDEX "auth_group_permissions_permission_id_84c5c92e" ON "auth_group_permissions" ("permission_id"); args=()
+ALTER TABLE "auth_permission" ALTER COLUMN "name" TYPE varchar(255); (params [])
+(0.002) ALTER TABLE "auth_permission" ALTER COLUMN "name" TYPE varchar(255); args=[]
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0002_alter_permission_name_max_length', '2024-10-20T15:45:12.918704+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0002_alter_permission_name_max_length', datetime.datetime(2024, 10, 20, 15, 45, 12, 918704, tzinfo=<UTC>))
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0003_alter_user_email_max_length', '2024-10-20T15:45:12.940999+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0003_alter_user_email_max_length', datetime.datetime(2024, 10, 20, 15, 45, 12, 940999, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0004_alter_user_username_opts', '2024-10-20T15:45:12.959177+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0004_alter_user_username_opts', datetime.datetime(2024, 10, 20, 15, 45, 12, 959177, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0005_alter_user_last_login_null', '2024-10-20T15:45:12.978359+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0005_alter_user_last_login_null', datetime.datetime(2024, 10, 20, 15, 45, 12, 978359, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.002) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0006_require_contenttypes_0002', '2024-10-20T15:45:12.988212+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0006_require_contenttypes_0002', datetime.datetime(2024, 10, 20, 15, 45, 12, 988212, tzinfo=<UTC>))
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0007_alter_validators_add_error_messages', '2024-10-20T15:45:13.007332+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0007_alter_validators_add_error_messages', datetime.datetime(2024, 10, 20, 15, 45, 13, 7332, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0008_alter_user_username_max_length', '2024-10-20T15:45:13.025973+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0008_alter_user_username_max_length', datetime.datetime(2024, 10, 20, 15, 45, 13, 25973, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0009_alter_user_last_name_max_length', '2024-10-20T15:45:13.043422+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0009_alter_user_last_name_max_length', datetime.datetime(2024, 10, 20, 15, 45, 13, 43422, tzinfo=<UTC>))
+ALTER TABLE "auth_group" ALTER COLUMN "name" TYPE varchar(150); (params [])
+(0.004) ALTER TABLE "auth_group" ALTER COLUMN "name" TYPE varchar(150); args=[]
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0010_alter_group_name_max_length', '2024-10-20T15:45:13.067175+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0010_alter_group_name_max_length', datetime.datetime(2024, 10, 20, 15, 45, 13, 67175, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0011_update_proxy_permissions', '2024-10-20T15:45:13.087665+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0011_update_proxy_permissions', datetime.datetime(2024, 10, 20, 15, 45, 13, 87665, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('auth', '0012_alter_user_first_name_max_length', '2024-10-20T15:45:13.107587+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('auth', '0012_alter_user_first_name_max_length', datetime.datetime(2024, 10, 20, 15, 45, 13, 107587, tzinfo=<UTC>))
+CREATE TABLE "accounts_user" ("id" serial NOT NULL PRIMARY KEY, "is_superuser" boolean NOT NULL, "first_name" varchar(150) NOT NULL, "last_name" varchar(150) NOT NULL, "is_staff" boolean NOT NULL, "is_active" boolean NOT NULL, "avatar" varchar(100) NOT NULL, "username" varchar(100) NULL UNIQUE, "email" varchar(254) NULL UNIQUE, "password" varchar(100) NOT NULL, "tournament_name" varchar(100) NOT NULL, "is_online" boolean NOT NULL, "games_played" integer NOT NULL CHECK ("games_played" >= 0), "games_won" integer NOT NULL CHECK ("games_won" >= 0), "games_lost" integer NOT NULL CHECK ("games_lost" >= 0), "date_joined" timestamp with time zone NOT NULL, "last_login" timestamp with time zone NOT NULL); (params None)
+(0.009) CREATE TABLE "accounts_user" ("id" serial NOT NULL PRIMARY KEY, "is_superuser" boolean NOT NULL, "first_name" varchar(150) NOT NULL, "last_name" varchar(150) NOT NULL, "is_staff" boolean NOT NULL, "is_active" boolean NOT NULL, "avatar" varchar(100) NOT NULL, "username" varchar(100) NULL UNIQUE, "email" varchar(254) NULL UNIQUE, "password" varchar(100) NOT NULL, "tournament_name" varchar(100) NOT NULL, "is_online" boolean NOT NULL, "games_played" integer NOT NULL CHECK ("games_played" >= 0), "games_won" integer NOT NULL CHECK ("games_won" >= 0), "games_lost" integer NOT NULL CHECK ("games_lost" >= 0), "date_joined" timestamp with time zone NOT NULL, "last_login" timestamp with time zone NOT NULL); args=None
+CREATE TABLE "accounts_user_friends" ("id" serial NOT NULL PRIMARY KEY, "from_user_id" integer NOT NULL, "to_user_id" integer NOT NULL); (params None)
+(0.006) CREATE TABLE "accounts_user_friends" ("id" serial NOT NULL PRIMARY KEY, "from_user_id" integer NOT NULL, "to_user_id" integer NOT NULL); args=None
+CREATE TABLE "accounts_user_groups" ("id" serial NOT NULL PRIMARY KEY, "user_id" integer NOT NULL, "group_id" integer NOT NULL); (params None)
+(0.005) CREATE TABLE "accounts_user_groups" ("id" serial NOT NULL PRIMARY KEY, "user_id" integer NOT NULL, "group_id" integer NOT NULL); args=None
+CREATE TABLE "accounts_user_user_permissions" ("id" serial NOT NULL PRIMARY KEY, "user_id" integer NOT NULL, "permission_id" integer NOT NULL); (params None)
+(0.005) CREATE TABLE "accounts_user_user_permissions" ("id" serial NOT NULL PRIMARY KEY, "user_id" integer NOT NULL, "permission_id" integer NOT NULL); args=None
+CREATE TABLE "accounts_otptoken" ("id" serial NOT NULL PRIMARY KEY, "otp_code" varchar(6) NOT NULL, "tp_created_at" timestamp with time zone NOT NULL, "otp_expires_at" timestamp with time zone NULL, "user_id" integer NOT NULL); (params None)
+(0.005) CREATE TABLE "accounts_otptoken" ("id" serial NOT NULL PRIMARY KEY, "otp_code" varchar(6) NOT NULL, "tp_created_at" timestamp with time zone NOT NULL, "otp_expires_at" timestamp with time zone NULL, "user_id" integer NOT NULL); args=None
+CREATE TABLE "accounts_friendrequest" ("id" serial NOT NULL PRIMARY KEY, "from_user_id" integer NOT NULL, "to_user_id" integer NOT NULL); (params None)
+(0.006) CREATE TABLE "accounts_friendrequest" ("id" serial NOT NULL PRIMARY KEY, "from_user_id" integer NOT NULL, "to_user_id" integer NOT NULL); args=None
+CREATE TABLE "accounts_accountactivatetoken" ("token" uuid NOT NULL PRIMARY KEY, "activate_token" uuid NOT NULL, "expired_at" timestamp with time zone NOT NULL, "user_id" integer NOT NULL); (params None)
+(0.003) CREATE TABLE "accounts_accountactivatetoken" ("token" uuid NOT NULL PRIMARY KEY, "activate_token" uuid NOT NULL, "expired_at" timestamp with time zone NOT NULL, "user_id" integer NOT NULL); args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('accounts', '0001_initial', '2024-10-20T15:45:13.232370+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('accounts', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 13, 232370, tzinfo=<UTC>))
+CREATE INDEX "accounts_user_username_6088629e_like" ON "accounts_user" ("username" varchar_pattern_ops); (params ())
+(0.002) CREATE INDEX "accounts_user_username_6088629e_like" ON "accounts_user" ("username" varchar_pattern_ops); args=()
+CREATE INDEX "accounts_user_email_b2644a56_like" ON "accounts_user" ("email" varchar_pattern_ops); (params ())
+(0.002) CREATE INDEX "accounts_user_email_b2644a56_like" ON "accounts_user" ("email" varchar_pattern_ops); args=()
+ALTER TABLE "accounts_user_friends" ADD CONSTRAINT "accounts_user_friends_from_user_id_to_user_id_c243c5a7_uniq" UNIQUE ("from_user_id", "to_user_id"); (params ())
+(0.003) ALTER TABLE "accounts_user_friends" ADD CONSTRAINT "accounts_user_friends_from_user_id_to_user_id_c243c5a7_uniq" UNIQUE ("from_user_id", "to_user_id"); args=()
+ALTER TABLE "accounts_user_friends" ADD CONSTRAINT "accounts_user_friends_from_user_id_70b05a1b_fk_accounts_user_id" FOREIGN KEY ("from_user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "accounts_user_friends" ADD CONSTRAINT "accounts_user_friends_from_user_id_70b05a1b_fk_accounts_user_id" FOREIGN KEY ("from_user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+ALTER TABLE "accounts_user_friends" ADD CONSTRAINT "accounts_user_friends_to_user_id_6742c6fb_fk_accounts_user_id" FOREIGN KEY ("to_user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.002) ALTER TABLE "accounts_user_friends" ADD CONSTRAINT "accounts_user_friends_to_user_id_6742c6fb_fk_accounts_user_id" FOREIGN KEY ("to_user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "accounts_user_friends_from_user_id_70b05a1b" ON "accounts_user_friends" ("from_user_id"); (params ())
+(0.003) CREATE INDEX "accounts_user_friends_from_user_id_70b05a1b" ON "accounts_user_friends" ("from_user_id"); args=()
+CREATE INDEX "accounts_user_friends_to_user_id_6742c6fb" ON "accounts_user_friends" ("to_user_id"); (params ())
+(0.002) CREATE INDEX "accounts_user_friends_to_user_id_6742c6fb" ON "accounts_user_friends" ("to_user_id"); args=()
+ALTER TABLE "accounts_user_groups" ADD CONSTRAINT "accounts_user_groups_user_id_group_id_59c0b32f_uniq" UNIQUE ("user_id", "group_id"); (params ())
+(0.002) ALTER TABLE "accounts_user_groups" ADD CONSTRAINT "accounts_user_groups_user_id_group_id_59c0b32f_uniq" UNIQUE ("user_id", "group_id"); args=()
+ALTER TABLE "accounts_user_groups" ADD CONSTRAINT "accounts_user_groups_user_id_52b62117_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "accounts_user_groups" ADD CONSTRAINT "accounts_user_groups_user_id_52b62117_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+ALTER TABLE "accounts_user_groups" ADD CONSTRAINT "accounts_user_groups_group_id_bd11a704_fk_auth_group_id" FOREIGN KEY ("group_id") REFERENCES "auth_group" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "accounts_user_groups" ADD CONSTRAINT "accounts_user_groups_group_id_bd11a704_fk_auth_group_id" FOREIGN KEY ("group_id") REFERENCES "auth_group" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "accounts_user_groups_user_id_52b62117" ON "accounts_user_groups" ("user_id"); (params ())
+(0.002) CREATE INDEX "accounts_user_groups_user_id_52b62117" ON "accounts_user_groups" ("user_id"); args=()
+CREATE INDEX "accounts_user_groups_group_id_bd11a704" ON "accounts_user_groups" ("group_id"); (params ())
+(0.002) CREATE INDEX "accounts_user_groups_group_id_bd11a704" ON "accounts_user_groups" ("group_id"); args=()
+ALTER TABLE "accounts_user_user_permissions" ADD CONSTRAINT "accounts_user_user_permi_user_id_permission_id_2ab516c2_uniq" UNIQUE ("user_id", "permission_id"); (params ())
+(0.002) ALTER TABLE "accounts_user_user_permissions" ADD CONSTRAINT "accounts_user_user_permi_user_id_permission_id_2ab516c2_uniq" UNIQUE ("user_id", "permission_id"); args=()
+ALTER TABLE "accounts_user_user_permissions" ADD CONSTRAINT "accounts_user_user_p_user_id_e4f0a161_fk_accounts_" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "accounts_user_user_permissions" ADD CONSTRAINT "accounts_user_user_p_user_id_e4f0a161_fk_accounts_" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+ALTER TABLE "accounts_user_user_permissions" ADD CONSTRAINT "accounts_user_user_p_permission_id_113bb443_fk_auth_perm" FOREIGN KEY ("permission_id") REFERENCES "auth_permission" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.004) ALTER TABLE "accounts_user_user_permissions" ADD CONSTRAINT "accounts_user_user_p_permission_id_113bb443_fk_auth_perm" FOREIGN KEY ("permission_id") REFERENCES "auth_permission" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "accounts_user_user_permissions_user_id_e4f0a161" ON "accounts_user_user_permissions" ("user_id"); (params ())
+(0.002) CREATE INDEX "accounts_user_user_permissions_user_id_e4f0a161" ON "accounts_user_user_permissions" ("user_id"); args=()
+CREATE INDEX "accounts_user_user_permissions_permission_id_113bb443" ON "accounts_user_user_permissions" ("permission_id"); (params ())
+(0.002) CREATE INDEX "accounts_user_user_permissions_permission_id_113bb443" ON "accounts_user_user_permissions" ("permission_id"); args=()
+ALTER TABLE "accounts_otptoken" ADD CONSTRAINT "accounts_otptoken_user_id_eb54279e_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.002) ALTER TABLE "accounts_otptoken" ADD CONSTRAINT "accounts_otptoken_user_id_eb54279e_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "accounts_otptoken_user_id_eb54279e" ON "accounts_otptoken" ("user_id"); (params ())
+(0.002) CREATE INDEX "accounts_otptoken_user_id_eb54279e" ON "accounts_otptoken" ("user_id"); args=()
+ALTER TABLE "accounts_friendrequest" ADD CONSTRAINT "accounts_friendreque_from_user_id_f74e1070_fk_accounts_" FOREIGN KEY ("from_user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.002) ALTER TABLE "accounts_friendrequest" ADD CONSTRAINT "accounts_friendreque_from_user_id_f74e1070_fk_accounts_" FOREIGN KEY ("from_user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+ALTER TABLE "accounts_friendrequest" ADD CONSTRAINT "accounts_friendrequest_to_user_id_cfa35a29_fk_accounts_user_id" FOREIGN KEY ("to_user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.002) ALTER TABLE "accounts_friendrequest" ADD CONSTRAINT "accounts_friendrequest_to_user_id_cfa35a29_fk_accounts_user_id" FOREIGN KEY ("to_user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "accounts_friendrequest_from_user_id_f74e1070" ON "accounts_friendrequest" ("from_user_id"); (params ())
+(0.003) CREATE INDEX "accounts_friendrequest_from_user_id_f74e1070" ON "accounts_friendrequest" ("from_user_id"); args=()
+CREATE INDEX "accounts_friendrequest_to_user_id_cfa35a29" ON "accounts_friendrequest" ("to_user_id"); (params ())
+(0.002) CREATE INDEX "accounts_friendrequest_to_user_id_cfa35a29" ON "accounts_friendrequest" ("to_user_id"); args=()
+ALTER TABLE "accounts_accountactivatetoken" ADD CONSTRAINT "accounts_accountacti_user_id_51cb878f_fk_accounts_" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.004) ALTER TABLE "accounts_accountactivatetoken" ADD CONSTRAINT "accounts_accountacti_user_id_51cb878f_fk_accounts_" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "accounts_accountactivatetoken_user_id_51cb878f" ON "accounts_accountactivatetoken" ("user_id"); (params ())
+(0.003) CREATE INDEX "accounts_accountactivatetoken_user_id_51cb878f" ON "accounts_accountactivatetoken" ("user_id"); args=()
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('accounts', '0002_auto_20241020_0819', '2024-10-20T15:45:13.349721+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('accounts', '0002_auto_20241020_0819', datetime.datetime(2024, 10, 20, 15, 45, 13, 349721, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('accounts', '0003_auto_20241020_0838', '2024-10-20T15:45:13.375637+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('accounts', '0003_auto_20241020_0838', datetime.datetime(2024, 10, 20, 15, 45, 13, 375637, tzinfo=<UTC>))
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('accounts', '0004_auto_20241020_0901', '2024-10-20T15:45:13.405752+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('accounts', '0004_auto_20241020_0901', datetime.datetime(2024, 10, 20, 15, 45, 13, 405752, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('accounts', '0005_auto_20241020_0902', '2024-10-20T15:45:13.429676+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('accounts', '0005_auto_20241020_0902', datetime.datetime(2024, 10, 20, 15, 45, 13, 429676, tzinfo=<UTC>))
+CREATE TABLE "django_admin_log" ("id" serial NOT NULL PRIMARY KEY, "action_time" timestamp with time zone NOT NULL, "object_id" text NULL, "object_repr" varchar(200) NOT NULL, "action_flag" smallint NOT NULL CHECK ("action_flag" >= 0), "change_message" text NOT NULL, "content_type_id" integer NULL, "user_id" integer NOT NULL); (params None)
+(0.004) CREATE TABLE "django_admin_log" ("id" serial NOT NULL PRIMARY KEY, "action_time" timestamp with time zone NOT NULL, "object_id" text NULL, "object_repr" varchar(200) NOT NULL, "action_flag" smallint NOT NULL CHECK ("action_flag" >= 0), "change_message" text NOT NULL, "content_type_id" integer NULL, "user_id" integer NOT NULL); args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('admin', '0001_initial', '2024-10-20T15:45:13.466998+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('admin', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 13, 466998, tzinfo=<UTC>))
+ALTER TABLE "django_admin_log" ADD CONSTRAINT "django_admin_log_content_type_id_c4bce8eb_fk_django_co" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "django_admin_log" ADD CONSTRAINT "django_admin_log_content_type_id_c4bce8eb_fk_django_co" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+ALTER TABLE "django_admin_log" ADD CONSTRAINT "django_admin_log_user_id_c564eba6_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "django_admin_log" ADD CONSTRAINT "django_admin_log_user_id_c564eba6_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "django_admin_log_content_type_id_c4bce8eb" ON "django_admin_log" ("content_type_id"); (params ())
+(0.002) CREATE INDEX "django_admin_log_content_type_id_c4bce8eb" ON "django_admin_log" ("content_type_id"); args=()
+CREATE INDEX "django_admin_log_user_id_c564eba6" ON "django_admin_log" ("user_id"); (params ())
+(0.002) CREATE INDEX "django_admin_log_user_id_c564eba6" ON "django_admin_log" ("user_id"); args=()
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('admin', '0002_logentry_remove_auto_add', '2024-10-20T15:45:13.512297+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('admin', '0002_logentry_remove_auto_add', datetime.datetime(2024, 10, 20, 15, 45, 13, 512297, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('admin', '0003_logentry_add_action_flag_choices', '2024-10-20T15:45:13.549433+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('admin', '0003_logentry_add_action_flag_choices', datetime.datetime(2024, 10, 20, 15, 45, 13, 549433, tzinfo=<UTC>))
+CREATE TABLE "authtoken_token" ("key" varchar(40) NOT NULL PRIMARY KEY, "created" timestamp with time zone NOT NULL, "user_id" integer NOT NULL UNIQUE); (params None)
+(0.003) CREATE TABLE "authtoken_token" ("key" varchar(40) NOT NULL PRIMARY KEY, "created" timestamp with time zone NOT NULL, "user_id" integer NOT NULL UNIQUE); args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('authtoken', '0001_initial', '2024-10-20T15:45:13.591612+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('authtoken', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 13, 591612, tzinfo=<UTC>))
+ALTER TABLE "authtoken_token" ADD CONSTRAINT "authtoken_token_user_id_35299eff_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.002) ALTER TABLE "authtoken_token" ADD CONSTRAINT "authtoken_token_user_id_35299eff_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "authtoken_token_key_10f0b77e_like" ON "authtoken_token" ("key" varchar_pattern_ops); (params ())
+(0.002) CREATE INDEX "authtoken_token_key_10f0b77e_like" ON "authtoken_token" ("key" varchar_pattern_ops); args=()
+(0.006) 
+            SELECT
+                c.conname,
+                array(
+                    SELECT attname
+                    FROM unnest(c.conkey) WITH ORDINALITY cols(colid, arridx)
+                    JOIN pg_attribute AS ca ON cols.colid = ca.attnum
+                    WHERE ca.attrelid = c.conrelid
+                    ORDER BY cols.arridx
+                ),
+                c.contype,
+                (SELECT fkc.relname || '.' || fka.attname
+                FROM pg_attribute AS fka
+                JOIN pg_class AS fkc ON fka.attrelid = fkc.oid
+                WHERE fka.attrelid = c.confrelid AND fka.attnum = c.confkey[1]),
+                cl.reloptions
+            FROM pg_constraint AS c
+            JOIN pg_class AS cl ON c.conrelid = cl.oid
+            WHERE cl.relname = 'authtoken_token' AND pg_catalog.pg_table_is_visible(cl.oid)
+        ; args=['authtoken_token']
+(0.008) 
+            SELECT
+                indexname, array_agg(attname ORDER BY arridx), indisunique, indisprimary,
+                array_agg(ordering ORDER BY arridx), amname, exprdef, s2.attoptions
+            FROM (
+                SELECT
+                    c2.relname as indexname, idx.*, attr.attname, am.amname,
+                    CASE
+                        WHEN idx.indexprs IS NOT NULL THEN
+                            pg_get_indexdef(idx.indexrelid)
+                    END AS exprdef,
+                    CASE am.amname
+                        WHEN 'btree' THEN
+                            CASE (option & 1)
+                                WHEN 1 THEN 'DESC' ELSE 'ASC'
+                            END
+                    END as ordering,
+                    c2.reloptions as attoptions
+                FROM (
+                    SELECT *
+                    FROM pg_index i, unnest(i.indkey, i.indoption) WITH ORDINALITY koi(key, option, arridx)
+                ) idx
+                LEFT JOIN pg_class c ON idx.indrelid = c.oid
+                LEFT JOIN pg_class c2 ON idx.indexrelid = c2.oid
+                LEFT JOIN pg_am am ON c2.relam = am.oid
+                LEFT JOIN pg_attribute attr ON attr.attrelid = c.oid AND attr.attnum = idx.key
+                WHERE c.relname = 'authtoken_token' AND pg_catalog.pg_table_is_visible(c.oid)
+            ) s2
+            GROUP BY indexname, indisunique, indisprimary, amname, exprdef, attoptions;
+        ; args=['authtoken_token']
+SET CONSTRAINTS "authtoken_token_user_id_35299eff_fk_accounts_user_id" IMMEDIATE; ALTER TABLE "authtoken_token" DROP CONSTRAINT "authtoken_token_user_id_35299eff_fk_accounts_user_id"; (params ())
+(0.002) SET CONSTRAINTS "authtoken_token_user_id_35299eff_fk_accounts_user_id" IMMEDIATE; ALTER TABLE "authtoken_token" DROP CONSTRAINT "authtoken_token_user_id_35299eff_fk_accounts_user_id"; args=()
+ALTER TABLE "authtoken_token" ADD CONSTRAINT "authtoken_token_user_id_35299eff_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.004) ALTER TABLE "authtoken_token" ADD CONSTRAINT "authtoken_token_user_id_35299eff_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('authtoken', '0002_auto_20160226_1747', '2024-10-20T15:45:13.711942+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('authtoken', '0002_auto_20160226_1747', datetime.datetime(2024, 10, 20, 15, 45, 13, 711942, tzinfo=<UTC>))
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('authtoken', '0003_tokenproxy', '2024-10-20T15:45:13.725396+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('authtoken', '0003_tokenproxy', datetime.datetime(2024, 10, 20, 15, 45, 13, 725396, tzinfo=<UTC>))
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('authtoken', '0004_alter_tokenproxy_options', '2024-10-20T15:45:13.742175+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('authtoken', '0004_alter_tokenproxy_options', datetime.datetime(2024, 10, 20, 15, 45, 13, 742175, tzinfo=<UTC>))
+CREATE TABLE "otp_email_emaildevice" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(64) NOT NULL, "confirmed" boolean NOT NULL, "key" varchar(80) NOT NULL, "user_id" integer NOT NULL); (params None)
+(0.004) CREATE TABLE "otp_email_emaildevice" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(64) NOT NULL, "confirmed" boolean NOT NULL, "key" varchar(80) NOT NULL, "user_id" integer NOT NULL); args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('otp_email', '0001_initial', '2024-10-20T15:45:13.850933+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('otp_email', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 13, 850933, tzinfo=<UTC>))
+ALTER TABLE "otp_email_emaildevice" ADD CONSTRAINT "otp_email_emaildevice_user_id_0215c274_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "otp_email_emaildevice" ADD CONSTRAINT "otp_email_emaildevice_user_id_0215c274_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "otp_email_emaildevice_user_id_0215c274" ON "otp_email_emaildevice" ("user_id"); (params ())
+(0.002) CREATE INDEX "otp_email_emaildevice_user_id_0215c274" ON "otp_email_emaildevice" ("user_id"); args=()
+ALTER TABLE "otp_email_emaildevice" DROP COLUMN "key" CASCADE; (params ())
+(0.002) ALTER TABLE "otp_email_emaildevice" DROP COLUMN "key" CASCADE; args=()
+ALTER TABLE "otp_email_emaildevice" ADD COLUMN "token" varchar(16) NULL; (params [])
+(0.001) ALTER TABLE "otp_email_emaildevice" ADD COLUMN "token" varchar(16) NULL; args=[]
+ALTER TABLE "otp_email_emaildevice" ADD COLUMN "valid_until" timestamp with time zone DEFAULT %s NOT NULL; (params [datetime.datetime(2024, 10, 20, 15, 45, 13, 926943, tzinfo=<UTC>)])
+(0.002) ALTER TABLE "otp_email_emaildevice" ADD COLUMN "valid_until" timestamp with time zone DEFAULT '2024-10-20T15:45:13.926943+00:00'::timestamptz NOT NULL; args=[datetime.datetime(2024, 10, 20, 15, 45, 13, 926943, tzinfo=<UTC>)]
+ALTER TABLE "otp_email_emaildevice" ALTER COLUMN "valid_until" DROP DEFAULT; (params [])
+(0.001) ALTER TABLE "otp_email_emaildevice" ALTER COLUMN "valid_until" DROP DEFAULT; args=[]
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('otp_email', '0002_sidechanneldevice_email', '2024-10-20T15:45:13.935275+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('otp_email', '0002_sidechanneldevice_email', datetime.datetime(2024, 10, 20, 15, 45, 13, 935275, tzinfo=<UTC>))
+ALTER TABLE "otp_email_emaildevice" ADD COLUMN "email" varchar(254) NULL; (params [])
+(0.002) ALTER TABLE "otp_email_emaildevice" ADD COLUMN "email" varchar(254) NULL; args=[]
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('otp_email', '0003_emaildevice_email', '2024-10-20T15:45:13.975339+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('otp_email', '0003_emaildevice_email', datetime.datetime(2024, 10, 20, 15, 45, 13, 975339, tzinfo=<UTC>))
+ALTER TABLE "otp_email_emaildevice" ADD COLUMN "throttling_failure_count" integer DEFAULT %s NOT NULL CHECK ("throttling_failure_count" >= 0); (params [0])
+(0.002) ALTER TABLE "otp_email_emaildevice" ADD COLUMN "throttling_failure_count" integer DEFAULT 0 NOT NULL CHECK ("throttling_failure_count" >= 0); args=[0]
+ALTER TABLE "otp_email_emaildevice" ALTER COLUMN "throttling_failure_count" DROP DEFAULT; (params [])
+(0.001) ALTER TABLE "otp_email_emaildevice" ALTER COLUMN "throttling_failure_count" DROP DEFAULT; args=[]
+ALTER TABLE "otp_email_emaildevice" ADD COLUMN "throttling_failure_timestamp" timestamp with time zone NULL; (params [])
+(0.001) ALTER TABLE "otp_email_emaildevice" ADD COLUMN "throttling_failure_timestamp" timestamp with time zone NULL; args=[]
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('otp_email', '0004_throttling', '2024-10-20T15:45:14.026681+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('otp_email', '0004_throttling', datetime.datetime(2024, 10, 20, 15, 45, 14, 26681, tzinfo=<UTC>))
+CREATE TABLE "otp_static_staticdevice" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(64) NOT NULL, "confirmed" boolean NOT NULL, "user_id" integer NOT NULL); (params None)
+(0.004) CREATE TABLE "otp_static_staticdevice" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(64) NOT NULL, "confirmed" boolean NOT NULL, "user_id" integer NOT NULL); args=None
+CREATE TABLE "otp_static_statictoken" ("id" serial NOT NULL PRIMARY KEY, "token" varchar(16) NOT NULL, "device_id" integer NOT NULL); (params None)
+(0.003) CREATE TABLE "otp_static_statictoken" ("id" serial NOT NULL PRIMARY KEY, "token" varchar(16) NOT NULL, "device_id" integer NOT NULL); args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('otp_static', '0001_initial', '2024-10-20T15:45:14.106727+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('otp_static', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 14, 106727, tzinfo=<UTC>))
+ALTER TABLE "otp_static_staticdevice" ADD CONSTRAINT "otp_static_staticdevice_user_id_7f9cff2b_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.002) ALTER TABLE "otp_static_staticdevice" ADD CONSTRAINT "otp_static_staticdevice_user_id_7f9cff2b_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "otp_static_staticdevice_user_id_7f9cff2b" ON "otp_static_staticdevice" ("user_id"); (params ())
+(0.002) CREATE INDEX "otp_static_staticdevice_user_id_7f9cff2b" ON "otp_static_staticdevice" ("user_id"); args=()
+ALTER TABLE "otp_static_statictoken" ADD CONSTRAINT "otp_static_statictok_device_id_74b7c7d1_fk_otp_stati" FOREIGN KEY ("device_id") REFERENCES "otp_static_staticdevice" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "otp_static_statictoken" ADD CONSTRAINT "otp_static_statictok_device_id_74b7c7d1_fk_otp_stati" FOREIGN KEY ("device_id") REFERENCES "otp_static_staticdevice" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "otp_static_statictoken_token_d0a51866" ON "otp_static_statictoken" ("token"); (params ())
+(0.002) CREATE INDEX "otp_static_statictoken_token_d0a51866" ON "otp_static_statictoken" ("token"); args=()
+CREATE INDEX "otp_static_statictoken_token_d0a51866_like" ON "otp_static_statictoken" ("token" varchar_pattern_ops); (params ())
+(0.002) CREATE INDEX "otp_static_statictoken_token_d0a51866_like" ON "otp_static_statictoken" ("token" varchar_pattern_ops); args=()
+CREATE INDEX "otp_static_statictoken_device_id_74b7c7d1" ON "otp_static_statictoken" ("device_id"); (params ())
+(0.002) CREATE INDEX "otp_static_statictoken_device_id_74b7c7d1" ON "otp_static_statictoken" ("device_id"); args=()
+ALTER TABLE "otp_static_staticdevice" ADD COLUMN "throttling_failure_count" integer DEFAULT %s NOT NULL CHECK ("throttling_failure_count" >= 0); (params [0])
+(0.003) ALTER TABLE "otp_static_staticdevice" ADD COLUMN "throttling_failure_count" integer DEFAULT 0 NOT NULL CHECK ("throttling_failure_count" >= 0); args=[0]
+ALTER TABLE "otp_static_staticdevice" ALTER COLUMN "throttling_failure_count" DROP DEFAULT; (params [])
+(0.001) ALTER TABLE "otp_static_staticdevice" ALTER COLUMN "throttling_failure_count" DROP DEFAULT; args=[]
+ALTER TABLE "otp_static_staticdevice" ADD COLUMN "throttling_failure_timestamp" timestamp with time zone NULL; (params [])
+(0.001) ALTER TABLE "otp_static_staticdevice" ADD COLUMN "throttling_failure_timestamp" timestamp with time zone NULL; args=[]
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('otp_static', '0002_throttling', '2024-10-20T15:45:14.205490+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('otp_static', '0002_throttling', datetime.datetime(2024, 10, 20, 15, 45, 14, 205490, tzinfo=<UTC>))
+CREATE TABLE "otp_totp_totpdevice" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(64) NOT NULL, "confirmed" boolean NOT NULL, "key" varchar(80) NOT NULL, "step" smallint NOT NULL CHECK ("step" >= 0), "t0" bigint NOT NULL, "digits" smallint NOT NULL CHECK ("digits" >= 0), "tolerance" smallint NOT NULL CHECK ("tolerance" >= 0), "drift" smallint NOT NULL, "last_t" bigint NOT NULL, "user_id" integer NOT NULL); (params None)
+(0.006) CREATE TABLE "otp_totp_totpdevice" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(64) NOT NULL, "confirmed" boolean NOT NULL, "key" varchar(80) NOT NULL, "step" smallint NOT NULL CHECK ("step" >= 0), "t0" bigint NOT NULL, "digits" smallint NOT NULL CHECK ("digits" >= 0), "tolerance" smallint NOT NULL CHECK ("tolerance" >= 0), "drift" smallint NOT NULL, "last_t" bigint NOT NULL, "user_id" integer NOT NULL); args=None
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('otp_totp', '0001_initial', '2024-10-20T15:45:14.257126+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('otp_totp', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 14, 257126, tzinfo=<UTC>))
+ALTER TABLE "otp_totp_totpdevice" ADD CONSTRAINT "otp_totp_totpdevice_user_id_0fb18292_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "otp_totp_totpdevice" ADD CONSTRAINT "otp_totp_totpdevice_user_id_0fb18292_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "otp_totp_totpdevice_user_id_0fb18292" ON "otp_totp_totpdevice" ("user_id"); (params ())
+(0.002) CREATE INDEX "otp_totp_totpdevice_user_id_0fb18292" ON "otp_totp_totpdevice" ("user_id"); args=()
+ALTER TABLE "otp_totp_totpdevice" ADD COLUMN "throttling_failure_count" integer DEFAULT %s NOT NULL CHECK ("throttling_failure_count" >= 0); (params [0])
+(0.003) ALTER TABLE "otp_totp_totpdevice" ADD COLUMN "throttling_failure_count" integer DEFAULT 0 NOT NULL CHECK ("throttling_failure_count" >= 0); args=[0]
+ALTER TABLE "otp_totp_totpdevice" ALTER COLUMN "throttling_failure_count" DROP DEFAULT; (params [])
+(0.002) ALTER TABLE "otp_totp_totpdevice" ALTER COLUMN "throttling_failure_count" DROP DEFAULT; args=[]
+ALTER TABLE "otp_totp_totpdevice" ADD COLUMN "throttling_failure_timestamp" timestamp with time zone NULL; (params [])
+(0.002) ALTER TABLE "otp_totp_totpdevice" ADD COLUMN "throttling_failure_timestamp" timestamp with time zone NULL; args=[]
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('otp_totp', '0002_auto_20190420_0723', '2024-10-20T15:45:14.343950+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('otp_totp', '0002_auto_20190420_0723', datetime.datetime(2024, 10, 20, 15, 45, 14, 343950, tzinfo=<UTC>))
+CREATE TABLE "django_session" ("session_key" varchar(40) NOT NULL PRIMARY KEY, "session_data" text NOT NULL, "expire_date" timestamp with time zone NOT NULL); (params None)
+(0.004) CREATE TABLE "django_session" ("session_key" varchar(40) NOT NULL PRIMARY KEY, "session_data" text NOT NULL, "expire_date" timestamp with time zone NOT NULL); args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('sessions', '0001_initial', '2024-10-20T15:45:14.364737+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('sessions', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 14, 364737, tzinfo=<UTC>))
+CREATE INDEX "django_session_session_key_c0390e0f_like" ON "django_session" ("session_key" varchar_pattern_ops); (params ())
+(0.002) CREATE INDEX "django_session_session_key_c0390e0f_like" ON "django_session" ("session_key" varchar_pattern_ops); args=()
+CREATE INDEX "django_session_expire_date_a5c62663" ON "django_session" ("expire_date"); (params ())
+(0.002) CREATE INDEX "django_session_expire_date_a5c62663" ON "django_session" ("expire_date"); args=()
+CREATE TABLE "two_factor_phonedevice" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(64) NOT NULL, "confirmed" boolean NOT NULL, "number" varchar(16) NOT NULL, "key" varchar(40) NOT NULL, "method" varchar(4) NOT NULL, "user_id" integer NOT NULL); (params None)
+(0.004) CREATE TABLE "two_factor_phonedevice" ("id" serial NOT NULL PRIMARY KEY, "name" varchar(64) NOT NULL, "confirmed" boolean NOT NULL, "number" varchar(16) NOT NULL, "key" varchar(40) NOT NULL, "method" varchar(4) NOT NULL, "user_id" integer NOT NULL); args=None
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('two_factor', '0001_initial', '2024-10-20T15:45:14.434173+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('two_factor', '0001_initial', datetime.datetime(2024, 10, 20, 15, 45, 14, 434173, tzinfo=<UTC>))
+ALTER TABLE "two_factor_phonedevice" ADD CONSTRAINT "two_factor_phonedevice_user_id_54718003_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "two_factor_phonedevice" ADD CONSTRAINT "two_factor_phonedevice_user_id_54718003_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+CREATE INDEX "two_factor_phonedevice_user_id_54718003" ON "two_factor_phonedevice" ("user_id"); (params ())
+(0.002) CREATE INDEX "two_factor_phonedevice_user_id_54718003" ON "two_factor_phonedevice" ("user_id"); args=()
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('two_factor', '0002_auto_20150110_0810', '2024-10-20T15:45:14.483535+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('two_factor', '0002_auto_20150110_0810', datetime.datetime(2024, 10, 20, 15, 45, 14, 483535, tzinfo=<UTC>))
+(0.001) SELECT "two_factor_phonedevice"."id", "two_factor_phonedevice"."name", "two_factor_phonedevice"."confirmed", "two_factor_phonedevice"."number", "two_factor_phonedevice"."key", "two_factor_phonedevice"."method", "two_factor_phonedevice"."user_id" FROM "two_factor_phonedevice"; args=()
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('two_factor', '0003_auto_20150817_1733', '2024-10-20T15:45:14.581965+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('two_factor', '0003_auto_20150817_1733', datetime.datetime(2024, 10, 20, 15, 45, 14, 581965, tzinfo=<UTC>))
+ALTER TABLE "two_factor_phonedevice" ALTER COLUMN "number" TYPE varchar(128); (params [])
+(0.001) ALTER TABLE "two_factor_phonedevice" ALTER COLUMN "number" TYPE varchar(128); args=[]
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('two_factor', '0004_auto_20160205_1827', '2024-10-20T15:45:14.631134+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('two_factor', '0004_auto_20160205_1827', datetime.datetime(2024, 10, 20, 15, 45, 14, 631134, tzinfo=<UTC>))
+(0.002) 
+            SELECT
+                c.conname,
+                array(
+                    SELECT attname
+                    FROM unnest(c.conkey) WITH ORDINALITY cols(colid, arridx)
+                    JOIN pg_attribute AS ca ON cols.colid = ca.attnum
+                    WHERE ca.attrelid = c.conrelid
+                    ORDER BY cols.arridx
+                ),
+                c.contype,
+                (SELECT fkc.relname || '.' || fka.attname
+                FROM pg_attribute AS fka
+                JOIN pg_class AS fkc ON fka.attrelid = fkc.oid
+                WHERE fka.attrelid = c.confrelid AND fka.attnum = c.confkey[1]),
+                cl.reloptions
+            FROM pg_constraint AS c
+            JOIN pg_class AS cl ON c.conrelid = cl.oid
+            WHERE cl.relname = 'two_factor_phonedevice' AND pg_catalog.pg_table_is_visible(cl.oid)
+        ; args=['two_factor_phonedevice']
+(0.004) 
+            SELECT
+                indexname, array_agg(attname ORDER BY arridx), indisunique, indisprimary,
+                array_agg(ordering ORDER BY arridx), amname, exprdef, s2.attoptions
+            FROM (
+                SELECT
+                    c2.relname as indexname, idx.*, attr.attname, am.amname,
+                    CASE
+                        WHEN idx.indexprs IS NOT NULL THEN
+                            pg_get_indexdef(idx.indexrelid)
+                    END AS exprdef,
+                    CASE am.amname
+                        WHEN 'btree' THEN
+                            CASE (option & 1)
+                                WHEN 1 THEN 'DESC' ELSE 'ASC'
+                            END
+                    END as ordering,
+                    c2.reloptions as attoptions
+                FROM (
+                    SELECT *
+                    FROM pg_index i, unnest(i.indkey, i.indoption) WITH ORDINALITY koi(key, option, arridx)
+                ) idx
+                LEFT JOIN pg_class c ON idx.indrelid = c.oid
+                LEFT JOIN pg_class c2 ON idx.indexrelid = c2.oid
+                LEFT JOIN pg_am am ON c2.relam = am.oid
+                LEFT JOIN pg_attribute attr ON attr.attrelid = c.oid AND attr.attnum = idx.key
+                WHERE c.relname = 'two_factor_phonedevice' AND pg_catalog.pg_table_is_visible(c.oid)
+            ) s2
+            GROUP BY indexname, indisunique, indisprimary, amname, exprdef, attoptions;
+        ; args=['two_factor_phonedevice']
+SET CONSTRAINTS "two_factor_phonedevice_user_id_54718003_fk_accounts_user_id" IMMEDIATE; ALTER TABLE "two_factor_phonedevice" DROP CONSTRAINT "two_factor_phonedevice_user_id_54718003_fk_accounts_user_id"; (params ())
+(0.001) SET CONSTRAINTS "two_factor_phonedevice_user_id_54718003_fk_accounts_user_id" IMMEDIATE; ALTER TABLE "two_factor_phonedevice" DROP CONSTRAINT "two_factor_phonedevice_user_id_54718003_fk_accounts_user_id"; args=()
+ALTER TABLE "two_factor_phonedevice" ADD CONSTRAINT "two_factor_phonedevice_user_id_54718003_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; (params ())
+(0.003) ALTER TABLE "two_factor_phonedevice" ADD CONSTRAINT "two_factor_phonedevice_user_id_54718003_fk_accounts_user_id" FOREIGN KEY ("user_id") REFERENCES "accounts_user" ("id") DEFERRABLE INITIALLY DEFERRED; args=()
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('two_factor', '0005_auto_20160224_0450', '2024-10-20T15:45:14.808265+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('two_factor', '0005_auto_20160224_0450', datetime.datetime(2024, 10, 20, 15, 45, 14, 808265, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('two_factor', '0006_phonedevice_key_default', '2024-10-20T15:45:14.843359+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('two_factor', '0006_phonedevice_key_default', datetime.datetime(2024, 10, 20, 15, 45, 14, 843359, tzinfo=<UTC>))
+ALTER TABLE "two_factor_phonedevice" ADD COLUMN "throttling_failure_count" integer DEFAULT %s NOT NULL CHECK ("throttling_failure_count" >= 0); (params [0])
+(0.003) ALTER TABLE "two_factor_phonedevice" ADD COLUMN "throttling_failure_count" integer DEFAULT 0 NOT NULL CHECK ("throttling_failure_count" >= 0); args=[0]
+ALTER TABLE "two_factor_phonedevice" ALTER COLUMN "throttling_failure_count" DROP DEFAULT; (params [])
+(0.001) ALTER TABLE "two_factor_phonedevice" ALTER COLUMN "throttling_failure_count" DROP DEFAULT; args=[]
+ALTER TABLE "two_factor_phonedevice" ADD COLUMN "throttling_failure_timestamp" timestamp with time zone NULL; (params [])
+(0.001) ALTER TABLE "two_factor_phonedevice" ADD COLUMN "throttling_failure_timestamp" timestamp with time zone NULL; args=[]
+(0.003) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) INSERT INTO "django_migrations" ("app", "name", "applied") VALUES ('two_factor', '0007_auto_20201201_1019', '2024-10-20T15:45:14.957916+00:00'::timestamptz) RETURNING "django_migrations"."id"; args=('two_factor', '0007_auto_20201201_1019', datetime.datetime(2024, 10, 20, 15, 45, 14, 957916, tzinfo=<UTC>))
+(0.002) 
+            SELECT c.relname,
+            CASE WHEN c.relispartition THEN 'p' WHEN c.relkind IN ('m', 'v') THEN 'v' ELSE 't' END
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('f', 'm', 'p', 'r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid)
+        ; args=None
+(0.001) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=()
+(0.002) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'accounts'; args=('accounts',)
+(0.002) INSERT INTO "django_content_type" ("app_label", "model") VALUES ('accounts', 'user'), ('accounts', 'otptoken'), ('accounts', 'friendrequest'), ('accounts', 'accountactivatetoken') RETURNING "django_content_type"."id"; args=('accounts', 'user', 'accounts', 'otptoken', 'accounts', 'friendrequest', 'accounts', 'accountactivatetoken')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'user') LIMIT 21; args=('accounts', 'user')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'otptoken') LIMIT 21; args=('accounts', 'otptoken')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'friendrequest') LIMIT 21; args=('accounts', 'friendrequest')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'accounts' AND "django_content_type"."model" = 'accountactivatetoken') LIMIT 21; args=('accounts', 'accountactivatetoken')
+(0.002) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (1, 2, 3, 4) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(1, 2, 3, 4)
+(0.002) INSERT INTO "auth_permission" ("name", "content_type_id", "codename") VALUES ('Can add user', 1, 'add_user'), ('Can change user', 1, 'change_user'), ('Can delete user', 1, 'delete_user'), ('Can view user', 1, 'view_user'), ('Can add otp token', 2, 'add_otptoken'), ('Can change otp token', 2, 'change_otptoken'), ('Can delete otp token', 2, 'delete_otptoken'), ('Can view otp token', 2, 'view_otptoken'), ('Can add friend request', 3, 'add_friendrequest'), ('Can change friend request', 3, 'change_friendrequest'), ('Can delete friend request', 3, 'delete_friendrequest'), ('Can view friend request', 3, 'view_friendrequest'), ('Can add account activate token', 4, 'add_accountactivatetoken'), ('Can change account activate token', 4, 'change_accountactivatetoken'), ('Can delete account activate token', 4, 'delete_accountactivatetoken'), ('Can view account activate token', 4, 'view_accountactivatetoken') RETURNING "auth_permission"."id"; args=('Can add user', 1, 'add_user', 'Can change user', 1, 'change_user', 'Can delete user', 1, 'delete_user', 'Can view user', 1, 'view_user', 'Can add otp token', 2, 'add_otptoken', 'Can change otp token', 2, 'change_otptoken', 'Can delete otp token', 2, 'delete_otptoken', 'Can view otp token', 2, 'view_otptoken', 'Can add friend request', 3, 'add_friendrequest', 'Can change friend request', 3, 'change_friendrequest', 'Can delete friend request', 3, 'delete_friendrequest', 'Can view friend request', 3, 'view_friendrequest', 'Can add account activate token', 4, 'add_accountactivatetoken', 'Can change account activate token', 4, 'change_accountactivatetoken', 'Can delete account activate token', 4, 'delete_accountactivatetoken', 'Can view account activate token', 4, 'view_accountactivatetoken')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'accounts'; args=('accounts',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'admin'; args=('admin',)
+(0.002) INSERT INTO "django_content_type" ("app_label", "model") VALUES ('admin', 'logentry') RETURNING "django_content_type"."id"; args=('admin', 'logentry')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'admin' AND "django_content_type"."model" = 'logentry') LIMIT 21; args=('admin', 'logentry')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (5) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(5,)
+(0.001) INSERT INTO "auth_permission" ("name", "content_type_id", "codename") VALUES ('Can add log entry', 5, 'add_logentry'), ('Can change log entry', 5, 'change_logentry'), ('Can delete log entry', 5, 'delete_logentry'), ('Can view log entry', 5, 'view_logentry') RETURNING "auth_permission"."id"; args=('Can add log entry', 5, 'add_logentry', 'Can change log entry', 5, 'change_logentry', 'Can delete log entry', 5, 'delete_logentry', 'Can view log entry', 5, 'view_logentry')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'admin'; args=('admin',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'auth'; args=('auth',)
+(0.002) INSERT INTO "django_content_type" ("app_label", "model") VALUES ('auth', 'permission'), ('auth', 'group') RETURNING "django_content_type"."id"; args=('auth', 'permission', 'auth', 'group')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'auth' AND "django_content_type"."model" = 'permission') LIMIT 21; args=('auth', 'permission')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'auth' AND "django_content_type"."model" = 'group') LIMIT 21; args=('auth', 'group')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (6, 7) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(6, 7)
+(0.002) INSERT INTO "auth_permission" ("name", "content_type_id", "codename") VALUES ('Can add permission', 6, 'add_permission'), ('Can change permission', 6, 'change_permission'), ('Can delete permission', 6, 'delete_permission'), ('Can view permission', 6, 'view_permission'), ('Can add group', 7, 'add_group'), ('Can change group', 7, 'change_group'), ('Can delete group', 7, 'delete_group'), ('Can view group', 7, 'view_group') RETURNING "auth_permission"."id"; args=('Can add permission', 6, 'add_permission', 'Can change permission', 6, 'change_permission', 'Can delete permission', 6, 'delete_permission', 'Can view permission', 6, 'view_permission', 'Can add group', 7, 'add_group', 'Can change group', 7, 'change_group', 'Can delete group', 7, 'delete_group', 'Can view group', 7, 'view_group')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'auth'; args=('auth',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'contenttypes'; args=('contenttypes',)
+(0.002) INSERT INTO "django_content_type" ("app_label", "model") VALUES ('contenttypes', 'contenttype') RETURNING "django_content_type"."id"; args=('contenttypes', 'contenttype')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'contenttypes' AND "django_content_type"."model" = 'contenttype') LIMIT 21; args=('contenttypes', 'contenttype')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (8) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(8,)
+(0.001) INSERT INTO "auth_permission" ("name", "content_type_id", "codename") VALUES ('Can add content type', 8, 'add_contenttype'), ('Can change content type', 8, 'change_contenttype'), ('Can delete content type', 8, 'delete_contenttype'), ('Can view content type', 8, 'view_contenttype') RETURNING "auth_permission"."id"; args=('Can add content type', 8, 'add_contenttype', 'Can change content type', 8, 'change_contenttype', 'Can delete content type', 8, 'delete_contenttype', 'Can view content type', 8, 'view_contenttype')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'contenttypes'; args=('contenttypes',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'sessions'; args=('sessions',)
+(0.001) INSERT INTO "django_content_type" ("app_label", "model") VALUES ('sessions', 'session') RETURNING "django_content_type"."id"; args=('sessions', 'session')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'sessions' AND "django_content_type"."model" = 'session') LIMIT 21; args=('sessions', 'session')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (9) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(9,)
+(0.001) INSERT INTO "auth_permission" ("name", "content_type_id", "codename") VALUES ('Can add session', 9, 'add_session'), ('Can change session', 9, 'change_session'), ('Can delete session', 9, 'delete_session'), ('Can view session', 9, 'view_session') RETURNING "auth_permission"."id"; args=('Can add session', 9, 'add_session', 'Can change session', 9, 'change_session', 'Can delete session', 9, 'delete_session', 'Can view session', 9, 'view_session')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'sessions'; args=('sessions',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'authtoken'; args=('authtoken',)
+(0.002) INSERT INTO "django_content_type" ("app_label", "model") VALUES ('authtoken', 'token'), ('authtoken', 'tokenproxy') RETURNING "django_content_type"."id"; args=('authtoken', 'token', 'authtoken', 'tokenproxy')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'authtoken' AND "django_content_type"."model" = 'token') LIMIT 21; args=('authtoken', 'token')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'authtoken' AND "django_content_type"."model" = 'tokenproxy') LIMIT 21; args=('authtoken', 'tokenproxy')
+(0.002) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (10, 11) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(10, 11)
+(0.001) INSERT INTO "auth_permission" ("name", "content_type_id", "codename") VALUES ('Can add Token', 10, 'add_token'), ('Can change Token', 10, 'change_token'), ('Can delete Token', 10, 'delete_token'), ('Can view Token', 10, 'view_token'), ('Can add Token', 11, 'add_tokenproxy'), ('Can change Token', 11, 'change_tokenproxy'), ('Can delete Token', 11, 'delete_tokenproxy'), ('Can view Token', 11, 'view_tokenproxy') RETURNING "auth_permission"."id"; args=('Can add Token', 10, 'add_token', 'Can change Token', 10, 'change_token', 'Can delete Token', 10, 'delete_token', 'Can view Token', 10, 'view_token', 'Can add Token', 11, 'add_tokenproxy', 'Can change Token', 11, 'change_tokenproxy', 'Can delete Token', 11, 'delete_tokenproxy', 'Can view Token', 11, 'view_tokenproxy')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'authtoken'; args=('authtoken',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'rest_framework_simplejwt'; args=('rest_framework_simplejwt',)
+(0.002) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'rest_framework_simplejwt'; args=('rest_framework_simplejwt',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'django_otp'; args=('django_otp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'django_otp'; args=('django_otp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_static'; args=('otp_static',)
+(0.001) INSERT INTO "django_content_type" ("app_label", "model") VALUES ('otp_static', 'staticdevice'), ('otp_static', 'statictoken') RETURNING "django_content_type"."id"; args=('otp_static', 'staticdevice', 'otp_static', 'statictoken')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_static' AND "django_content_type"."model" = 'staticdevice') LIMIT 21; args=('otp_static', 'staticdevice')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_static' AND "django_content_type"."model" = 'statictoken') LIMIT 21; args=('otp_static', 'statictoken')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (12, 13) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(12, 13)
+(0.002) INSERT INTO "auth_permission" ("name", "content_type_id", "codename") VALUES ('Can add static device', 12, 'add_staticdevice'), ('Can change static device', 12, 'change_staticdevice'), ('Can delete static device', 12, 'delete_staticdevice'), ('Can view static device', 12, 'view_staticdevice'), ('Can add static token', 13, 'add_statictoken'), ('Can change static token', 13, 'change_statictoken'), ('Can delete static token', 13, 'delete_statictoken'), ('Can view static token', 13, 'view_statictoken') RETURNING "auth_permission"."id"; args=('Can add static device', 12, 'add_staticdevice', 'Can change static device', 12, 'change_staticdevice', 'Can delete static device', 12, 'delete_staticdevice', 'Can view static device', 12, 'view_staticdevice', 'Can add static token', 13, 'add_statictoken', 'Can change static token', 13, 'change_statictoken', 'Can delete static token', 13, 'delete_statictoken', 'Can view static token', 13, 'view_statictoken')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_static'; args=('otp_static',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_totp'; args=('otp_totp',)
+(0.001) INSERT INTO "django_content_type" ("app_label", "model") VALUES ('otp_totp', 'totpdevice') RETURNING "django_content_type"."id"; args=('otp_totp', 'totpdevice')
+(0.002) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_totp' AND "django_content_type"."model" = 'totpdevice') LIMIT 21; args=('otp_totp', 'totpdevice')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (14) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(14,)
+(0.001) INSERT INTO "auth_permission" ("name", "content_type_id", "codename") VALUES ('Can add TOTP device', 14, 'add_totpdevice'), ('Can change TOTP device', 14, 'change_totpdevice'), ('Can delete TOTP device', 14, 'delete_totpdevice'), ('Can view TOTP device', 14, 'view_totpdevice') RETURNING "auth_permission"."id"; args=('Can add TOTP device', 14, 'add_totpdevice', 'Can change TOTP device', 14, 'change_totpdevice', 'Can delete TOTP device', 14, 'delete_totpdevice', 'Can view TOTP device', 14, 'view_totpdevice')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_totp'; args=('otp_totp',)
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_email'; args=('otp_email',)
+(0.001) INSERT INTO "django_content_type" ("app_label", "model") VALUES ('otp_email', 'emaildevice') RETURNING "django_content_type"."id"; args=('otp_email', 'emaildevice')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE ("django_content_type"."app_label" = 'otp_email' AND "django_content_type"."model" = 'emaildevice') LIMIT 21; args=('otp_email', 'emaildevice')
+(0.001) SELECT "auth_permission"."content_type_id", "auth_permission"."codename" FROM "auth_permission" INNER JOIN "django_content_type" ON ("auth_permission"."content_type_id" = "django_content_type"."id") WHERE "auth_permission"."content_type_id" IN (15) ORDER BY "django_content_type"."app_label" ASC, "django_content_type"."model" ASC, "auth_permission"."codename" ASC; args=(15,)
+(0.001) INSERT INTO "auth_permission" ("name", "content_type_id", "codename") VALUES ('Can add email device', 15, 'add_emaildevice'), ('Can change email device', 15, 'change_emaildevice'), ('Can delete email device', 15, 'delete_emaildevice'), ('Can view email device', 15, 'view_emaildevice') RETURNING "auth_permission"."id"; args=('Can add email device', 15, 'add_emaildevice', 'Can change email device', 15, 'change_emaildevice', 'Can delete email device', 15, 'delete_emaildevice', 'Can view email device', 15, 'view_emaildevice')
+(0.001) SELECT "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_content_type" WHERE "django_content_type"."app_label" = 'otp_email'; args=('otp_email',)

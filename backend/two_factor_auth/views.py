@@ -14,7 +14,9 @@ class Send2FACodeView(GenericAPIView):
         # Get user
         try:
             user = User.objects.get(id=user_id)
+            logger.debug(f"User found: {user.username}")
         except User.DoesNotExist:
+            logger.error('User not found for ID: %s', user_id)
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         
         # Generate a random 2FA code
@@ -27,8 +29,10 @@ class Send2FACodeView(GenericAPIView):
         request.session['user_id'] = user_id
         request.session.save()
 
-        print(f"Stored session: {request.session.items()}")
-        print(f"Session keys: {list(request.session.keys())}")
+        logger.debug(f"Stored session in Send2FACodeView: {request.session.items()}")
+
+        # print(f"Stored session: {request.session.items()}")
+        # print(f"Session keys: {list(request.session.keys())}")
 
         # Send the 2FA code via email
         send_mail(
@@ -39,6 +43,9 @@ class Send2FACodeView(GenericAPIView):
             fail_silently=False,
         )
 
+        logger.info(f"2FA code sent to {user.email}. Code: {code}")
+
+        
         return Response({
             'message': '2FA code sent to your email.'
         }, status=status.HTTP_200_OK)

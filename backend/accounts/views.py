@@ -171,7 +171,8 @@ class LoginView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         # Print the received request data (username and password)
-        print(f"Received data in LoginView: {request.data}")
+        # print(f"Received data in LoginView: {request.data}")
+        # logger.debug(f"Received data in LoginView: {request.data}")
         serializer = self.get_serializer(data=request.data) 
         if serializer.is_valid(raise_exception=True):
             user = authenticate(
@@ -183,12 +184,16 @@ class LoginView(GenericAPIView):
             if user is not None:
                 #Store user info for 2FA verification
                 request.session['user_id'] = user.id
+                # logger.debug(f"user data in LoginView: {user.username}")
                 # Prepare to call the send_2fa_code endpoint in the two_factor_auth app
                 url = reverse('two_factor_auth:send_2fa_code', kwargs={'user_id': user.id})
                 response = requests.post(request.build_absolute_uri(url))
                 # Return the response from the 2FA service
+                # Log session data after sending the 2FA code
+                logger.debug(f"Session after sending 2FA code: {request.session.items()}")
                 return Response(response.json(), status=response.status_code)
             else:
+                # logger.warning('Invalid credentials for user: %s', serializer.validated_data['username'])
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
