@@ -18,7 +18,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getFriends() {
-    this.http.get('/api/friends').subscribe((data: any) => {
+    this.http.get('http://localhost:8000/accounts/list_friends/user1/').subscribe((data: any) => {
       this.friends = data;
     });
   }

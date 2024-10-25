@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { HttpClient} from '@angular/common/http'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -14,11 +15,12 @@ import { HttpClient} from '@angular/common/http'
 export class SignupComponent {
   signupForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private httpClient:HttpClient) {
+  constructor(private fb: FormBuilder, private httpClient:HttpClient, private router: Router) {
     this.signupForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
+      password2: ['', Validators.required]
     });
   }
 
@@ -30,6 +32,7 @@ export class SignupComponent {
 			this.httpClient.post('http://localhost:8000/accounts/account_register/', formData).subscribe({
 				next: (response: any) =>
 				{
+          this.router.navigate(['']);
 					console.log("Server response: ", response);
 				},
 				error: (err: any) => {

@@ -3,22 +3,30 @@
 <div class="singin-area container-fluid d-flex justify-content-center align-items-center">
   <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
     <div class="formGroup">
+      <label for="username">Username</label>
+      <input id="username" formControlName="username">
+      <div *ngIf="signupForm.get('username')?.touched && signupForm.get('username')?.invalid">
+        <small class="text-danger">Invalid username</small>
+      </div>
+    </div>
+    <div class="formGroup">
       <label for="email">email</label>
       <input id="email" formControlName="email">
       <div *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">
         <small class="text-danger">Invalid email</small>
       </div>
     </div>
-    <div class="formGroup"></div>
-      <label for="username">Username</label>
-      <input id="username" formControlName="username">
-      <div *ngIf="signupForm.get('username')?.touched && signupForm.get('username')?.invalid">
-        <small class="text-danger">Invalid username</small>
-      </div>
     <div class="formGroup">
       <label for="password">Password</label>
       <input id="password" type="password" formControlName="password">
       <div *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid">
+        <small class="text-danger">Invalid password</small>
+      </div>
+    </div>
+    <div class="formGroup">
+      <label for="password2">Repeat password</label>
+      <input id="password2" type="password2" formControlName="password2">
+      <div *ngIf="signupForm.get('password2')?.touched && signupForm.get('password2')?.invalid">
         <small class="text-danger">Invalid password</small>
       </div>
     </div>
