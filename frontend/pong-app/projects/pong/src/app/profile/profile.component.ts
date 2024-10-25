@@ -12,18 +12,21 @@ export class ProfileComponent implements OnInit {
   constructor(private userProfileService: UserProfileService) {}
 
   ngOnInit(): void {
-    this.loadUserProfile();
+    this.getFriends();
+    this.getMatchHistory();
   }
 
-  // Método para cargar el perfil del usuario
-  loadUserProfile(): void {
-    this.userProfileService.getUserProfile().subscribe(
-      data => {
-        this.userProfile = data; // Guardar los datos recibidos
-      },
-      error => {
-        console.error('Error al cargar el perfil', error);
-      }
-    );
+  getFriends() {
+    const url : string = 'http://localhost:8000/accounts/list_friends/' + localStorage.getItem('username');
+    this.http.get(url).subscribe((data: any) => {
+      this.friends = data;
+      console.log(data);
+    });
+  }
+
+  getMatchHistory() {
+    this.http.get('/api/match-history').subscribe((data: any) => {
+      this.matches = data;
+    });
   }
 }

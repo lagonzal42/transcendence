@@ -98,7 +98,7 @@ class LoginView(GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data) 
         if serializer.is_valid(raise_exception=True):
             user = authenticate(
                 username=serializer.validated_data['username'],
@@ -150,7 +150,7 @@ class CloseAccountView(APIView):
 
         return Response({"message": "Account and user successfully removed"}, status=200)
 class ListFriendsView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, username=None):
         friends_json = {}
@@ -203,7 +203,7 @@ def get_user_data(user):
             }
 
 class AddFriendView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request, username):
         user = User.objects.get(username=username)
@@ -285,7 +285,7 @@ class AddFriendView(APIView):
 #         return Response({'message': 'Friend request sent successfully.'}, status=200)
     
 class AcceptFriendRequestView(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
     def post(self, request, username):
         user = User.objects.get(username=username)
