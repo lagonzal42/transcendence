@@ -22,8 +22,10 @@ export class AuthService {
       map((response: any) => {
         if (isPlatformBrowser(this.platformId))
         {
-          localStorage.setItem('token', response.access_token);
-          localStorage.setItem('refresh', response.refresh_token);
+          localStorage.setItem('access', response.access);
+          localStorage.setItem('refresh', response.refresh);
+          localStorage.setItem('username', response.username);
+          console.log(response);
         }
         this.router.navigate(['']);
         return (0);
@@ -38,7 +40,7 @@ export class AuthService {
   {
     if (isPlatformBrowser(this.platformId))
     {
-      localStorage.removeItem('token');
+      localStorage.removeItem('access');
       localStorage.removeItem('refresh');
     }
     this.router.navigate(['/login']);
@@ -48,7 +50,7 @@ export class AuthService {
   {
     if (isPlatformBrowser(this.platformId))
     {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('access');
 
       if (!token)
         return (false);
@@ -65,10 +67,10 @@ export class AuthService {
 
     if (!refresh)
       return (of(401));
-    return (this.httpClient.post('http://localhost:8000/accounts/account_refresh/', {refresh_token: refresh}).pipe(
+    return (this.httpClient.post('http://localhost:8000/accounts/account_refresh/', {refresh: refresh}).pipe(
       map((response: any) => {
-        localStorage.setItem('token', response.access_token);
-        localStorage.setItem('refresh', response.refresh_token);
+        localStorage.setItem('access', response.access);
+        localStorage.setItem('refresh', response.refresh);
         return (0);
       }),
       catchError((error: any) => {

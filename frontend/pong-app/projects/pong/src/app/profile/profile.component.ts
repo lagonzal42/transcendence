@@ -18,8 +18,10 @@ export class ProfileComponent implements OnInit {
   }
 
   getFriends() {
-    this.http.get('http://localhost:8000/accounts/list_friends/user1/').subscribe((data: any) => {
+    const url : string = 'http://localhost:8000/accounts/list_friends/' + localStorage.getItem('username');
+    this.http.get(url).subscribe((data: any) => {
       this.friends = data;
+      console.log(data);
     });
   }
 
