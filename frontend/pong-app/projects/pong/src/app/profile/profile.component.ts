@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { UserProfileService } from '../userProfileService/userProfileService';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
+  imports: [CommonModule]
 })
 export class ProfileComponent implements OnInit {
   userProfile: any;
@@ -24,9 +26,9 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  getMatchHistory() {
-    this.http.get('/api/match-history').subscribe((data: any) => {
-      this.matches = data;
-    });
-  }
+  // getMatchHistory() {
+  //   this.http.get('/api/match-history').subscribe((data: any) => {
+  //     this.matches = data;
+  //   });
+  // }
 }
