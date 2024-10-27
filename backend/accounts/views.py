@@ -161,41 +161,74 @@ class UserDetailView(APIView):
         return Response(response_data, status=200)
 
 # # # # --- LoginView separated 2fa version --- # # # # # 
-
 class LoginView(GenericAPIView):
     """API login class"""
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
     print("Entered LoginView")
 
-
     def post(self, request, *args, **kwargs):
-        # Print the received request data (username and password)
-        # print(f"Received data in LoginView: {request.data}")
-        # logger.debug(f"Received data in LoginView: {request.data}")
-        serializer = self.get_serializer(data=request.data) 
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = authenticate(
                 username=serializer.validated_data['username'],
                 password=serializer.validated_data['password']
             )
-            print(f"user data in LoginView: {user.username}")
 
             if user is not None:
-                #Store user info for 2FA verification
+                # Store user info for 2FA verification
                 request.session['user_id'] = user.id
-                # logger.debug(f"user data in LoginView: {user.username}")
+
                 # Prepare to call the send_2fa_code endpoint in the two_factor_auth app
                 url = reverse('two_factor_auth:send_2fa_code', kwargs={'user_id': user.id})
                 response = requests.post(request.build_absolute_uri(url))
-                # Return the response from the 2FA service
-                # Log session data after sending the 2FA code
-                logger.debug(f"Session after sending 2FA code: {request.session.items()}")
-                return Response(response.json(), status=response.status_code)
+
+                # Check if the response is valid
+                try:
+                    response_data = response.json()  # Attempt to decode the JSON response
+                    return Response(response_data, status=response.status_code)
+                except ValueError as e:
+                    logger.error(f"JSON decode error: {e} - Response text: {response.text}")
+                    return Response({'error': 'Invalid response format from 2FA service'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
-                # logger.warning('Invalid credentials for user: %s', serializer.validated_data['username'])
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class LoginView(GenericAPIView):
+#     """API login class"""
+#     permission_classes = [AllowAny]
+#     serializer_class = LoginSerializer
+#     print("Entered LoginView")
+
+
+#     def post(self, request, *args, **kwargs):
+#         # Print the received request data (username and password)
+#         # print(f"Received data in LoginView: {request.data}")
+#         # logger.debug(f"Received data in LoginView: {request.data}")
+#         serializer = self.get_serializer(data=request.data) 
+#         if serializer.is_valid(raise_exception=True):
+#             user = authenticate(
+#                 username=serializer.validated_data['username'],
+#                 password=serializer.validated_data['password']
+#             )
+#             print(f"user data in LoginView: {user.username}")
+
+#             if user is not None:
+#                 #Store user info for 2FA verification
+#                 request.session['user_id'] = user.id
+#                 # logger.debug(f"user data in LoginView: {user.username}")
+#                 # Prepare to call the send_2fa_code endpoint in the two_factor_auth app
+#                 url = reverse('two_factor_auth:send_2fa_code', kwargs={'user_id': user.id})
+#                 response = requests.post(request.build_absolute_uri(url))
+#                 # Return the response from the 2FA service
+#                 # Log session data after sending the 2FA code
+#                 logger.debug(f"Session after sending 2FA code: {request.session.items()}")
+#                 return Response(response.json(), status=response.status_code)
+#             else:
+#                 # logger.warning('Invalid credentials for user: %s', serializer.validated_data['username'])
+#                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # # # # --- LoginView separated 2fa version --- # # # # # 
 
