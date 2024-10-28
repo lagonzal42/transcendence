@@ -16,10 +16,12 @@
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
-            + '/ws/calc/'
+            + '/calc/'
             + roomName
             + '/'
         );
+
+        console.log(chatSocket)
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
