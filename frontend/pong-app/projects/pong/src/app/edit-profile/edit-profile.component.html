@@ -1,0 +1,41 @@
+<div class="edit-profile-container">
+	<h2>Editar Perfil</h2>
+	<form (ngSubmit)="onSubmit()" #editProfileForm="ngForm">
+	  <div class="form-group">
+		<label for="name">Nombre:</label>
+		<input
+			type="text"
+			id="name"
+			name="name"
+			[(ngModel)]="userProfile.name"
+			required
+			class="form-control"
+		/>
+	</div>
+  
+	<div class="form-group">
+		<label for="email">Correo Electrónico:</label>
+		<input
+			type="email"
+			id="email"
+			name="email"
+			[(ngModel)]="userProfile.email"
+			required
+			class="form-control"
+		/>
+	</div>
+  
+	<div class="form-group">
+		<label for="photoUrl">URL de la Foto de Perfil:</label>
+		<input
+		  type="text"
+		  id="photoUrl"
+		  name="photoUrl"
+		  [(ngModel)]="userProfile.photoUrl"
+		  class="form-control"
+		/>
+	</div>
+  
+	  <button type="submit" class="btn-save">Guardar Cambios</button>
+	</form>
+</div>

@@ -2,7 +2,7 @@
   <!-- Imagen de perfil -->
   <div class="profile-header">
     <div class="profile-image">
-      <img [src]="userProfile?.photo_url" alt="Foto de perfil">
+      <img [src]="userProfile?.photo_url || 'assets/Profile_placeholder.png'" alt="profile-image">
     </div>
     <!-- Detalles del jugador -->
     <div class="profile-details">

@@ -60,9 +60,8 @@ volumes:
   frontend-app:
     name: frontend-app
     driver_opts:
-      device: '/sgoinfre/students/lagonzal/Projects/transcendence/frontend/pong-app'
+      device: 'home/vzayas/transcendence/frontend/pong-app'
       o: bind
       type: none
   postgres-data:
       driver: local
-

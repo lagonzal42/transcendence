@@ -67,7 +67,7 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     def get(self, request, username):
         # Obtain user info
         user = User.objects.filter(username=username).first()
