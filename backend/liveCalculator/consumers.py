@@ -1,82 +1,18 @@
 import json
 import uuid
-from channels.generic.websocket import WebsocketConsumer, AsyncWebsockerConsumer
+from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
-class MultiplayerConsumer(WebsocketConsumer):
-    game_group_name = "game_group"
-    players = {}
-
-    def connect(self):
-        self.player_id = str(uuid.uuid4())
-        self.accept()
-
-        async_to_sync(self.channel_layer.group_add)(
-            self.game_group_name, self.channel_name
-        )
-
-        self.send(
-            text_data=json.dumps({"type": "playerId", "playerId": self.player_id})
-        )
-    
-    def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.game_group_name, self_channel_name
-        )
-    
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-
-class Calculator(WebsocketConsumer):
-    def connect(self):
-        print("connecting to calculator")
-        self.accept()
-
-    def disconnect(self, close_code):
-        self.close()   
-
-    def receive(self, text_data):
-        print("connecting to calculator")
-        text_data_json = json.loads(text_data)
-        expression = text_data_json['expression']
-        try:
-            result = eval(expression)
-        except Exception as e:
-            result = "Invalid Expression"
-        self.send(text_data=json.dumps({
-            'result': result
-        }))
-
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("somethingggg")
-        print(self.scope["url_route"])
-    #     self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
-    #     self.room_group_name = "chat_%s" % self.room_name
-
-    #     # Join room group
-    #     await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-
-    #     await self.accept()
-
-    # async def disconnect(self, close_code):
-    #     # Leave room group
-    #     await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-
-    # # Receive message from WebSocket
-    # async def receive(self, text_data):
-    #     text_data_json = json.loads(text_data)
-    #     message = text_data_json["message"]
-
-    #     # Send message to room group
-    #     await self.channel_layer.group_send(
-    #         self.room_group_name, {"type": "chat_message", "message": message}
-    #     )
-
-    # # Receive message from room group
-    # async def chat_message(self, event):
-    #     message = event["message"]
-
-    #     # Send message to WebSocket
-    #     await self.send(text_data=json.dumps({"message": message}))
+        print("connectionnnnn establishhhhhhhhed    ")
+        await self.accept()
+    async def disconnect(self, close_code):
+        pass
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))

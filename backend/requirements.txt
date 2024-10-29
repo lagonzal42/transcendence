@@ -8,5 +8,6 @@ Pillow
 djangorestframework-simplejwt
 importlib_metadata==8.4.0
 gunicorn
-channels
 daphne
+channels
+channels-redis==4.1.0
