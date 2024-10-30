@@ -14,12 +14,20 @@
     <br />
   </div>
     <script>
-      const chatSocket = new WebSocket("ws://" + window.location.host + "/");
+      const roomName = "{{ room_name }}";
+      const chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+      );
       chatSocket.onopen = function (e) {
         console.log("The connection was setup successfully !");
       };
       chatSocket.onclose = function (e) {
-        console.log("Something unexpected happened !");
+        console.log("WebSocket closed with code: " + e.code);
+        console.log("Reason: " + e.reason);
+        console.log("Clean close: " + e.wasClean);
+      };
+      chatSocket.onerror = function (e) {
+        console.error('WebSocket Error:', e);
       };
       document.querySelector("#id_message_send_input").focus();
       document.querySelector("#id_message_send_input").onkeyup = function (e) {
@@ -31,12 +39,18 @@
         var messageInput = document.querySelector(
           "#id_message_send_input"
         ).value;
-        chatSocket.send(JSON.stringify({ message: messageInput, username : "{{request.user.username}}"}));
+        if (messageInput.trim()) {
+            chatSocket.send(JSON.stringify({
+                message: messageInput,
+                username: "{{request.user.username|default:''}}",
+                room: roomName
+            }));
+        }
       };
       chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         var div = document.createElement("div");
-        div.innerHTML = data.username + " : " + data.message;
+        div.innerHTML = `<strong>${data.username}</strong>: ${data.message}`;
         document.querySelector("#id_message_send_input").value = "";
         document.querySelector("#id_chat_item_container").appendChild(div);
       };

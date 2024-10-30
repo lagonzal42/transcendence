@@ -35,6 +35,7 @@ import live_chat.urls
 router = DefaultRouter()
 router.register(r'accounts', UpdateProfileView)
 
+print("loading main urls.py")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
