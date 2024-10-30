@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'channels',
     'accounts',
     'live_chat',
-    'liveCalculator',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
