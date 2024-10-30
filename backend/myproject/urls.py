@@ -31,6 +31,7 @@ from accounts.views import UpdateProfileView
 
 import accounts.urls
 import liveCalculator.urls
+import live_chat.urls
 
 router = DefaultRouter()
 router.register(r'accounts', UpdateProfileView)
@@ -39,6 +40,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('live/', include('liveCalculator.urls')),
+    path('chat/', include('live_chat.urls')),
     # authenticate users in the browsable API interface without having to manually set up a login system
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api-root'), permanent=False)),

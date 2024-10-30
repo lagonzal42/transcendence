@@ -173,27 +173,6 @@ class ListFriendsView(APIView):
 
         return JsonResponse(friends_json)
 
-# class ListFriendsView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, id=None):
-#         friends_json = {}
-#         user = User.objects.get(id=id)
-#         friends = user.friends.all()
-
-#         if id is None:
-#             for friend in friends:
-#                 friends_json[friend.id] = get_user_data(friend)
-#         else:
-#             try:
-#                 friend = User.objects.get(id=id)
-#                 friends_json[friend.id] = get_user_data(friend)
-#             except User.DoesNotExist:
-#                 return JsonResponse({"error": "User not found."}, status=404)
-
-#         #print(friends_json)
-#         return JsonResponse(friends_json)
-
 def get_user_data(user):
     return  {
                 'username': user.username,
@@ -229,60 +208,6 @@ class AddFriendView(APIView):
         print(friend_request.id)
 
         return Response({'message': 'Friend request sent successfully.'}, status=200)
-
-# class AcceptFriendRequestView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def post(self, request, id):
-#         user = User.objects.get(id=id)
-#         request_id = request.data.get('request_id')
-
-#         if request_id is None:
-#             return Response({'error': "No request id provided."}, status=400)
-
-#         try:
-#             friend_request = FriendRequest.objects.get(id=request_id, to_user=user)
-#         except FriendRequest.DoesNotExist:
-#             return Response({'error': 'Friend request not found.'}, status=404)
-
-#         # Add each other as friends
-#         user.friends.add(friend_request.from_user)
-#         friend_request.from_user.friends.add(user)
-
-#         # Delete the friend request after acceptance
-#         friend_request.delete()
-
-#         return Response({'message': 'Friend request accepted successfully.'}, status=200)
-
-
-# class AddFriendView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def post(self, request, id):
-#         user = User.objects.get(id=id)
-#         request_id = request.data.get('request_id')
-
-#         if request_id is None:
-#             return Response({'error': "No friend id provided."}, status=400)
-
-#         try:
-#             friend = User.objects.get(id=request_id)
-#         except User.DoesNotExist:
-#             return Response({'error': 'User not found'}, status=404)
-#         if request_id == user.id:
-#             return Response({'message': "Users cant add themselves as friends"})
-        
-#          # Check if friend request already exists
-#         if FriendRequest.objects.filter(from_user=user, to_user=friend).exists():
-#             return Response({'error': 'Friend request already sent.'}, status=400)
-
-#         # Create a friend request
-#         friend_request = FriendRequest.objects.create(from_user=user, to_user=friend)
-        
-#         print("friend_request.id")
-#         print(friend_request.id)
-
-#         return Response({'message': 'Friend request sent successfully.'}, status=200)
     
 class AcceptFriendRequestView(APIView):
     permission_classes = [IsAuthenticated]

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'daphne',
     'channels',
     'accounts',
+    'live_chat',
     'liveCalculator',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -116,12 +117,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
 ASGI_APPLICATION = 'myproject.asgi.application'
-# CHANNEL_LAYERS = { 
-#     "default": {
-#         "BACKEND": "channels.layers.InMemoryChannelLayer"
-#     }   
-# }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

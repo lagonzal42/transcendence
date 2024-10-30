@@ -33,7 +33,7 @@ from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
-import liveCalculator.routing
+import live_chat.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
 
@@ -44,7 +44,7 @@ application = ProtocolTypeRouter({
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(
             URLRouter(
-                liveCalculator.routing.websocket_urlpatterns
+                live_chat.routing.websocket_urlpatterns
             )
         )
     ),
