@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, action
 from django.contrib.auth.decorators import login_required
@@ -25,30 +26,16 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate
 from django.core.mail import EmailMessage
-
-from .models import AccountActivateToken
-import logging
-
-import random
-from datetime import timedelta
-from django.utils import timezone
+from django.core.mail import send_mail
 from django.conf import settings
+from django.http import HttpResponse, JsonResponse
 
 from .services import send_activation_email
-
+from .models import AccountActivateToken
 from django.shortcuts import redirect
 from django.urls import reverse
 import requests
 
-# Set up a logger
-logger = logging.getLogger(__name__)
-
-def BaseView(request):
-    users = User.objects.all()
-    return render(request, 'accounts/base.html', {'users':users})
-from django.core.mail import send_mail
-from django.conf import settings
-from django.http import HttpResponse, JsonResponse
 
 class AccountList(ListAPIView):
     queryset = User.objects.all()
@@ -76,30 +63,16 @@ def send_code_to_user(email):
 class RegisterView(APIView):
     serializer_class = UserRegisterSerializer
 
+
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            # # the model instance, to send activation mail
-            user_insta = serializer.save()
-
-            # Send the activation email using the service
-            send_activation_email(user_insta, from_email="noreply@essencecatch.com")
-
-            # # serialized representation of the data to return to frontend
+            user_intra = serializer.save()
             user = serializer.data
-            # Print all the items in the user dictionary
-            print("User data after registration:")
-            for key, value in user.items():
-                print(f"{key}: {value}")
-
-#### another send email function                
             # send_code_to_user(user['email'])
-#### another send email function                
-
-            
-            return Response(user, status=status.HTTP_201_CREATED)
+            send_activation_email(user_intra, from_email="noreply@essencecatch.com")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class ActivateAccountView(APIView):
@@ -113,7 +86,7 @@ class ActivateAccountView(APIView):
 
             # If the user is successfully activated
             if user:
-                logger.info('Account has been activated.')  # Account activated
+                # logger.info('Account has been activated.')  # Account activated
 
                 # Delete the activation token after successful activation
                 AccountActivateToken.objects.filter(user=user).delete()
@@ -165,7 +138,7 @@ class LoginView(GenericAPIView):
     """API login class"""
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
-    print("Entered LoginView")
+    # print("Entered LoginView")
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -188,123 +161,43 @@ class LoginView(GenericAPIView):
                     response_data = response.json()  # Attempt to decode the JSON response
                     return Response(response_data, status=response.status_code)
                 except ValueError as e:
-                    logger.error(f"JSON decode error: {e} - Response text: {response.text}")
+                    # logger.error(f"JSON decode error: {e} - Response text: {response.text}")
                     return Response({'error': 'Invalid response format from 2FA service'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # class LoginView(GenericAPIView):
 #     """API login class"""
 #     permission_classes = [AllowAny]
 #     serializer_class = LoginSerializer
-#     print("Entered LoginView")
-
 
 #     def post(self, request, *args, **kwargs):
-#         # Print the received request data (username and password)
-#         # print(f"Received data in LoginView: {request.data}")
-#         # logger.debug(f"Received data in LoginView: {request.data}")
 #         serializer = self.get_serializer(data=request.data) 
 #         if serializer.is_valid(raise_exception=True):
 #             user = authenticate(
 #                 username=serializer.validated_data['username'],
 #                 password=serializer.validated_data['password']
 #             )
-#             print(f"user data in LoginView: {user.username}")
-
 #             if user is not None:
-#                 #Store user info for 2FA verification
-#                 request.session['user_id'] = user.id
-#                 # logger.debug(f"user data in LoginView: {user.username}")
-#                 # Prepare to call the send_2fa_code endpoint in the two_factor_auth app
-#                 url = reverse('two_factor_auth:send_2fa_code', kwargs={'user_id': user.id})
-#                 response = requests.post(request.build_absolute_uri(url))
-#                 # Return the response from the 2FA service
-#                 # Log session data after sending the 2FA code
-#                 logger.debug(f"Session after sending 2FA code: {request.session.items()}")
-#                 return Response(response.json(), status=response.status_code)
+#                 # Create JWT token
+#                 refresh = RefreshToken.for_user(user)
+
+#                 return Response({
+#                     'user_id': user.id,
+#                     'username': user.username,
+#                     'email': user.email,
+#                     'first_name': user.first_name,
+#                     'last_name': user.last_name,
+#                     # "refresh" and "access" are JWT tokens
+#                     'refresh': str(refresh),
+#                     'access': str(refresh.access_token),
+#                 }, status=200)
 #             else:
-#                 # logger.warning('Invalid credentials for user: %s', serializer.validated_data['username'])
 #                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# # # # --- LoginView separated 2fa version --- # # # # # 
-
-
-# class Verify2FAView(GenericAPIView):
-#     """API 2FA verification class"""
-#     permission_classes = [AllowAny]
-
-#     def post(self, request, *args, **kwargs):
-#         code = request.data.get('code')
-#         # In Verify2FAView
-#         print(f"Session data in Verify2FAView: {request.session.items()}")
-
-#         # Retrieve stored 2FA code and expiry from session
-#         stored_code = request.session.get('2fa_code')
-#         expiry_time_str = request.session.get('2fa_code_expiry')
-
-#         # Debugging logs
-#         print(f"Session key: {request.session.session_key}")
-
-#         print(f"Stored 2FA code: {stored_code}")
-#         print(f"Received 2FA code: {code}")
-#         print(f"Expiry time string from session: {expiry_time_str}")
-
-#         # Convert expiry_time back to a datetime object
-#         if expiry_time_str:
-#             try:
-#                 expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
-#                 print(f"Converted expiry time: {expiry_time}")
-#                 print(f"Current time: {timezone.now()}")
-#             except Exception as e:
-#                 print(f"Error converting expiry time: {e}")
-#                 return Response({'error': 'Error parsing 2FA expiry time'}, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             print("Expiry time not found in session")
-#             return Response({'error': '2FA session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
-
-#         # # Convert expiry_time back to a datetime object
-#         # if expiry_time_str:
-#         #     expiry_time = timezone.datetime.fromisoformat(expiry_time_str)
-#         # else:
-#         #     return Response({'error': '2FA session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
-
-#         # Verify 2FA code and expiry
-#         if code and code == str(stored_code) and timezone.now() < expiry_time:
-#             # Get the user from the session
-#             user_id = request.session.get('user_id')  # Ensure user ID is stored after successful authentication
-#             if user_id:
-#                 try:
-#                     user = User.objects.get(id=user_id)
-
-#                     # Create JWT token
-#                     refresh = RefreshToken.for_user(user)
-
-#                     # Clear the session data
-#                     del request.session['2fa_code']
-#                     del request.session['2fa_code_expiry']
-#                     del request.session['user_id']
-
-#                     # Return user information and tokens
-#                     return Response({
-#                         'user_id': user.id,
-#                         'username': user.username,
-#                         'email': user.email,
-#                         'first_name': user.first_name,
-#                         'last_name': user.last_name,
-#                         'refresh': str(refresh),
-#                         'access': str(refresh.access_token),
-#                     }, status=200)
-#                 except User.DoesNotExist:
-#                     return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-#             else:
-#                 return Response({'error': 'User session expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             return Response({'error': 'Invalid or expired 2FA code'}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UpdateProfileView(UpdateAPIView):
     queryset = User.objects.all()

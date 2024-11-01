@@ -13,8 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# from django.contrib import admin
-# from django.urls import path, include
+from django.contrib import admin
+from django.urls import path, include
 # For JWT
 # from rest_framework_simplejwt import views
 from rest_framework_simplejwt.views import (
@@ -29,10 +29,7 @@ from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 from accounts.views import UpdateProfileView
 
-
 import accounts.urls
-import two_factor_auth.urls
-from two_factor.urls import urlpatterns as tf_urls
 
 router = DefaultRouter()
 router.register(r'accounts', UpdateProfileView)
@@ -40,7 +37,6 @@ router.register(r'accounts', UpdateProfileView)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('two_factor_auth/', include('two_factor_auth.urls')),
     # authenticate users in the browsable API interface without having to manually set up a login system
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api-root'), permanent=False)),
@@ -48,7 +44,7 @@ urlpatterns = [
     path('api-auth/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # reobtain JWT token
     path('api-auth/jwt/refresh', TokenRefreshView.as_view(), name='token_refresh'),
-    path('', include(tf_urls)),
+    path('two_factor_auth/', include('two_factor_auth.urls', namespace='two_factor_auth')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [

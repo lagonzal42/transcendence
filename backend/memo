@@ -16,7 +16,7 @@ curl -X POST http://localhost:8000/accounts/account_register/ -H "Content-Type: 
   "password": "strongpassword123", "password2": "strongpassword123", "first_name": "Momomi", "last_name": "Akino", "username": "testuser2"
 }'
 
-curl -X POST http://localhost:8000/accounts/login/ -H "Content-Type: application/json" -d '{"username": "testuser2", "password": "strongpassword123"}'
+curl -X POST http://localhost:8000/accounts/account_login/ -H "Content-Type: application/json" -d '{"username": "testuser2", "password": "strongpassword123"}'
 
 curl -X POST http://localhost:8000/two_factor_auth/verify/ -H "Content-Type: application/json" -d '{"code": "649069"}'
 
