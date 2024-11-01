@@ -221,6 +221,9 @@ LOGIN_URL = 'two_factor_auth:login' # # # not implemented yet
 
 ACTIVATE_URL = 'http://localhost:8000/accounts'
 
+# Set the session engine to use the database
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
