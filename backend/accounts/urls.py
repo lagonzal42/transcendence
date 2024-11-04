@@ -16,7 +16,9 @@ urlpatterns = [
     path('account_login/', views.LoginView.as_view(), name='LoginView'),
     path('account_close/', views.CloseAccountView.as_view(), name='CloseAccountView'),
     path('account_update/<str:username>', views.UpdateProfileView.as_view(), name='auth_update_profile'),
-    path('list_friends/<str:username>', ListFriendsView.as_view(), name='ListFriendsView'),
+    #path('list_friends/<str:username>', ListFriendsView.as_view(), name='ListFriendsView'),
+    path('list_friends/<str:username>', views.ListFriendsView, name='ListFriendsView'),
     path('add_friend/<str:username>', AddFriendView.as_view(), name="AddFriendView"),
     path('accept_friend_request/<str:username>', AcceptFriendRequestView.as_view(), name="AcceptFriendRequest"),
+    path('current_user/', views.CurrentUser.as_view(), name='current_user'),
 ]

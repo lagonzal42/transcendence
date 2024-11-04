@@ -15,7 +15,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import api_view, action, permission_classes
 from django.contrib.auth.decorators import login_required
 
 from .models import User, OtpToken, FriendRequest
@@ -149,29 +149,40 @@ class CloseAccountView(APIView):
             raise Response("No User found")
 
         return Response({"message": "Account and user successfully removed"}, status=200)
-class ListFriendsView(APIView):
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request, username=None):
-        friends_json = {}
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            return JsonResponse({"error": "User not found."}, status=404)
-
+@api_view(['GET'])
+def ListFriendsView(request, username):
+    try:
+        user = User.objects.get(username=username)
         friends = user.friends.all()
+        friend_data = [{'username': friend.username} for friend in friends]
+        return Response(friend_data)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        if username is None:
-            for friend in friends:
-                friends_json[friend.username] = get_user_data(friend)
-        else:
-            try:
-                friend = User.objects.get(username=username)
-                friends_json[friend.username] = get_user_data(friend)
-            except User.DoesNotExist:
-                return JsonResponse({"error": "Friend not found."}, status=404)
+# class ListFriendsView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-        return JsonResponse(friends_json)
+#     def get(self, request, username=None):
+#         friends_json = {}
+#         try:
+#             user = User.objects.get(username=username)
+#         except User.DoesNotExist:
+#             return JsonResponse({"error": "User not found."}, status=404)
+
+#         friends = user.friends.all()
+
+#         if username is None:
+#             for friend in friends:
+#                 friends_json[friend.username] = get_user_data(friend)
+#         else:
+#             try:
+#                 friend = User.objects.get(username=username)
+#                 friends_json[friend.username] = get_user_data(friend)
+#             except User.DoesNotExist:
+#                 return JsonResponse({"error": "Friend not found."}, status=404)
+
+#         return JsonResponse(friends_json)
 
 def get_user_data(user):
     return  {
@@ -237,5 +248,17 @@ class RemoveFriendView(APIView):
     def post(self, request, username):
         user = User.objects.get(username=username)
         user_to_remove = request.data.get('user_to_remove')
-    
 
+class CurrentUser(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user
+        return Response({
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name
+        }, status=status.HTTP_200_OK)
+    

@@ -9,6 +9,7 @@ import { SearchComponent } from './search/search.component';
 import { TournamentComponent } from './tournament/tournament.component';
 import { LocalPlayComponent } from './local-play/local-play.component';
 import { PongGameComponent } from './pong-game/pong-game.component';
+import { ChatComponent } from './chat/chat.component';
 
 
 export const routes: Routes = [
@@ -25,5 +26,9 @@ export const routes: Routes = [
       { path: 'local-play', component: LocalPlayComponent },
       { path: 'pong-game', component: PongGameComponent }
     ]
+  },
+  {
+    path: 'chat/:roomId',
+    component: ChatComponent
   }
 ];
