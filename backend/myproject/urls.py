@@ -15,46 +15,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-# For JWT
-# from rest_framework_simplejwt import views
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from django.conf import settings
-from django.urls import path, re_path, include, reverse_lazy
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.views.generic.base import RedirectView
-from rest_framework.routers import DefaultRouter
-from accounts.views import UpdateProfileView
 
-import accounts.urls
-import live_chat.urls
-
-router = DefaultRouter()
-router.register(r'accounts', UpdateProfileView)
-
-print("loading main urls.py")
 urlpatterns = [
+    # Django Admin
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('chat/', include('live_chat.urls')),
-    # authenticate users in the browsable API interface without having to manually set up a login system
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api-root'), permanent=False)),
-    # obtain JWT token
-    path('api-auth/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # reobtain JWT token
-    path('api-auth/jwt/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # API Endpoints
+    path('api/', include([
+        # Auth endpoints
+        path('auth/', include([
+            path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+            path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+            path('', include('rest_framework.urls')),
+        ])),
+    ])),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# urlpatterns = [
-#     path("admin/", admin.site.urls), #admin form
-#     path("accounts/", include("accounts.urls")), #accounts's url
-#     # # obtain jwt-token
-#     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-#     # # reobtain jwt-token
-#     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-# ]
-

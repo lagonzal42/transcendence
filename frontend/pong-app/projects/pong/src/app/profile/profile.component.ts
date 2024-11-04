@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService } from '../services/chat.service';
-//import { AuthService } from '../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../services/auth.service';
 
 interface User {
   id: number;
@@ -14,8 +15,10 @@ interface User {
 
 @Component({
   selector: 'app-profile',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
   friends: any[] = [];
@@ -27,7 +30,7 @@ export class ProfileComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private chatService: ChatService,
-    //private authService: AuthService
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +41,7 @@ export class ProfileComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.http.get<User>('http://localhost:8000/accounts/current_user/').subscribe({
+    this.http.get<User>(`${this.authService.API_URL}/accounts/me/`).subscribe({
       next: (user) => {
         this.currentUsername = user.username;
         this.getFriends(user.username);
@@ -60,7 +63,7 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    this.http.get(`http://localhost:8000/accounts/list_friends/${username}/`).subscribe({
+    this.http.get(`http://localhost:8000/accounts/users/${username}/friends/`).subscribe({
       next: (data: any) => {
         this.friends = data;
         this.isLoading = false;
@@ -78,8 +81,7 @@ export class ProfileComponent implements OnInit {
       console.error('Current user not loaded');
       return;
     }
-    const users = [this.currentUsername, friendUsername].sort();
-    const roomName = `private_${users[0]}_${users[1]}`;
+    const roomName = this.chatService.createChatRoom(this.currentUsername, friendUsername);
     this.router.navigate(['/chat', roomName]);
   }
 }

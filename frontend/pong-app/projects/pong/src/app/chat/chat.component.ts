@@ -3,6 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService, ChatMessage } from '../services/chat.service';
 import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { HttpClient } from '@angular/common/http';
+
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+}
 
 @Component({
   selector: 'app-chat',
@@ -58,18 +69,34 @@ import { Observable } from 'rxjs';
 export class ChatComponent implements OnInit, OnDestroy {
   messages$: Observable<ChatMessage[]>;
   newMessage: string = '';
-  private roomName: string;
-  private username: string;
+  private roomName: string = '';
+  private username: string = '';
 
-  constructor(private chatService: ChatService) {
+  constructor(
+    private chatService: ChatService,
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private http: HttpClient
+  ) {
     this.messages$ = this.chatService.messages$;
-    // For testing purposes - these should come from your auth service
-    this.username = 'testUser';
-    this.roomName = 'testRoom';
   }
 
   ngOnInit() {
-    this.chatService.connectToChat(this.roomName, this.username);
+    this.route.params.subscribe(params => {
+      this.roomName = params['roomId'];
+    });
+
+    this.http.get<User>(`${this.authService.API_URL}/accounts/me/`).subscribe({
+      next: (user) => {
+        this.username = user.username;
+        if (this.username && this.roomName) {
+          this.chatService.connectToChat(this.roomName, this.username);
+        }
+      },
+      error: (error) => {
+        console.error('Error getting user:', error);
+      }
+    });
   }
 
   ngOnDestroy() {

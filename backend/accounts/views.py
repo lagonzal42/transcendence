@@ -54,16 +54,27 @@ def send_code_to_user(email):
 
 #   @user_not_authenticated
 class RegisterView(APIView):
+    permission_classes = [AllowAny]
     serializer_class = UserRegisterSerializer
 
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            user = serializer.data
-            send_code_to_user(user['email'])
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                },
+                'tokens': {
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                }
+            }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(APIView):
@@ -100,33 +111,46 @@ class LoginView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data) 
         if serializer.is_valid(raise_exception=True):
-            user = authenticate(
-                username=serializer.validated_data['username'],
-                password=serializer.validated_data['password']
-            )
-            if user is not None:
-                # Create JWT token
-                refresh = RefreshToken.for_user(user)
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
 
+            user = authenticate(username=username, password=password)
+
+            if user:
+                refresh = RefreshToken.for_user(user)
                 return Response({
-                    'user_id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    # "refresh" and "access" are JWT tokens
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }, status=200)
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                    },
+                    'tokens': {
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    }
+                }, status=status.HTTP_200_OK)
             else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
+        except Exception:
+            return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
 
 class UpdateProfileView(UpdateAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = UpdateUserSerializer
-    permission_classes = [IsAuthenticated]
     lookup_field = 'username'
 
     def get(self, request, username):
@@ -216,6 +240,7 @@ class AddFriendView(APIView):
 
         # Create a friend request
         friend_request = FriendRequest.objects.create(from_user=user, to_user=friend)
+        print("printting request iddd")
         print(friend_request.id)
 
         return Response({'message': 'Friend request sent successfully.'}, status=200)
@@ -259,6 +284,7 @@ class CurrentUser(APIView):
             'username': user.username,
             'email': user.email,
             'first_name': user.first_name,
-            'last_name': user.last_name
+            'last_name': user.last_name,
+            'tournament_name': user.tournament_name,
         }, status=status.HTTP_200_OK)
     

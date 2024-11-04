@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 export interface ChatMessage {
   message: string;
@@ -14,10 +15,15 @@ export class ChatService {
   private socket: WebSocket | null = null;
   private messagesSubject = new BehaviorSubject<ChatMessage[]>([]);
   public messages$ = this.messagesSubject.asObservable();
+  private isBrowser: boolean;
 
-  constructor() {}
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   connectToChat(roomName: string, username: string): void {
+    if (!this.isBrowser) return;
+    
     this.socket = new WebSocket(`ws://localhost:8000/ws/chat/${roomName}/`);
 
     this.socket.onopen = () => {
@@ -36,7 +42,7 @@ export class ChatService {
   }
 
   sendMessage(message: string, username: string, roomName: string): void {
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+    if (this.isBrowser && this.socket && this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(JSON.stringify({
         message: message,
         username: username,
@@ -46,13 +52,12 @@ export class ChatService {
   }
 
   disconnect(): void {
-    if (this.socket) {
+    if (this.isBrowser && this.socket) {
       this.socket.close();
     }
   }
 
   createChatRoom(currentUser: string, friendUsername: string): string {
-    // Create a consistent room name for two users
     const users = [currentUser, friendUsername].sort();
     return `private_${users[0]}_${users[1]}`;
   }
