@@ -420,4 +420,52 @@ class DeclineFriendRequestView(APIView):
         friend_request.save()
 
         return Response({'message': 'Friend request declined'}, status=200)
+
+class BlockUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        try:
+            user_to_block = User.objects.get(id=user_id)
+            
+            if request.user == user_to_block:
+                return Response({'error': 'Cannot block yourself'}, status=400)
+                
+            request.user.blocked_users.add(user_to_block)
+            return Response({'message': 'User blocked successfully'}, status=200)
+            
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+
+class UnblockUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        try:
+            user_to_unblock = User.objects.get(id=user_id)
+            request.user.blocked_users.remove(user_to_unblock)
+            return Response({'message': 'User unblocked successfully'}, status=200)
+            
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+
+class BlockedUsersListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            blocked_users = request.user.blocked_users.all()
+            blocked_users_data = [{
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,  # Only include if needed
+                'isBlocked': True
+            } for user in blocked_users]
+            
+            return Response(blocked_users_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {'error': 'An error occurred while fetching blocked users'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     

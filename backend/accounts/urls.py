@@ -23,4 +23,9 @@ urlpatterns = [
     path('friend-requests/send/', views.SendFriendRequestView.as_view(), name='send_friend_request'),
     path('friend-requests/accept/', views.AcceptFriendRequestView.as_view(), name='accept_friend_request'),
     path('friend-requests/decline/', views.DeclineFriendRequestView.as_view(), name='decline_friend_request'),
+    
+    # Blocking functionality
+    path('block/<int:user_id>/', views.BlockUserView.as_view(), name='block_user'),
+    path('unblock/<int:user_id>/', views.UnblockUserView.as_view(), name='unblock_user'),
+    path('blocked-users/', views.BlockedUsersListView.as_view(), name='blocked_users_list'),
 ]

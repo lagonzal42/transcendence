@@ -26,6 +26,7 @@ class User(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(default=timezone.now)
     friends = models.ManyToManyField('self', blank=True, symmetrical=True)
+    blocked_users = models.ManyToManyField('self', symmetrical=False, related_name='blocked_by', blank=True)
 
 
     #USERNAME_FIELD = 'email'

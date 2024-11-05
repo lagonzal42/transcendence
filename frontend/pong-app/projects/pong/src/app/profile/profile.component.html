@@ -54,11 +54,33 @@
                 No friends found
             </div>
             <ul *ngIf="friends.length > 0">
-                <li *ngFor="let friend of friends">
-                    {{ friend.username }}
-                    <button (click)="startChat(friend.username)" class="chat-button">
-                        Chat
-                    </button>
+                <li *ngFor="let friend of friends" class="friend-item">
+                    <span>{{ friend.username }}</span>
+                    <div class="friend-actions">
+                        <button (click)="startChat(friend.username)" class="chat-button">
+                            Chat
+                        </button>
+                        <button (click)="blockUser(friend.id)" class="block-button">
+                            Block
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="blocked-users">
+            <h3>Blocked Users</h3>
+            <div *ngIf="blockedUsers.length === 0" class="no-blocked">
+                No blocked users
+            </div>
+            <ul *ngIf="blockedUsers.length > 0">
+                <li *ngFor="let user of blockedUsers" class="blocked-item">
+                    <span>{{ user.username }}</span>
+                    <div class="blocked-actions">
+                        <button (click)="unblockUser(user.id)" class="unblock-button">
+                            Unblock
+                        </button>
+                    </div>
                 </li>
             </ul>
         </div>

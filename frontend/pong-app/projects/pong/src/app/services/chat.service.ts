@@ -1,11 +1,18 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 export interface ChatMessage {
   message: string;
   username: string;
   timestamp?: string;
+}
+
+export interface ChatUser {
+  id: number;
+  username: string;
+  isBlocked: boolean;
 }
 
 @Injectable({
@@ -16,9 +23,11 @@ export class ChatService {
   private messagesSubject = new BehaviorSubject<ChatMessage[]>([]);
   public messages$ = this.messagesSubject.asObservable();
   private isBrowser: boolean;
+  private API_URL: string;
 
-  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+  constructor(@Inject(PLATFORM_ID) platformId: Object, private http: HttpClient) {
     this.isBrowser = isPlatformBrowser(platformId);
+    this.API_URL = 'http://localhost:8000';
   }
 
   connectToChat(roomName: string, username: string): void {
@@ -60,5 +69,21 @@ export class ChatService {
   createChatRoom(currentUser: string, friendUsername: string): string {
     const users = [currentUser, friendUsername].sort();
     return `private_${users[0]}_${users[1]}`;
+  }
+
+  blockUser(userId: number): Observable<any> {
+    return this.http.post(`${this.API_URL}/accounts/block/${userId}/`, {});
+  }
+
+  unblockUser(userId: number): Observable<any> {
+    return this.http.post(`${this.API_URL}/accounts/unblock/${userId}/`, {});
+  }
+
+  getBlockedUsers(): Observable<ChatUser[]> {
+    return this.http.get<ChatUser[]>(`${this.API_URL}/accounts/blocked-users/`);
+  }
+
+  getUserProfile(username: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/accounts/users/${username}/`);
   }
 } 

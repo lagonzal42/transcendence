@@ -22,6 +22,12 @@ interface FriendRequest {
   created_at: string;
 }
 
+interface ChatUser {
+  id: number;
+  username: string;
+  isBlocked: boolean;
+}
+
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -37,6 +43,7 @@ export class ProfileComponent implements OnInit {
   searchQuery: string = '';
   searchResults: User[] = [];
   friendRequests: FriendRequest[] = [];
+  blockedUsers: ChatUser[] = [];
 
   constructor(
     private http: HttpClient,
@@ -48,6 +55,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserData();
     this.loadFriendRequests();
+    this.loadBlockedUsers();
   }
 
   loadUserData() {
@@ -164,6 +172,48 @@ export class ProfileComponent implements OnInit {
       error: (error) => {
         console.error('Error declining friend request:', error);
         this.error = 'Failed to decline friend request';
+      }
+    });
+  }
+
+  loadBlockedUsers() {
+    this.isLoading = true;
+    this.chatService.getBlockedUsers().subscribe({
+      next: (users) => {
+        this.blockedUsers = users;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading blocked users:', error);
+        this.error = 'Failed to load blocked users';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  blockUser(userId: number) {
+    this.chatService.blockUser(userId).subscribe({
+      next: () => {
+        // Remove from friends list if present
+        this.friends = this.friends.filter(friend => friend.id !== userId);
+        // Reload blocked users
+        this.loadBlockedUsers();
+      },
+      error: (error) => {
+        console.error('Error blocking user:', error);
+        this.error = 'Failed to block user';
+      }
+    });
+  }
+
+  unblockUser(userId: number) {
+    this.chatService.unblockUser(userId).subscribe({
+      next: () => {
+        this.blockedUsers = this.blockedUsers.filter(user => user.id !== userId);
+      },
+      error: (error) => {
+        console.error('Error unblocking user:', error);
+        this.error = 'Failed to unblock user';
       }
     });
   }

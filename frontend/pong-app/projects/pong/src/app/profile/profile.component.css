@@ -189,3 +189,63 @@
     border-radius: 4px;
     cursor: pointer;
 }
+
+.friend-item, .blocked-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.friend-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.block-button {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.unblock-button {
+    background-color: #666;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.unblock-button:hover {
+    background-color: #888;
+}
+
+.blocked-users {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.blocked-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.no-blocked {
+    color: #666;
+    font-style: italic;
+    padding: 10px 0;
+}
