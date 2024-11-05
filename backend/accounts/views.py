@@ -216,34 +216,34 @@ def get_user_data(user):
                 'friends': list(user.friends.values_list('username', flat=True)),
             }
 
-class AddFriendView(APIView):
-    permission_classes = [IsAuthenticated]
+# class AddFriendView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def post(self, request, username):
-        user = User.objects.get(username=username)
-        friend_username = request.data.get('friend_username')
+#     def post(self, request, username):
+#         user = User.objects.get(username=username)
+#         friend_username = request.data.get('friend_username')
 
-        if friend_username is None:
-            return Response({'error': "No friend username provided."}, status=400)
+#         if friend_username is None:
+#             return Response({'error': "No friend username provided."}, status=400)
 
-        try:
-            friend = User.objects.get(username=friend_username)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found'}, status=404)
+#         try:
+#             friend = User.objects.get(username=friend_username)
+#         except User.DoesNotExist:
+#             return Response({'error': 'User not found'}, status=404)
 
-        if friend.username == user.username:
-            return Response({'error': "Users cannot send friend requests to themselves."}, status=400)
+#         if friend.username == user.username:
+#             return Response({'error': "Users cannot send friend requests to themselves."}, status=400)
 
-        # Check if friend request already exists
-        if FriendRequest.objects.filter(from_user=user, to_user=friend).exists():
-            return Response({'error': 'Friend request already sent.'}, status=400)
+#         # Check if friend request already exists
+#         if FriendRequest.objects.filter(from_user=user, to_user=friend).exists():
+#             return Response({'error': 'Friend request already sent.'}, status=400)
 
-        # Create a friend request
-        friend_request = FriendRequest.objects.create(from_user=user, to_user=friend)
-        print("printting request iddd")
-        print(friend_request.id)
+#         # Create a friend request
+#         friend_request = FriendRequest.objects.create(from_user=user, to_user=friend)
+#         print("printting request iddd")
+#         print(friend_request.id)
 
-        return Response({'message': 'Friend request sent successfully.'}, status=200)
+#         return Response({'message': 'Friend request sent successfully.'}, status=200)
     
 class AcceptFriendRequestView(APIView):
     permission_classes = [IsAuthenticated]
@@ -273,9 +273,26 @@ class AcceptFriendRequestView(APIView):
             return Response({'error': 'Friend request not found'}, status=404)
 
 class RemoveFriendView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, username):
-        user = User.objects.get(username=username)
-        user_to_remove = request.data.get('user_to_remove')
+        try:
+            user = User.objects.get(username=username)
+            friend_username = request.data.get('user_to_remove')
+            
+            if not friend_username:
+                return Response({'error': 'Friend username is required'}, status=400)
+            
+            friend = User.objects.get(username=friend_username)
+            
+            # Remove from both users' friend lists
+            user.friends.remove(friend)
+            friend.friends.remove(user)
+            
+            return Response({'message': 'Friend removed successfully'}, status=200)
+            
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
 
 class CurrentUser(APIView):
     permission_classes = [IsAuthenticated]
@@ -340,37 +357,51 @@ class SendFriendRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        to_username = request.data.get('to_username')
-        if not to_username:
-            return Response({'error': 'Username is required'}, status=400)
-
         try:
+            to_username = request.data.get('to_username')
+            if not to_username:
+                return Response({'error': 'Username is required'}, status=400)
+
             to_user = User.objects.get(username=to_username)
+
+            if request.user == to_user:
+                return Response({'error': 'Cannot send friend request to yourself'}, status=400)
+
+            # Check if they're already friends
+            if request.user.friends.filter(id=to_user.id).exists():
+                return Response({'error': 'Already friends'}, status=400)
+
+            # Check if a request already exists
+            existing_request = FriendRequest.objects.filter(
+                from_user=request.user,
+                to_user=to_user,
+            ).first()
+
+            if existing_request:
+                if existing_request.status == 'pending':
+                    return Response({'error': 'Friend request already sent'}, status=400)
+                elif existing_request.status == 'declined':
+                    # If there was a declined request, update it to pending
+                    existing_request.status = 'pending'
+                    existing_request.save()
+                    return Response({'message': 'Friend request sent successfully'}, status=201)
+
+            friend_request = FriendRequest.objects.create(
+                from_user=request.user,
+                to_user=to_user,
+                status='pending'
+            )
+
+            return Response({'message': 'Friend request sent successfully'}, status=201)
+
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
-
-        if request.user == to_user:
-            return Response({'error': 'Cannot send friend request to yourself'}, status=400)
-
-        # Check if they're already friends
-        if request.user.friends.filter(id=to_user.id).exists():
-            return Response({'error': 'Already friends'}, status=400)
-
-        # Check if a request already exists
-        if FriendRequest.objects.filter(
-            from_user=request.user,
-            to_user=to_user,
-            status='pending'
-        ).exists():
-            return Response({'error': 'Friend request already sent'}, status=400)
-
-        friend_request = FriendRequest.objects.create(
-            from_user=request.user,
-            to_user=to_user,
-            status='pending'
-        )
-
-        return Response({'message': 'Friend request sent successfully'}, status=201)
+        except Exception as e:
+            print(f"Error in SendFriendRequestView: {str(e)}")  # For debugging
+            return Response(
+                {'error': 'An error occurred while processing your request'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class DeclineFriendRequestView(APIView):
     permission_classes = [IsAuthenticated]
