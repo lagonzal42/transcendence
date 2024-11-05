@@ -12,6 +12,42 @@
             <h2>{{ currentUsername }}'s Profile</h2>
         </div>
 
+        <div class="search-section">
+            <h3>Find Friends</h3>
+            <div class="search-box">
+                <input type="text" [(ngModel)]="searchQuery" placeholder="Search users...">
+                <button (click)="searchUsers()">Search</button>
+            </div>
+            
+            <div *ngIf="searchResults.length > 0" class="search-results">
+                <ul>
+                    <li *ngFor="let user of searchResults">
+                        {{ user.username }}
+                        <button (click)="sendFriendRequest(user.username)" class="friend-request-button">
+                            Send Friend Request
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="friend-requests" *ngIf="friendRequests.length > 0">
+            <h3>Friend Requests</h3>
+            <ul>
+                <li *ngFor="let request of friendRequests">
+                    <span>{{ request.from_user.username }} wants to be your friend</span>
+                    <div class="request-actions">
+                        <button (click)="acceptFriendRequest(request)" class="accept-button">
+                            Accept
+                        </button>
+                        <button (click)="declineFriendRequest(request.id)" class="decline-button">
+                            Decline
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
         <div class="friends-list">
             <h3>Friends</h3>
             <div *ngIf="friends.length === 0" class="no-friends">

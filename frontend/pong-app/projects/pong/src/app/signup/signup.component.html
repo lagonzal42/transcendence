@@ -25,7 +25,7 @@
     </div>
     <div class="formGroup">
       <label for="password2">Repeat password</label>
-      <input id="password2" type="password2" formControlName="password2">
+      <input id="password2" type="password" formControlName="password2">
       <div *ngIf="signupForm.get('password2')?.touched && signupForm.get('password2')?.invalid">
         <small class="text-danger">Invalid password</small>
       </div>

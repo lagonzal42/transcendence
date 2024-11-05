@@ -29,12 +29,14 @@ export class LoginComponent {
 	onSubmit() {
 		if (this.loginForm.valid) {
 			const { username, password } = this.loginForm.value;
+			console.log('Attempting login with:', username);
 			this.authService.login(username, password).subscribe({
-				next: () => {
+				next: (response) => {
+					console.log('Login error:', response);
 					this.router.navigate(['']);
 				},
 				error: (err) => {
-					console.error('Login error:', err);
+					console.error('Server error:', err.error.detail);
 				}
 			});
 		} else {

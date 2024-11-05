@@ -22,15 +22,28 @@ interface User {
   template: `
     <div class="chat-container">
       <div class="messages-container">
-        <div *ngFor="let message of messages$ | async" class="message">
-          <strong>{{ message.username }}:</strong> {{ message.message }}
+        <div *ngFor="let message of messages$ | async" 
+             class="message-wrapper"
+             [ngClass]="{'own-message': message.username === username}">
+          <div class="message-bubble">
+            <div class="message-sender" *ngIf="message.username !== username">
+              {{ message.username }}
+            </div>
+            <div class="message-content">
+              {{ message.message }}
+            </div>
+          </div>
         </div>
       </div>
       <div class="input-container">
         <input [(ngModel)]="newMessage" 
                (keyup.enter)="sendMessage()"
-               placeholder="Type a message...">
-        <button (click)="sendMessage()">Send</button>
+               placeholder="iMessage">
+        <button (click)="sendMessage()">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
       </div>
     </div>
   `,
@@ -38,31 +51,99 @@ interface User {
     .chat-container {
       display: flex;
       flex-direction: column;
-      height: 400px;
-      width: 300px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      height: 600px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      background-color: #f5f5f5;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+
     .messages-container {
       flex: 1;
       overflow-y: auto;
-      padding: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-    .message {
-      margin: 5px 0;
+
+    .message-wrapper {
+      display: flex;
+      justify-content: flex-start;
+      margin: 4px 0;
     }
+
+    .own-message {
+      justify-content: flex-end;
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 8px 12px;
+      border-radius: 20px;
+      background-color: #e9e9eb;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .own-message .message-bubble {
+      background-color: #0b93f6;
+      color: white;
+    }
+
+    .message-sender {
+      font-size: 0.8em;
+      color: #666;
+      margin-bottom: 2px;
+    }
+
+    .message-content {
+      word-wrap: break-word;
+    }
+
     .input-container {
       display: flex;
-      padding: 10px;
-      border-top: 1px solid #ccc;
+      padding: 12px;
+      gap: 8px;
+      background-color: #fff;
+      border-top: 1px solid #e0e0e0;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
     }
+
     input {
       flex: 1;
-      margin-right: 10px;
-      padding: 5px;
+      padding: 12px;
+      border: none;
+      border-radius: 20px;
+      background-color: #f0f0f0;
+      font-size: 1em;
+      outline: none;
     }
+
+    input:focus {
+      background-color: #e8e8e8;
+    }
+
     button {
-      padding: 5px 15px;
+      background-color: transparent;
+      border: none;
+      color: #0b93f6;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    button svg {
+      width: 24px;
+      height: 24px;
     }
   `]
 })
@@ -70,7 +151,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   messages$: Observable<ChatMessage[]>;
   newMessage: string = '';
   private roomName: string = '';
-  private username: string = '';
+  public username: string = '';
 
   constructor(
     private chatService: ChatService,

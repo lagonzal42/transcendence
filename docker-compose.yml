@@ -41,7 +41,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      - frontend-app:/usr/src/app  # Montar el directorio local en el contenedor
+      - ./frontend:/usr/src/app  # Montar el directorio local en el contenedor
     ports:
       - "4200:4200"
     depends_on:
@@ -118,12 +118,12 @@ networks:
     driver: bridge
 
 volumes:
-  frontend-app:
-    name: frontend-app
-    driver_opts:
-      device: '/sgoinfre/students/abasante/transcendence/frontend/pong-app'
-      o: bind
-      type: none
+  # frontend-app:
+  #   name: frontend-app
+  #   driver_opts:
+  #     device: './frontend'
+  #     o: bind
+  #     type: none
   postgres-data:
     driver: local
   grafana-storage: {}

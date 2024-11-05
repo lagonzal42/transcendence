@@ -20,11 +20,17 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
+    if (this.isBrowser){
+      sessionStorage.removeItem('access_token');
+      sessionStorage.removeItem('refresh_token');
+    }
+
     return this.http.post(`${this.API_URL}/api/auth/token/`, { username, password }).pipe(
       tap((response: any) => {
+        console.log('Login response received:', response);
         if (this.isBrowser) {
-          localStorage.setItem('access_token', response.access);
-          localStorage.setItem('refresh_token', response.refresh);
+          sessionStorage.setItem('access_token', response.access);
+          sessionStorage.setItem('refresh_token', response.refresh);
         }
         this.isAuthenticatedSubject.next(true);
       })
@@ -33,22 +39,50 @@ export class AuthService {
 
   logout() {
     if (this.isBrowser) {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      sessionStorage.removeItem('access_token');
+      sessionStorage.removeItem('refresh_token');
     }
     this.isAuthenticatedSubject.next(false);
   }
 
   refreshToken() {
-    const refresh = this.isBrowser ? localStorage.getItem('refresh_token') : null;
+    const refresh = this.isBrowser ? sessionStorage.getItem('refresh_token') : null;
     return this.http.post(`${this.API_URL}/auth/token/refresh/`, { refresh });
   }
 
   getAccessToken(): string | null {
-    return this.isBrowser ? localStorage.getItem('access_token') : null;
+    return this.isBrowser ? sessionStorage.getItem('access_token') : null;
   }
 
   isAuthenticated(): Observable<boolean> {
     return this.isAuthenticatedSubject.asObservable();
+  }
+
+  searchUsers(query: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/accounts/users/search/?query=${query}`);
+  }
+
+  sendFriendRequest(to_username: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/accounts/friend-requests/send/`, {
+      to_username: to_username
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  getFriendRequests(): Observable<any> {
+    return this.http.get(`${this.API_URL}/accounts/friend-requests/`);
+  }
+
+  acceptFriendRequest(fromUsername: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/accounts/friend-requests/accept/`, {
+      from_username: fromUsername
+    });
+  }
+
+  declineFriendRequest(requestId: number): Observable<any> {
+    return this.http.post(`${this.API_URL}/accounts/friend-requests/${requestId}/decline/`, {});
   }
 } 

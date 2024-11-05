@@ -41,8 +41,17 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
 class FriendRequest(models.Model):
-    from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
-    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
+    from_user = models.ForeignKey(User, related_name='friend_requests_sent', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='friend_requests_received', on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('declined', 'Declined')
+    ], default='pending')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('from_user', 'to_user')
 
     def __str__(self):
 	    return "From {}, to {}".format(self.from_user.username, self.to_user.username)

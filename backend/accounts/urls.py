@@ -12,12 +12,15 @@ urlpatterns = [
     
     # User profile
     path('users/', views.AccountList.as_view(), name='user_list'),
+    path('users/search/', views.SearchUsersView.as_view(), name='user_search'),
     path('users/<str:username>/', views.UserDetailView.as_view(), name='user_detail'),
     path('users/<str:username>/update/', views.UpdateProfileView.as_view(), name='user_update'),
     path('users/<str:username>/close/', views.CloseAccountView.as_view(), name='user_close'),
     
     # Friend management
     path('users/<str:username>/friends/', views.ListFriendsView, name='friend_list'),
-    path('users/<str:username>/friends/add/', views.AddFriendView.as_view(), name='friend_add'),
-    path('users/<str:username>/friends/accept/', views.AcceptFriendRequestView.as_view(), name='friend_accept'),
+    path('friend-requests/', views.FriendRequestListView.as_view(), name='friend_request_list'),
+    path('friend-requests/send/', views.SendFriendRequestView.as_view(), name='send_friend_request'),
+    path('friend-requests/accept/', views.AcceptFriendRequestView.as_view(), name='accept_friend_request'),
+    path('friend-requests/decline/', views.DeclineFriendRequestView.as_view(), name='decline_friend_request'),
 ]

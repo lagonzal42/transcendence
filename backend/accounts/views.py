@@ -248,26 +248,29 @@ class AddFriendView(APIView):
 class AcceptFriendRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, username):
-        user = User.objects.get(username=username)
-        request_id = request.data.get('request_id')
-
-        if request_id is None:
-            return Response({'error': "No request id provided."}, status=400)
-
+    def post(self, request):
+        from_username = request.data.get('from_username')
+        
         try:
-            friend_request = FriendRequest.objects.get(id=request_id, to_user=user)
+            # Find the pending request from this user
+            friend_request = FriendRequest.objects.get(
+                from_user__username=from_username,
+                to_user=request.user,
+                status='pending'
+            )
+            
+            # Add each other as friends
+            request.user.friends.add(friend_request.from_user)
+            friend_request.from_user.friends.add(request.user)
+            
+            # Update request status
+            friend_request.status = 'accepted'
+            friend_request.save()
+            
+            return Response({'message': 'Friend request accepted successfully'}, status=200)
+            
         except FriendRequest.DoesNotExist:
-            return Response({'error': 'Friend request not found.'}, status=404)
-
-        # Add each other as friends
-        user.friends.add(friend_request.from_user)
-        friend_request.from_user.friends.add(user)
-
-        # Delete the friend request after acceptance
-        friend_request.delete()
-
-        return Response({'message': 'Friend request accepted successfully.'}, status=200)
+            return Response({'error': 'Friend request not found'}, status=404)
 
 class RemoveFriendView(APIView):
     def post(self, request, username):
@@ -287,4 +290,103 @@ class CurrentUser(APIView):
             'last_name': user.last_name,
             'tournament_name': user.tournament_name,
         }, status=status.HTTP_200_OK)
+    
+class SearchUsersView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        query = request.GET.get('query', '')
+        if not query:
+            return Response({'error': 'Search query is required'}, status=400)
+
+        users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)[:10]
+        user_data = [{
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'first_name': user.first_name
+        } for user in users]
+        
+        return Response(user_data)
+
+class FriendRequestListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        pending_requests = FriendRequest.objects.filter(
+            to_user=request.user,
+            status='pending'
+        )
+        
+        requests_data = [{
+            'id': req.id,
+            'from_user': {
+                'id': req.from_user.id,
+                'username': req.from_user.username,
+                'email': req.from_user.email
+            },
+            'to_user': {
+                'id': req.to_user.id,
+                'username': req.to_user.username,
+                'email': req.to_user.email
+            },
+            'status': req.status,
+            'created_at': req.created_at
+        } for req in pending_requests]
+        
+        return Response(requests_data)
+
+class SendFriendRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        to_username = request.data.get('to_username')
+        if not to_username:
+            return Response({'error': 'Username is required'}, status=400)
+
+        try:
+            to_user = User.objects.get(username=to_username)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+
+        if request.user == to_user:
+            return Response({'error': 'Cannot send friend request to yourself'}, status=400)
+
+        # Check if they're already friends
+        if request.user.friends.filter(id=to_user.id).exists():
+            return Response({'error': 'Already friends'}, status=400)
+
+        # Check if a request already exists
+        if FriendRequest.objects.filter(
+            from_user=request.user,
+            to_user=to_user,
+            status='pending'
+        ).exists():
+            return Response({'error': 'Friend request already sent'}, status=400)
+
+        friend_request = FriendRequest.objects.create(
+            from_user=request.user,
+            to_user=to_user,
+            status='pending'
+        )
+
+        return Response({'message': 'Friend request sent successfully'}, status=201)
+
+class DeclineFriendRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, request_id):
+        try:
+            friend_request = FriendRequest.objects.get(
+                id=request_id,
+                to_user=request.user,
+                status='pending'
+            )
+        except FriendRequest.DoesNotExist:
+            return Response({'error': 'Friend request not found'}, status=404)
+
+        friend_request.status = 'declined'
+        friend_request.save()
+
+        return Response({'message': 'Friend request declined'}, status=200)
     
