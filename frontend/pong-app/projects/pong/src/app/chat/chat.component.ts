@@ -187,10 +187,22 @@ export class ChatComponent implements OnInit, OnDestroy {
           next: (user) => {
             this.username = user.username;
             this.otherUsername = users.find(u => u !== this.username) || '';
-            if (this.username && this.roomName) {
-              this.messages$ = this.chatService.getMessages(this.roomName);
-              this.chatService.connectToChat(this.roomName, this.username);
-            }
+            
+            // Get other user's details and check if blocked
+            this.chatService.getUserProfile(this.otherUsername).subscribe({
+              next: (otherUser) => {
+                this.otherUserId = otherUser.user.id;
+                this.chatService.getBlockedUsers().subscribe({
+                  next: (blockedUsers) => {
+                    this.isUserBlocked = blockedUsers.some(u => u.id === this.otherUserId);
+                    if (this.username && this.roomName) {
+                      this.messages$ = this.chatService.getMessages(this.roomName);
+                      this.chatService.connectToChat(this.roomName, this.username);
+                    }
+                  }
+                });
+              }
+            });
           },
           error: (error) => {
             console.error('Error getting user:', error);

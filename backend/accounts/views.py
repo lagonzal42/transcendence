@@ -179,7 +179,10 @@ def ListFriendsView(request, username):
     try:
         user = User.objects.get(username=username)
         friends = user.friends.all()
-        friend_data = [{'username': friend.username} for friend in friends]
+        friend_data = [{
+            'id': friend.id,
+            'username': friend.username
+        } for friend in friends]
         return Response(friend_data)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -379,7 +382,7 @@ class SendFriendRequestView(APIView):
 
             if existing_request:
                 if existing_request.status == 'pending':
-                    return Response({'error': 'Friend request already sent'}, status=400)
+                    return Response({'error': 'Friend request already sent'}, status=200)
                 elif existing_request.status == 'declined':
                     # If there was a declined request, update it to pending
                     existing_request.status = 'pending'

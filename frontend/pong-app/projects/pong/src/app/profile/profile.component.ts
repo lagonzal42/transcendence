@@ -28,6 +28,11 @@ interface ChatUser {
   isBlocked: boolean;
 }
 
+interface Friend {
+  id: number;
+  username: string;
+}
+
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -36,7 +41,7 @@ interface ChatUser {
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
-  friends: any[] = [];
+  friends: Friend[] = [];
   currentUsername: string = '';
   isLoading: boolean = true;
   error: string | null = null;
@@ -86,7 +91,10 @@ export class ProfileComponent implements OnInit {
 
     this.http.get(`http://localhost:8000/accounts/users/${username}/friends/`).subscribe({
       next: (data: any) => {
-        this.friends = data;
+        this.friends = data.map((friend: any) => ({
+          id: friend.id,
+          username: friend.username
+        }));
         this.isLoading = false;
       },
       error: (error) => {

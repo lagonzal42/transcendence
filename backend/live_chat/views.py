@@ -11,10 +11,6 @@ from rest_framework.decorators import api_view
 # Create your views here.
 
 def chatPage(request, room_name):
-    print(f"ChatPage view called with room_name: {room_name}")  # Debug print
-    print(f"Current working directory: {os.getcwd()}")  # Print working directory
-    print(f"Request path: {request.path}")  # Print the request path
-    
     template_path = "live_chat/chatPage.html"
     print(f"Looking for template: {template_path}")  # Print template path
     

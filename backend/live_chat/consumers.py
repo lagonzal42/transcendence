@@ -35,10 +35,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         data = json.loads(text_data)
-        print(data)
         message_body = data['message']
         username = data['username']
         room_name = data['room']
+
+        # Extract other username from room name
+        users = room_name.replace('private_', '').split('_')
+        other_username = next(u for u in users if u != username)
+
+        # Check if either user has blocked the other
+        if await self.is_blocked(username, other_username) or await self.is_blocked(other_username, username):
+            return
 
         await self.save_message(username, room_name, message_body)
 
@@ -51,29 +58,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'username': username
             }
         )
-
-    # async def receive(self, text_data):
-    #     data = json.loads(text_data)
-    #     print(data)
-    #     message_body = data['message']
-    #     username = data['username']
-    #     room_name = data['room']
-
-    #     # Check if sender is blocked by receiver
-    #     sender = await self.get_user(username)
-    #     receiver = await self.get_room_participant(room_name, username)
-        
-    #     if sender and receiver and not await self.is_blocked(sender, receiver):
-    #         await self.save_message(username, room_name, message_body)
-    #         await self.channel_layer.group_send(
-    #             self.room_group_name,
-    #             {
-    #                 'type': 'chat_message',
-    #                 'message': message_body,
-    #                 'username': username
-    #             }
-    #         )
-
 
     # Receive message from room group
     async def chat_message(self, event):
@@ -130,3 +114,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return True
         except Room.DoesNotExist:
             return True  # Allow connection to create new room
+
+    @database_sync_to_async
+    def is_blocked(self, sender_username, receiver_username):
+        try:
+            sender = User.objects.get(username=sender_username)
+            receiver = User.objects.get(username=receiver_username)
+            return receiver.blocked_users.filter(id=sender.id).exists()
+        except User.DoesNotExist:
+            return False
