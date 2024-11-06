@@ -27,6 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('chat/', include('live_chat.urls')),
+    path('remote-pong/', include('remote_pong.urls')),
 
     # API Endpoints
     path('api/', include([
