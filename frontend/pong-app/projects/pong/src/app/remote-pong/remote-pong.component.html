@@ -1,0 +1,15 @@
+<p>remote-pong works!</p>
+<div class="game-container">
+    <div class="score-board">
+      <span class="player-score">{{player1Score}}</span>
+      <span class="separator">-</span>
+      <span class="player-score">{{player2Score}}</span>
+    </div>
+    <canvas #pongCanvas width="700" height="500"></canvas>
+    <div class="game-status" *ngIf="!isGameStarted">
+      Waiting for opponent...
+    </div>
+    <div class="winner-message" *ngIf="gameEnded">
+      {{winnerMessage}}
+    </div>
+  </div>
