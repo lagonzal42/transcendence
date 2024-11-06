@@ -118,6 +118,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def can_connect_to_room(self):
         try:
             room = Room.objects.get(uuid=self.room_name)
-            return room.status != Room.CLOSED
+            if room.status == Room.CLOSED:
+                return False
+            
+            # For private rooms, verify participants
+            if self.room_name.startswith('private_'):
+                usernames = self.room_name.replace('private_', '').split('_')
+                user_count = User.objects.filter(username__in=usernames).count()
+                return user_count == 2  # Both users must exist
+            
+            return True
         except Room.DoesNotExist:
             return True  # Allow connection to create new room

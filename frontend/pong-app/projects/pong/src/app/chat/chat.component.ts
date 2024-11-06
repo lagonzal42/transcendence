@@ -23,7 +23,6 @@ interface User {
   template: `
     <div class="chat-container">
       <div class="chat-header">
-        <span>Chat with {{otherUsername}}</span>
         <button (click)="toggleUserActions()">⋮</button>
         <div *ngIf="showUserActions" class="user-actions">
           <button (click)="viewProfile()">View Profile</button>
@@ -162,7 +161,7 @@ interface User {
   `]
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  messages$: Observable<ChatMessage[]>;
+  messages$!: Observable<ChatMessage[]>;
   newMessage: string = '';
   private roomName: string = '';
   public username: string = '';
@@ -177,28 +176,26 @@ export class ChatComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private http: HttpClient
-  ) {
-    this.messages$ = this.chatService.messages$;
-  }
+  ) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.roomName = params['roomId'];
       if (this.roomName.startsWith('private_')) {
         const users = this.roomName.replace('private_', '').split('_');
-        this.otherUsername = users.find(u => u !== this.username) || '';
-      }
-    });
-
-    this.http.get<User>(`${this.authService.API_URL}/accounts/me/`).subscribe({
-      next: (user) => {
-        this.username = user.username;
-        if (this.username && this.roomName) {
-          this.chatService.connectToChat(this.roomName, this.username);
-        }
-      },
-      error: (error) => {
-        console.error('Error getting user:', error);
+        this.http.get<User>(`${this.authService.API_URL}/accounts/me/`).subscribe({
+          next: (user) => {
+            this.username = user.username;
+            this.otherUsername = users.find(u => u !== this.username) || '';
+            if (this.username && this.roomName) {
+              this.messages$ = this.chatService.getMessages(this.roomName);
+              this.chatService.connectToChat(this.roomName, this.username);
+            }
+          },
+          error: (error) => {
+            console.error('Error getting user:', error);
+          }
+        });
       }
     });
   }

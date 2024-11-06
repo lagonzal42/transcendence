@@ -20,14 +20,20 @@ export interface ChatUser {
 })
 export class ChatService {
   private socket: WebSocket | null = null;
-  private messagesSubject = new BehaviorSubject<ChatMessage[]>([]);
-  public messages$ = this.messagesSubject.asObservable();
+  private messageSubjects = new Map<string, BehaviorSubject<ChatMessage[]>>();
   private isBrowser: boolean;
   private API_URL: string;
 
   constructor(@Inject(PLATFORM_ID) platformId: Object, private http: HttpClient) {
     this.isBrowser = isPlatformBrowser(platformId);
     this.API_URL = 'http://localhost:8000';
+  }
+
+  getMessages(roomName: string): Observable<ChatMessage[]> {
+    if (!this.messageSubjects.has(roomName)) {
+      this.messageSubjects.set(roomName, new BehaviorSubject<ChatMessage[]>([]));
+    }
+    return this.messageSubjects.get(roomName)!.asObservable();
   }
 
   connectToChat(roomName: string, username: string): void {
@@ -41,12 +47,16 @@ export class ChatService {
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      const currentMessages = this.messagesSubject.value;
-      this.messagesSubject.next([...currentMessages, data]);
+      const subject = this.messageSubjects.get(roomName);
+      if (subject) {
+        const currentMessages = subject.value;
+        subject.next([...currentMessages, data]);
+      }
     };
 
     this.socket.onclose = () => {
       console.log('WebSocket connection closed');
+      this.messageSubjects.delete(roomName);
     };
   }
 
