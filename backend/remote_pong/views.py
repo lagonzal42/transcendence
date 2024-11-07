@@ -1,12 +1,17 @@
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
 from .models import GameQueue, Match
 import uuid
 
-@api_view(['POST'])
+@csrf_exempt
+@api_view(['POST', 'OPTIONS'])
 @permission_classes([IsAuthenticated])
 def join_queue(request):
+    if request.method == 'OPTIONS':
+        return JsonResponse({})
+    
     player = request.user
     
     # Check if player is already in queue
