@@ -1,71 +1,23 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
 import { PongService } from '../services/pong.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-remote-pong',
   standalone: true,
-  template: `
-    <div class="game-container">
-      <div class="score-board">
-        <span class="player-score">{{player1Score}}</span>
-        <span class="separator">-</span>
-        <span class="player-score">{{player2Score}}</span>
-      </div>
-      <canvas #pongCanvas width="700" height="500"></canvas>
-      <div class="game-status" *ngIf="!isGameStarted">
-        Waiting for opponent...
-      </div>
-      <div class="winner-message" *ngIf="gameEnded">
-        {{winnerMessage}}
-      </div>
-    </div>
-  `,
-  styles: [`
-    .game-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-
-    canvas {
-      background-color: #000;
-      border-radius: 8px;
-    }
-
-    .score-board {
-      font-size: 2em;
-      margin-bottom: 20px;
-      font-family: 'Arial', sans-serif;
-    }
-
-    .player-score {
-      padding: 0 20px;
-    }
-
-    .separator {
-      color: #666;
-    }
-
-    .game-status {
-      margin-top: 20px;
-      font-size: 1.2em;
-      color: #666;
-    }
-
-    .winner-message {
-      margin-top: 20px;
-      font-size: 1.5em;
-      color: #4CAF50;
-    }
-  `]
+  imports: [CommonModule],
+  templateUrl: './remote-pong.component.html',
+  styleUrls: ['./remote-pong.component.css']
 })
 export class RemotePongComponent implements AfterViewInit, OnDestroy {
   @ViewChild('pongCanvas') pongCanvas!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
   private gameStateSubscription?: Subscription;
+  private keyboardListener?: (event: KeyboardEvent) => void;
+  private isBrowser: boolean;
   
   player1Score: number = 0;
   player2Score: number = 0;
@@ -75,26 +27,35 @@ export class RemotePongComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private pongService: PongService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngAfterViewInit() {
-    this.ctx = this.pongCanvas.nativeElement.getContext('2d')!;
-    
-    // Get game ID from route params
-    this.route.params.subscribe(params => {
-      const gameId = params['gameId'];
-      this.initializeGame(gameId);
-    });
+    if (this.isBrowser) {
+      this.ctx = this.pongCanvas.nativeElement.getContext('2d')!;
+      
+      // Get game ID from route params
+      this.route.params.subscribe(params => {
+        const gameId = params['gameId'];
+        this.initializeGame(gameId);
+      });
 
-    // Listen for keyboard events
-    window.addEventListener('keydown', this.handleKeyPress.bind(this));
+      // Listen for keyboard events
+      this.keyboardListener = this.handleKeyPress.bind(this);
+      window.addEventListener('keydown', this.keyboardListener);
+    }
   }
 
   ngOnDestroy() {
     this.gameStateSubscription?.unsubscribe();
     this.pongService.disconnect();
-    window.removeEventListener('keydown', this.handleKeyPress.bind(this));
+    
+    if (this.isBrowser && this.keyboardListener) {
+      window.removeEventListener('keydown', this.keyboardListener);
+    }
   }
 
   private initializeGame(gameId: string) {
