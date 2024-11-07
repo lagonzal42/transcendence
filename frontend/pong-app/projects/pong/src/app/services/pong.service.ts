@@ -31,7 +31,7 @@ export class PongService {
     if (!this.isBrowser) return;
 
     try {
-        this.socket = new WebSocket(`ws://localhost:8000/ws/pong/${gameId}/`);
+        this.socket = new WebSocket(`ws://localhost:8000/ws/pong/${gameId}/`);  
         
         this.socket.onopen = () => {
             console.log('Connected to game server');

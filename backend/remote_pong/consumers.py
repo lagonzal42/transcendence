@@ -47,9 +47,9 @@ class PongGameConsumer(AsyncWebsocketConsumer):
             direction = data.get('direction')
             
             if player_type == 'player1':
-                self.game_state['player1_y'] += 20 if direction == 'down' else -20
+                self.game_state['player1_y'] += 10 if direction == 'down' else -10
             else:
-                self.game_state['player2_y'] += 20 if direction == 'down' else -20
+                self.game_state['player2_y'] += 10 if direction == 'down' else -10
                 
             # Keep paddles within bounds
             self.game_state['player1_y'] = max(0, min(425, self.game_state['player1_y']))
