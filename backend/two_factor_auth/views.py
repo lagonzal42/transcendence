@@ -32,8 +32,8 @@ class Send2FACodeView(GenericAPIView):
 
         # logger.debug(f"Stored session in Send2FACodeView: {request.session.items()}")
 
-        print(f"Stored session: {request.session.items()}")
-        print(f"Session keys: {list(request.session.keys())}")
+        print(f"Generate::Stored session: {request.session.items()}")
+        print(f"Generate::Session keys: {list(request.session.keys())}")
 
         # Send the 2FA code via email
         send_mail(
@@ -55,16 +55,16 @@ class Send2FACodeView(GenericAPIView):
 class Verify2FAView(GenericAPIView):
     """Verifies the 2FA code"""
     def post(self, request, *args, **kwargs):
-        username = request.data.get('username')
+        # username = request.data.get('username')
         code = request.data.get('code')
-        print(f"Stored session: {request.session.items()}")
-        print(f"Session keys: {list(request.session.keys())}")
+        print(f"Verify::Stored session: {request.session.items()}")
+        print(f"Verify::Session keys: {list(request.session.keys())}")
 
         # Find the user by username
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        # try:
+        #     user = User.objects.get(username=username)
+        # except User.DoesNotExist:
+        #     return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # Get stored code and expiry from session
         stored_code = request.session.get('2fa_code')

@@ -223,7 +223,9 @@ ACTIVATE_URL = 'http://localhost:8000/accounts'
 
 # Set the session engine to use the database
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-
+# settings.py
+SESSION_COOKIE_AGE = 300  # Session lasts for 5 minutes, adjust as needed
+SESSION_SAVE_EVERY_REQUEST = True  # Optional: Save session data on each request
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
