@@ -28,6 +28,8 @@ class Send2FACodeView(GenericAPIView):
         request.session['2fa_code_expiry'] = expiry_time.isoformat()
         request.session['user_id'] = user_id
         request.session.modified = True
+        print("New:::::Send2FA Session data:", request.session.items())
+        print("Session data after setting 2FA code:", dict(request.session))
         request.session.save()
 
         # logger.debug(f"Stored session in Send2FACodeView: {request.session.items()}")

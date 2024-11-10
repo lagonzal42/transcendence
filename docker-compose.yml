@@ -10,6 +10,14 @@ services:
     networks:
       - app-network
 
+# # # Adding redis
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
   backend:
     build:
       context: ./backend
@@ -26,8 +34,10 @@ services:
       - DB_PASSWORD=postgres
       - DB_HOST=db
       - DB_PORT=5432
+      - REDIS_HOST=redis  # Link to the Redis service
     depends_on:
       - db
+      - redis
     networks:
       - app-network
 

@@ -10,3 +10,4 @@ importlib_metadata==8.4.0
 gunicorn
 python-decouple
 requests
+django-redis
