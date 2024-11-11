@@ -3,6 +3,6 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 urlpatterns = [
-    path('queue/join/', views.join_queue, name='join-queue'),
-    path('queue/check/', views.check_match, name='check-match')
+    path('queue/join/', views.JoinQueueView.as_view(), name='join-queue'),
+    path('queue/check/', views.CheckMatchView.as_view(), name='check-match')
 ]
