@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { PaddleComponent as Paddle } from './gameClasses/paddle/paddle.component';
+import { BallComponent as Ball } from './gameClasses/ball/ball.component';
 
 @Component({
   selector: 'app-pong-game',
