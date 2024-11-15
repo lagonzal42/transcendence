@@ -88,6 +88,15 @@ export class BallComponent {
       this.dy = 5 * Math.sin(bounceAngle);
     }
 
+    checkGoal(canvasWidth: number)
+    {
+      if (this.xPosition + this.ballRadius >= canvasWidth)
+        return 2;
+      else if( this.xPosition - this.ballRadius <= 0)
+        return 1;
+      return 0;
+    }
+
     getX()
     {
       return this.xPosition;
