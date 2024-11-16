@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { PaddleComponent as Paddle } from './gameClasses/paddle/paddle.component';
+import { BallComponent as Ball } from './gameClasses/ball/ball.component';
 
 @Component({
   selector: 'app-pong-game',
@@ -13,31 +15,38 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   private ctx!: CanvasRenderingContext2D | null;
   public isGameInitialized: boolean = false;
 
-  // Nombres de los jugadores
+  // // Nombres de los jugadores
   public leftPlayerName: string = '';
   public rightPlayerName: string = '';
 
-  // Paddle settings
-  private paddleHeight: number = 75;
-  private paddleWidth: number = 10;
-  private leftPaddleY: number = 0;
-  private rightPaddleY: number = 0;
-  private paddleSpeed: number = 7;
+  // Paddle instances
+  private leftPaddle!: Paddle;
+  private rightPaddle!: Paddle;
 
-  // Ball settings
-  private ballRadius: number = 10;
-  private x: number = 0;
-  private y: number = 0;
-  private dx: number = 2;
-  private dy: number = -2;
+  //Ball instance
+  private ball!: Ball;
 
-  // Score
+  // // Paddle settings
+  // private paddleHeight: number = 75;
+  // private paddleWidth: number = 10;
+  // private leftPaddleY: number = 0;
+  // private rightPaddleY: number = 0;
+  // private paddleSpeed: number = 7;
+
+  // // Ball settings
+  // private ballRadius: number = 10;
+  // private x: number = 0;
+  // private y: number = 0;
+  // private dx: number = 2;
+  // private dy: number = -2;
+
+  // // Score
   public leftPlayerScore: number = 0;
   public rightPlayerScore: number = 0;
   private winningScore: number = 3;
   private gameEnded: boolean = false;
 
-  // Paddle movement flags
+  // // Paddle movement flags
   private leftPaddleUp: boolean = false;
   private leftPaddleDown: boolean = false;
   private rightPaddleUp: boolean = false;
@@ -73,11 +82,14 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   }  
 
   initializeGame(): void {
-    this.x = this.pongCanvas.nativeElement.width / 2;
-    this.y = this.pongCanvas.nativeElement.height / 2;
+    // this.x = this.pongCanvas.nativeElement.width / 2;
+    // this.y = this.pongCanvas.nativeElement.height / 2;
   
-    this.leftPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
-    this.rightPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
+    // this.leftPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
+    // this.rightPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
+    this.leftPaddle = new Paddle(10, (this.pongCanvas.nativeElement.height - 75) / 2);
+    this.rightPaddle = new Paddle(this.pongCanvas.nativeElement.width - 20, (this.pongCanvas.nativeElement.height - 75) / 2);
+    this.ball = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
   
     this.leftPlayerScore = 0; // Resetea la puntuación al inicio
     this.rightPlayerScore = 0; // Resetea la puntuación al inicio
@@ -91,8 +103,34 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       window.addEventListener('keydown', this.keyHandler.bind(this));
       window.addEventListener('keyup', this.keyHandler.bind(this));
       requestAnimationFrame(this.draw.bind(this)); // Asegúrate de que se llama a draw
+      while (!this.gameEnded)
+      {
+        this.ball.move();
+        this.ball.calculateCollisions(this.pongCanvas.nativeElement.height, this.leftPaddle, this.rightPaddle);
+        this.paddleMovement();
+        this.checkGoal();
+        requestAnimationFrame(this.draw.bind(this));
+      }
+      this.displayWinner();
     }
-  }  
+  }
+
+  checkGoal(): void
+  {
+    switch(this.ball.checkGoal(this.pongCanvas.nativeElement.width))
+    {
+      case 1:
+        this.leftPlayerScore++;
+        this.updateScoreDisplay();
+        this.resetBall();
+        break;
+      case 2:
+        this.rightPlayerScore++;
+        this.updateScoreDisplay();
+        this.resetBall();
+        break;
+    }
+  }
 
   keyHandler(event: KeyboardEvent): void {
     const isKeyDown = event.type === 'keydown';  // Detect if the event is keydown or keyup
@@ -121,84 +159,99 @@ export class PongGameComponent implements OnInit, AfterViewInit {
 
     // Clear the canvas
     this.ctx.clearRect(0, 0, this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
+    this.leftPaddle.draw(this.ctx);
+    this.rightPaddle.draw(this.ctx);
+    this.ball.draw(this.ctx);
+    // // Draw the ball
+    // this.ctx.beginPath();
+    // this.ctx.arc(this.x, this.y, this.ballRadius, 0, Math.PI * 2);
+    // this.ctx.fillStyle = '#FFFFFF'; // Color de la pelota
+    // this.ctx.fill();
+    // this.ctx.closePath();
 
-    // Draw the ball
-    this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.ballRadius, 0, Math.PI * 2);
-    this.ctx.fillStyle = '#FFFFFF'; // Color de la pelota
-    this.ctx.fill();
-    this.ctx.closePath();
+    // // Draw the left paddle
+    // this.ctx.beginPath();
+    // this.ctx.rect(10, this.leftPaddleY, this.paddleWidth, this.paddleHeight);
+    // this.ctx.fillStyle = '#FFFFFF'; // Color de la pala izquierda
+    // this.ctx.fill();
+    // this.ctx.closePath();
 
-    // Draw the left paddle
-    this.ctx.beginPath();
-    this.ctx.rect(10, this.leftPaddleY, this.paddleWidth, this.paddleHeight);
-    this.ctx.fillStyle = '#FFFFFF'; // Color de la pala izquierda
-    this.ctx.fill();
-    this.ctx.closePath();
-
-    // Draw the right paddle
-    this.ctx.beginPath();
-    this.ctx.rect(this.pongCanvas.nativeElement.width - this.paddleWidth - 10, this.rightPaddleY, this.paddleWidth, this.paddleHeight);
-    this.ctx.fillStyle = '#FFFFFF'; // Color de la pala derecha
-    this.ctx.fill();
-    this.ctx.closePath();
+    // // Draw the right paddle
+    // this.ctx.beginPath();
+    // this.ctx.rect(this.pongCanvas.nativeElement.width - this.paddleWidth - 10, this.rightPaddleY, this.paddleWidth, this.paddleHeight);
+    // this.ctx.fillStyle = '#FFFFFF'; // Color de la pala derecha
+    // this.ctx.fill();
+    // this.ctx.closePath();
 
     // Ball movement
-    this.x += this.dx;
-    this.y += this.dy;
+    // this.x += this.dx;
+    // this.y += this.dy;
 
     // Collision detection (borders)
-    if (this.y + this.dy > this.pongCanvas.nativeElement.height - this.ballRadius || this.y + this.dy < this.ballRadius) {
-      this.dy = -this.dy;
-    }
+    // if (this.y + this.dy > this.pongCanvas.nativeElement.height - this.ballRadius || this.y + this.dy < this.ballRadius) {
+    //   this.dy = -this.dy;
+    // }
 
-    // Collision with paddles
-    if (this.x - this.ballRadius < 20 + this.paddleWidth && this.y > this.leftPaddleY && this.y < this.leftPaddleY + this.paddleHeight) {
-      this.dx = -this.dx;
-    } else if (this.x + this.ballRadius > this.pongCanvas.nativeElement.width - 20 - this.paddleWidth && this.y > this.rightPaddleY && this.y < this.rightPaddleY + this.paddleHeight) {
-      this.dx = -this.dx;
-    }
+    // // Collision with paddles
+    // if (this.x - this.ballRadius < 20 + this.paddleWidth && this.y > this.leftPaddleY && this.y < this.leftPaddleY + this.paddleHeight) {
+    //   this.dx = -this.dx;
+    // } else if (this.x + this.ballRadius > this.pongCanvas.nativeElement.width - 20 - this.paddleWidth && this.y > this.rightPaddleY && this.y < this.rightPaddleY + this.paddleHeight) {
+    //   this.dx = -this.dx;
+    // }
 
     // Score logic: when the ball passes the paddle on either side
-    if (this.x - this.ballRadius < 0) {
-      this.rightPlayerScore++;
-      this.updateScoreDisplay(); // Update display immediately after scoring
-      this.resetBall();
-    } else if (this.x + this.ballRadius > this.pongCanvas.nativeElement.width) {
-      this.leftPlayerScore++;
-      this.updateScoreDisplay(); // Update display immediately after scoring
-      this.resetBall();
-    }
+    // if (this.x - this.ballRadius < 0) {
+    //   this.rightPlayerScore++;
+    //   this.updateScoreDisplay(); // Update display immediately after scoring
+    //   this.resetBall();
+    // } else if (this.x + this.ballRadius > this.pongCanvas.nativeElement.width) {
+    //   this.leftPlayerScore++;
+    //   this.updateScoreDisplay(); // Update display immediately after scoring
+    //   this.resetBall();
+    // }
 
     // Check if game has ended
-    if (this.leftPlayerScore >= this.winningScore || this.rightPlayerScore >= this.winningScore) {
-      this.gameEnded = true;
-      this.displayWinner();
-      return; // Stop drawing further
-    }
+    // if (this.leftPlayerScore >= this.winningScore || this.rightPlayerScore >= this.winningScore) {
+    //   this.gameEnded = true;
+    //   this.displayWinner();
+    //   return; // Stop drawing further
+    // }
 
     // Paddle movement
-    if (this.leftPaddleUp && this.leftPaddleY > 0) {
-      this.leftPaddleY -= this.paddleSpeed;
-    }
-    if (this.leftPaddleDown && this.leftPaddleY < this.pongCanvas.nativeElement.height - this.paddleHeight) {
-      this.leftPaddleY += this.paddleSpeed;
-    }
-    if (this.rightPaddleUp && this.rightPaddleY > 0) {
-      this.rightPaddleY -= this.paddleSpeed;
-    }
-    if (this.rightPaddleDown && this.rightPaddleY < this.pongCanvas.nativeElement.height - this.paddleHeight) {
-      this.rightPaddleY += this.paddleSpeed;
-    }
+    // if (this.leftPaddleUp) {
+    //   this.leftPaddle.moveUp();
+    // }
+    // if (this.leftPaddleDown) {
+    //   this.leftPaddle.moveDown();
+    // }
+    // if (this.rightPaddleUp) {
+    //   this.rightPaddle.moveUp();
+    // }
+    // if (this.rightPaddleDown) {
+    //   this.rightPaddle.moveDown();
+    // }
 
-    requestAnimationFrame(this.draw.bind(this));
+    // requestAnimationFrame(this.draw.bind(this));
+  }
+
+  paddleMovement(): void
+  {
+    if (this.leftPaddleUp) {
+      this.leftPaddle.moveUp();
+    }
+    if (this.leftPaddleDown) {
+      this.leftPaddle.moveDown();
+    }
+    if (this.rightPaddleUp) {
+      this.rightPaddle.moveUp();
+    }
+    if (this.rightPaddleDown) {
+      this.rightPaddle.moveDown();
+    }
   }
 
   resetBall(): void {
-    this.x = this.pongCanvas.nativeElement.width / 2;
-    this.y = this.pongCanvas.nativeElement.height / 2;
-    this.dx = 2 * (Math.random() < 0.5 ? 1 : -1); // Randomize direction
-    this.dy = 2 * (Math.random() < 0.5 ? 1 : -1); // Randomize direction
+    this.ball = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
   }
 
   updateScoreDisplay(): void {
