@@ -3,19 +3,24 @@ from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
-#from live_chat.routing import websocket_urlpatterns
-from remote_pong.routing import websocket_urlpatterns
-from corsheaders.middleware import CorsMiddleware
+from live_chat.routing import websocket_urlpatterns as chat_urlpatterns
+from remote_pong.routing import websocket_urlpatterns as pong_urlpatterns
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
 
 django_asgi_app = get_asgi_application()
 
-application = ProtocolTypeRouter(
-    {
-        "http": django_asgi_app,
-        "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+# Combine both URL patterns with explicit paths
+websocket_urlpatterns = [
+    *chat_urlpatterns,
+    *pong_urlpatterns,
+]
+
+application = ProtocolTypeRouter({
+    "http": django_asgi_app,
+    "websocket": AllowedHostsOriginValidator(
+        AuthMiddlewareStack(
+            URLRouter(websocket_urlpatterns)
         )
-    }
-)
+    ),
+})

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ChatService } from '../services/chat.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
@@ -12,6 +12,11 @@ interface User {
   email: string;
   first_name: string;
   last_name: string;
+  avatar?: string;
+  is_online?: boolean;
+  games_played?: number;
+  games_won?: number;
+  games_lost?: number;
 }
 
 interface FriendRequest {
@@ -33,6 +38,11 @@ interface Friend {
   username: string;
 }
 
+interface UserResponse {
+  message: string;
+  user: User;
+}
+
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -41,66 +51,90 @@ interface Friend {
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
-  friends: Friend[] = [];
   currentUsername: string = '';
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   error: string | null = null;
   searchQuery: string = '';
-  searchResults: User[] = [];
+  searchResults: any[] = [];
   friendRequests: FriendRequest[] = [];
-  blockedUsers: ChatUser[] = [];
+  friends: Friend[] = [];
+  blockedUsers: any[] = [];
+
+  userAvatar: string = 'assets/default-avatar.png';
+  isUserOnline: boolean = false;
+  userStats = {
+    games_played: 0,
+    games_won: 0,
+    games_lost: 0
+  };
+  isOwnProfile: boolean = false;
 
   constructor(
     private http: HttpClient,
+    private authService: AuthService,
+    private route: ActivatedRoute,
     private router: Router,
-    private chatService: ChatService,
-    private authService: AuthService
+    private chatService: ChatService
   ) {}
 
-  ngOnInit(): void {
-    this.loadUserData();
-    this.loadFriendRequests();
-    this.loadBlockedUsers();
-  }
-
-  loadUserData() {
-    this.isLoading = true;
-    this.error = null;
-
-    this.http.get<User>(`${this.authService.API_URL}/accounts/me/`).subscribe({
-      next: (user) => {
-        this.currentUsername = user.username;
-        this.getFriends(user.username);
-      },
-      error: (error) => {
-        console.error('Error loading user data:', error);
-        this.error = 'Failed to load user data';
-        this.isLoading = false;
-        if (error.status === 401) {
-          this.router.navigate(['/login']);
-        }
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      const username = params['username'];
+      if (username) {
+        this.currentUsername = username;
+        this.loadUserProfile(username);
+        this.loadFriendRequests();
       }
     });
   }
 
-  getFriends(username: string) {
+  loadUserProfile(username: string) {
+    this.isLoading = true;
+    this.error = null;
+
+    this.http.get<UserResponse>(`${this.authService.API_URL}/accounts/users/${username}/`).subscribe({
+      next: (response) => {
+        if (response.user && response.user.username) {
+          this.currentUsername = response.user.username;
+          this.userAvatar = response.user.avatar || 'assets/default-avatar.png';
+          this.isUserOnline = response.user.is_online ?? false;
+          this.userStats = {
+            games_played: response.user.games_played ?? 0,
+            games_won: response.user.games_won ?? 0,
+            games_lost: response.user.games_lost ?? 0
+          };
+          this.loadFriends(response.user.username);
+          this.isLoading = false;
+        } else {
+          console.error('Invalid user data:', response);
+          this.error = 'Invalid user data received';
+          this.isLoading = false;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading user profile:', error);
+        this.error = 'Failed to load user profile';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  showUpdateProfile() {
+    this.router.navigate(['/profile/edit']);
+  }
+
+  loadFriends(username: string) {
     if (!username) {
       console.error('Username is required to get friends');
       return;
     }
 
-    this.http.get(`http://localhost:8000/accounts/users/${username}/friends/`).subscribe({
-      next: (data: any) => {
-        this.friends = data.map((friend: any) => ({
-          id: friend.id,
-          username: friend.username
-        }));
-        this.isLoading = false;
+    this.http.get<Friend[]>(`${this.authService.API_URL}/accounts/users/${username}/friends/`).subscribe({
+      next: (friends) => {
+        this.friends = friends;
       },
       error: (error) => {
-        console.error('Error getting friends:', error);
-        this.error = 'Failed to load friends';
-        this.isLoading = false;
+        console.error('Error loading friends:', error);
       }
     });
   }
@@ -163,7 +197,7 @@ export class ProfileComponent implements OnInit {
         this.friendRequests = this.friendRequests.filter(
           req => req.from_user.username !== request.from_user.username
         );
-        this.loadUserData();
+        this.loadUserProfile(this.currentUsername);
       },
       error: (error) => {
         console.error('Error accepting friend request:', error);
@@ -202,9 +236,7 @@ export class ProfileComponent implements OnInit {
   blockUser(userId: number) {
     this.chatService.blockUser(userId).subscribe({
       next: () => {
-        // Remove from friends list if present
         this.friends = this.friends.filter(friend => friend.id !== userId);
-        // Reload blocked users
         this.loadBlockedUsers();
       },
       error: (error) => {

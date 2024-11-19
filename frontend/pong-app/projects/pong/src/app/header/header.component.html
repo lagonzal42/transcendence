@@ -8,8 +8,23 @@
         <button routerLink="/search" class="btn-search" id="search-button">
             Search
         </button>
-        <button routerLink="/profile" class="btn-profile" id="profile-button">
+        <button *ngIf="isLoggedIn" 
+                (click)="navigateToProfile()" 
+                class="btn-profile" 
+                id="profile-button">
             Profile
+        </button>
+        <button *ngIf="isLoggedIn"
+                (click)="logout()"
+                class="btn-logout"
+                id="logout-button">
+            Logout
+        </button>
+        <button *ngIf="!isLoggedIn" 
+                routerLink="/login" 
+                class="btn-login" 
+                id="login-button">
+            Login
         </button>
     </div>
 </header>

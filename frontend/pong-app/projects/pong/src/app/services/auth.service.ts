@@ -20,29 +20,56 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
-    if (this.isBrowser){
-      sessionStorage.removeItem('access_token');
-      sessionStorage.removeItem('refresh_token');
-    }
-
-    return this.http.post(`${this.API_URL}/api/auth/token/`, { username, password }).pipe(
-      tap((response: any) => {
-        console.log('Login response received:', response);
-        if (this.isBrowser) {
-          sessionStorage.setItem('access_token', response.access);
-          sessionStorage.setItem('refresh_token', response.refresh);
+    return this.http.post<any>(`${this.API_URL}/accounts/login/`, {
+      username,
+      password
+    }).pipe(
+      tap(response => {
+        if (response.tokens) {
+          sessionStorage.setItem('access_token', response.tokens.access);
+          sessionStorage.setItem('refresh_token', response.tokens.refresh);
+          this.isAuthenticatedSubject.next(true);
         }
-        this.isAuthenticatedSubject.next(true);
       })
     );
   }
 
   logout() {
+    const refresh = this.getRefreshToken();
+    if (refresh) {
+      // Call backend logout endpoint
+      return this.http.post(`${this.API_URL}/accounts/logout/`, { refresh }).pipe(
+        tap(() => {
+          if (this.isBrowser) {
+            sessionStorage.removeItem('access_token');
+            sessionStorage.removeItem('refresh_token');
+          }
+          this.isAuthenticatedSubject.next(false);
+        })
+      ).subscribe({
+        error: (error) => {
+          console.error('Logout error:', error);
+          // Clean up local storage even if server request fails
+          if (this.isBrowser) {
+            sessionStorage.removeItem('access_token');
+            sessionStorage.removeItem('refresh_token');
+          }
+          this.isAuthenticatedSubject.next(false);
+        }
+      });
+    }
+    
+    // If no refresh token, just clean up local storage
     if (this.isBrowser) {
       sessionStorage.removeItem('access_token');
       sessionStorage.removeItem('refresh_token');
     }
     this.isAuthenticatedSubject.next(false);
+    return new Observable(subscriber => subscriber.complete());
+  }
+
+  private getRefreshToken(): string | null {
+    return this.isBrowser ? sessionStorage.getItem('refresh_token') : null;
   }
 
   refreshToken() {
@@ -84,5 +111,17 @@ export class AuthService {
 
   declineFriendRequest(requestId: number): Observable<any> {
     return this.http.post(`${this.API_URL}/accounts/friend-requests/${requestId}/decline/`, {});
+  }
+
+  getCurrentUser() {
+    return this.http.get<{username: string}>(`${this.API_URL}/accounts/me/`)
+  }
+
+  updateProfile(formData: FormData, username: string): Observable<any> {
+    return this.http.put(`${this.API_URL}/accounts/users/${username}/update/`, formData);
+  }
+
+  getUserStats(username: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/accounts/users/${username}/stats/`);
   }
 } 

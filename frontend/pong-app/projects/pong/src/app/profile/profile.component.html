@@ -84,5 +84,32 @@
                 </li>
             </ul>
         </div>
+
+        <div class="user-stats" *ngIf="!isLoading && !error">
+            <div class="avatar-section">
+                <img [src]="userAvatar" alt="User avatar" class="user-avatar">
+                <span class="online-status" [class.online]="isUserOnline"></span>
+            </div>
+            
+            <div class="stats-section">
+                <h3>Stats</h3>
+                <div class="stat-item">
+                    <span>Games Played:</span>
+                    <span>{{userStats.games_played}}</span>
+                </div>
+                <div class="stat-item">
+                    <span>Wins:</span>
+                    <span>{{userStats.games_won}}</span>
+                </div>
+                <div class="stat-item">
+                    <span>Losses:</span>
+                    <span>{{userStats.games_lost}}</span>
+                </div>
+            </div>
+            
+            <button *ngIf="isOwnProfile" (click)="showUpdateProfile()" class="edit-profile-btn">
+                Edit Profile
+            </button>
+        </div>
     </div>
 </div>

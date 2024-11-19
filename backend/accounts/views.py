@@ -122,9 +122,7 @@ class LoginView(GenericAPIView):
                     'user': {
                         'id': user.id,
                         'username': user.username,
-                        'email': user.email,
-                        'first_name': user.first_name,
-                        'last_name': user.last_name,
+                        'email': user.email,    
                     },
                     'tokens': {
                         'refresh': str(refresh),
@@ -303,12 +301,7 @@ class CurrentUser(APIView):
     def get(self, request):
         user = request.user
         return Response({
-            'id': user.id,
             'username': user.username,
-            'email': user.email,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'tournament_name': user.tournament_name,
         }, status=status.HTTP_200_OK)
     
 class SearchUsersView(APIView):

@@ -32,7 +32,7 @@ export class LoginComponent {
 			console.log('Attempting login with:', username);
 			this.authService.login(username, password).subscribe({
 				next: (response) => {
-					console.log('Login error:', response);
+					console.log('Login backend response:', response);
 					this.router.navigate(['']);
 				},
 				error: (err) => {
