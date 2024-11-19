@@ -4,6 +4,7 @@ import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-update-profile',
@@ -19,6 +20,14 @@ import { switchMap } from 'rxjs/operators';
         </div>
         
         <div class="form-group">
+          <label>Email</label>
+          <input type="email" formControlName="email" class="form-control">
+          <div *ngIf="updateForm.get('email')?.errors?.['email']" class="error-message">
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <div class="form-group">
           <label>Avatar</label>
           <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-control">
         </div>
@@ -27,7 +36,13 @@ import { switchMap } from 'rxjs/operators';
           <img [src]="avatarPreview" alt="Avatar preview">
         </div>
 
-        <button type="submit" [disabled]="updateForm.invalid">Update Profile</button>
+        <button type="submit" 
+                [disabled]="updateForm.get('email')?.errors?.['email'] || 
+                           (!updateForm.get('tournament_name')?.value && 
+                            !updateForm.get('email')?.value && 
+                            !selectedFile)">
+          Update Profile
+        </button>
       </form>
     </div>
   `,
@@ -48,32 +63,54 @@ import { switchMap } from 'rxjs/operators';
     .form-group {
       margin-bottom: 15px;
     }
+    .error-message {
+      color: red;
+      font-size: 0.8em;
+      margin-top: 5px;
+    }
+    .debug-info {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+    }
   `]
 })
 export class UpdateProfileComponent implements OnInit {
   updateForm: FormGroup;
   avatarPreview: string | null = null;
   selectedFile: File | null = null;
+  username: string = '';
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.updateForm = this.fb.group({
-      tournament_name: ['', Validators.required],
+      tournament_name: [''],
+      email: ['', [Validators.email]]
     });
   }
-
+  
   ngOnInit() {
-    this.loadUserData();
+    this.route.params.subscribe(params => {
+      this.username = params['username'];
+      this.loadUserData();
+    });
   }
 
   loadUserData() {
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
+        console.log('User data received:', user);
         this.updateForm.patchValue({
-          tournament_name: user.username
+          tournament_name: user.tournament_name || user.username,
+          email: user.email
         });
+        console.log('Form validity:', this.updateForm.valid);
+        console.log('Form errors:', this.updateForm.errors);
       },
       error: (error) => console.error('Error loading user data:', error)
     });
@@ -92,18 +129,25 @@ export class UpdateProfileComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.updateForm.valid) {
-      const formData = new FormData();
-      formData.append('tournament_name', this.updateForm.get('tournament_name')?.value);
-      if (this.selectedFile) {
-        formData.append('avatar', this.selectedFile);
-      }
+    const formData = new FormData();
+    const tournamentName = this.updateForm.get('tournament_name')?.value;
+    const email = this.updateForm.get('email')?.value;
 
-      this.authService.getCurrentUser().pipe(
-        switchMap(user => this.authService.updateProfile(formData, user.username))
-      ).subscribe({
+    if (tournamentName) {
+      formData.append('tournament_name', tournamentName);
+    }
+    if (email) {
+      formData.append('email', email);
+    }
+    if (this.selectedFile) {
+      formData.append('avatar', this.selectedFile);
+    }
+
+    if (tournamentName || email || this.selectedFile) {
+      this.authService.updateProfile(formData, this.username).subscribe({
         next: (response) => {
           console.log('Profile updated successfully', response);
+          this.router.navigate(['/profile', this.username]);
         },
         error: (error) => console.error('Error updating profile:', error)
       });

@@ -15,6 +15,12 @@
             Profile
         </button>
         <button *ngIf="isLoggedIn"
+                (click)="navigateToUpdateProfile()"
+                class="btn-update-profile"
+                id="update-profile-button">
+            Update Profile
+        </button>
+        <button *ngIf="isLoggedIn"
                 (click)="logout()"
                 class="btn-logout"
                 id="logout-button">

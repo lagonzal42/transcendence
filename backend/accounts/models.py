@@ -14,7 +14,7 @@ import secrets
 import random    
 
 class User(AbstractUser):
-    avatar = models.ImageField(default="noob.png")
+    avatar = models.ImageField(upload_to='avatars/', default="noob.png")
     username = models.CharField(max_length=100, unique=True, null=True)
     email = models.EmailField(unique=True, null=True)
     password = models.CharField(max_length=100)

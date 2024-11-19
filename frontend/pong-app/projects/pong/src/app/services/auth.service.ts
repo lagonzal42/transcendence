@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 
+interface User {
+  username: string;
+  email: string;
+  tournament_name?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -114,7 +120,7 @@ export class AuthService {
   }
 
   getCurrentUser() {
-    return this.http.get<{username: string}>(`${this.API_URL}/accounts/me/`)
+    return this.http.get<User>(`${this.API_URL}/accounts/me/`);
   }
 
   updateProfile(formData: FormData, username: string): Observable<any> {

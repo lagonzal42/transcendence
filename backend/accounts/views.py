@@ -151,15 +151,24 @@ class UpdateProfileView(UpdateAPIView):
     serializer_class = UpdateUserSerializer
     lookup_field = 'username'
 
-    def get(self, request, username):
-        user = User.objects.filter(username=username).first()
-        if not user:
-            return Response({"message": "No User found"}, status=404)
-        return Response({
-                    'username': user.username,
-                    'email': user.email,
-                    'tournament_name': user.tournament_name,
-                }, status=200)
+    def update(self, request, *args, **kwargs):
+        partial = True
+        instance = self.get_object()
+        
+        # Create a new dict with only the fields that were sent
+        data_to_update = {}
+        if 'tournament_name' in request.data:
+            data_to_update['tournament_name'] = request.data['tournament_name']
+        if 'email' in request.data:
+            data_to_update['email'] = request.data['email']
+        if 'avatar' in request.FILES:
+            data_to_update['avatar'] = request.FILES['avatar']
+
+        serializer = self.get_serializer(instance, data=data_to_update, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
 
 class CloseAccountView(APIView):
     def post(self, request, id):

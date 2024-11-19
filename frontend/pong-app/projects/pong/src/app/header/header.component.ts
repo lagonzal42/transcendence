@@ -49,6 +49,12 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  navigateToUpdateProfile() {
+    if (this.currentUsername) {
+      this.router.navigate(['/profile', this.currentUsername, 'update']);
+    }
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['']);

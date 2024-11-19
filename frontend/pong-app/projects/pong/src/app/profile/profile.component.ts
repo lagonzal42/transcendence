@@ -120,7 +120,7 @@ export class ProfileComponent implements OnInit {
   }
 
   showUpdateProfile() {
-    this.router.navigate(['/profile/edit']);
+    this.router.navigate(['/profile/update']);
   }
 
   loadFriends(username: string) {
