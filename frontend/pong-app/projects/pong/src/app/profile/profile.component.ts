@@ -36,6 +36,7 @@ interface ChatUser {
 interface Friend {
   id: number;
   username: string;
+  is_online?: boolean;
 }
 
 interface UserResponse {
@@ -104,34 +105,43 @@ export class ProfileComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.http.get<UserResponse>(`${this.authService.API_URL}/accounts/users/${username}/`).subscribe({
-      next: (response) => {
-        console.log('Profile response:', response);
-        if (response.user && response.user.username) {
-          this.currentUsername = response.user.username;
-          if (response.user.avatar) {
-            this.userAvatar = `${this.authService.API_URL}${response.user.avatar}?t=${new Date().getTime()}`;
-            console.log('Updated userAvatar in loadUserProfile:', this.userAvatar);
-          } else {
-            this.userAvatar = 'assets/default-avatar.png';
+    // First get the current logged-in user
+    this.authService.getCurrentUser().subscribe({
+      next: (currentUser) => {
+        // Set isOwnProfile flag by comparing usernames
+        this.isOwnProfile = currentUser.username === username;
+        
+        // Then load the profile data
+        this.http.get<UserResponse>(`${this.authService.API_URL}/accounts/users/${username}/`).subscribe({
+          next: (response) => {
+            console.log('Profile response:', response);
+            if (response.user && response.user.username) {
+              this.currentUsername = response.user.username;
+              if (response.user.avatar) {
+                this.userAvatar = `${this.authService.API_URL}${response.user.avatar}?t=${new Date().getTime()}`;
+              } else {
+                this.userAvatar = 'assets/default-avatar.png';
+              }
+              this.isUserOnline = response.user.is_online ?? false;
+              console.log('User online status:', this.isUserOnline); // Add this debug log
+              this.userStats = {
+                games_played: response.user.games_played ?? 0,
+                games_won: response.user.games_won ?? 0,
+                games_lost: response.user.games_lost ?? 0
+              };
+              this.loadFriends(response.user.username);
+              this.isLoading = false;
+            }
+          },
+          error: (error) => {
+            console.error('Error loading user profile:', error);
+            this.error = 'Failed to load user profile';
+            this.isLoading = false;
           }
-          this.isUserOnline = response.user.is_online ?? false;
-          this.userStats = {
-            games_played: response.user.games_played ?? 0,
-            games_won: response.user.games_won ?? 0,
-            games_lost: response.user.games_lost ?? 0
-          };
-          this.loadFriends(response.user.username);
-          this.isLoading = false;
-        } else {
-          console.error('Invalid user data:', response);
-          this.error = 'Invalid user data received';
-          this.isLoading = false;
-        }
+        });
       },
       error: (error) => {
-        console.error('Error loading user profile:', error);
-        this.error = 'Failed to load user profile';
+        console.error('Error getting current user:', error);
         this.isLoading = false;
       }
     });
@@ -149,6 +159,7 @@ export class ProfileComponent implements OnInit {
 
     this.http.get<Friend[]>(`${this.authService.API_URL}/accounts/users/${username}/friends/`).subscribe({
       next: (friends) => {
+        console.log('Friends data:', friends);
         this.friends = friends;
       },
       error: (error) => {

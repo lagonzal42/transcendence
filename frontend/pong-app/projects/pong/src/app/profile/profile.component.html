@@ -85,7 +85,10 @@
                 <div *ngIf="friends.length === 0" class="empty-state">No friends found</div>
                 <ul *ngIf="friends.length > 0" class="friends-list">
                     <li *ngFor="let friend of friends" class="list-item">
-                        <span>{{ friend.username }}</span>
+                        <div class="friend-info">
+                            <span class="friend-name">{{ friend.username }}</span>
+                            <span class="online-status" [class.online]="friend.is_online"></span>
+                        </div>
                         <div class="action-buttons">
                             <button (click)="startChat(friend.username)" class="action-button chat">Chat</button>
                             <button (click)="blockUser(friend.id)" class="action-button block">Block</button>

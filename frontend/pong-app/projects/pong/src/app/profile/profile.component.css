@@ -254,13 +254,14 @@
 }
 
 .online-status {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
     background-color: #ccc;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+    border: 2px solid white;
 }
 
 .online-status.online {
@@ -406,4 +407,30 @@
     padding: 1.5rem;
     background: #f8f9fa;
     border-radius: 8px;
+}
+
+.friend-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.friend-name {
+    margin-right: 8px;
+}
+
+.list-item .online-status {
+    position: relative;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ccc;
+    border: 1px solid white;
+    bottom: 0;
+    right: 0;
+}
+
+.list-item .online-status.online {
+    background-color: #2ecc71;
 }
