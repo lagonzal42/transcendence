@@ -93,7 +93,7 @@ export class UpdateProfileComponent implements OnInit {
       email: ['', [Validators.email]]
     });
   }
-  
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.username = params['username'];
@@ -146,8 +146,14 @@ export class UpdateProfileComponent implements OnInit {
     if (tournamentName || email || this.selectedFile) {
       this.authService.updateProfile(formData, this.username).subscribe({
         next: (response) => {
-          console.log('Profile updated successfully', response);
-          this.router.navigate(['/profile', this.username]);
+          console.log('Profile update response:', response);
+          if (response.avatar) {
+            this.router.navigate(['/profile', this.username], {
+              state: { newAvatarUrl: response.avatar }
+            });
+          } else {
+            console.error('No avatar URL in response');
+          }
         },
         error: (error) => console.error('Error updating profile:', error)
       });

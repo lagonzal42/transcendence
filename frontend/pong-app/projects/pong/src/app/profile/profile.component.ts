@@ -78,6 +78,18 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Get avatar URL from router state if available
+    const navigation = this.router.getCurrentNavigation();
+    console.log('Router state:', navigation?.extras.state);
+
+    if (navigation?.extras.state && 'newAvatarUrl' in navigation.extras.state) {
+      const newAvatarUrl = navigation.extras.state['newAvatarUrl'];
+      console.log('New avatar URL from state:', newAvatarUrl);
+      if (newAvatarUrl) {
+        this.updateAvatar(newAvatarUrl);
+      }
+    }
+
     this.route.params.subscribe(params => {
       const username = params['username'];
       if (username) {
@@ -94,9 +106,15 @@ export class ProfileComponent implements OnInit {
 
     this.http.get<UserResponse>(`${this.authService.API_URL}/accounts/users/${username}/`).subscribe({
       next: (response) => {
+        console.log('Profile response:', response);
         if (response.user && response.user.username) {
           this.currentUsername = response.user.username;
-          this.userAvatar = response.user.avatar || 'assets/default-avatar.png';
+          if (response.user.avatar) {
+            this.userAvatar = `${this.authService.API_URL}${response.user.avatar}?t=${new Date().getTime()}`;
+            console.log('Updated userAvatar in loadUserProfile:', this.userAvatar);
+          } else {
+            this.userAvatar = 'assets/default-avatar.png';
+          }
           this.isUserOnline = response.user.is_online ?? false;
           this.userStats = {
             games_played: response.user.games_played ?? 0,
@@ -257,4 +275,11 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+
+  updateAvatar(newAvatarUrl: string) {
+    console.log('Updating avatar to:', newAvatarUrl);
+    this.userAvatar = `${this.authService.API_URL}${newAvatarUrl}?t=${new Date().getTime()}`;
+    console.log('New userAvatar value:', this.userAvatar);
+  }
+
 }

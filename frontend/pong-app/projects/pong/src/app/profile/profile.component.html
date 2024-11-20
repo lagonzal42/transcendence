@@ -12,7 +12,7 @@
             <div class="profile-layout">
                 <div class="profile-left">
                     <div class="avatar-container">
-                        <img [src]="userAvatar" alt="User avatar" class="user-avatar">
+                        <img [src]="userAvatar" alt="User avatar" class="user-avatar" [attr.cache-control]="'no-cache'">
                         <span class="online-status" [class.online]="isUserOnline"></span>
                         <button *ngIf="isOwnProfile" (click)="showUpdateProfile()" class="edit-profile-btn">
                             Edit Profile
