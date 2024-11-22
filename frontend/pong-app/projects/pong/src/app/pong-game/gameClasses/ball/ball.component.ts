@@ -1,13 +1,4 @@
-import { Component } from '@angular/core';
 import { PaddleComponent as Paddle } from '../paddle/paddle.component';
-
-@Component({
-  selector: 'app-ball',
-  standalone: true,
-  imports: [],
-  templateUrl: './ball.component.html',
-  styleUrl: './ball.component.css'
-})
 
 export class BallComponent {
     
@@ -24,10 +15,10 @@ export class BallComponent {
       this.xPosition = xPos;
       this.yPosition = yPos;
       this.ballRadius = 10;
-      this.dx = this.getRandomNumber(-1, 1);
-      this.dy = this.getRandomNumber(-1, 1);
+      this.dx = this.getRandomNumber(-0.5, 0.5);
+      this.dy = this.getRandomNumber(-0.5, 0.5);
       this.touches = 0;
-      this.speed = 5;
+      this.speed = 4;
     }
 
     getRandomNumber(min: number, max: number)
@@ -59,17 +50,29 @@ export class BallComponent {
 
     calculatePaddleCollisions(Paddle1: Paddle, Paddle2: Paddle)
     {
-      if (this.dx < 0 && this.xPosition <= Paddle1.getWidth() + Paddle1.getX() + this.ballRadius
-        && this.yPosition >= Paddle1.getY() && this.yPosition <= Paddle1.getY() + Paddle1.getHeight())
+      if (this.xPosition <= Paddle1.getWidth() + Paddle1.getX() + this.ballRadius)
       {
-            this.calculateReboundAngle(Paddle1);
+        if (this.yPosition >= Paddle1.getY() && this.yPosition <= Paddle1.getY() + Paddle1.getHeight())
+        {
+          if (this.dx < 0)
+          {
+            this.calculateReboundAngle(Paddle1, -1);
             this.touches += 1;
+          }
+        }
       }
-      else if (this.dx > 0 && this.xPosition >= Paddle2.getX() - this.ballRadius
-        && this.yPosition >= Paddle2.getY() && this.yPosition <= Paddle2.getY() + Paddle2.getHeight())
+      else if (this.xPosition >= Paddle2.getX() - Paddle2.getWidth() - this.ballRadius)
       {
-            this.calculateReboundAngle(Paddle2);
+
+        console.log("paddle 2 position " + Paddle2.getX() + "ball x" + this.xPosition)
+        if (this.yPosition >= Paddle2.getY() && this.yPosition <= Paddle2.getY() + Paddle2.getHeight())
+        {
+          if (this.dx > 0)
+          {
+            this.calculateReboundAngle(Paddle2, 1);
             this.touches += 1;
+          }
+        }
       }
       if (this.touches == 3)
       {
@@ -78,14 +81,13 @@ export class BallComponent {
       }
     }
 
-    calculateReboundAngle(Paddle: Paddle)
+    calculateReboundAngle(Paddle: Paddle, factor: number)
     {
-      let relativeIntersectY = (Paddle.getY() + Paddle.getHeight() / 2) - this.yPosition;
+      let relativeIntersectY = this.yPosition - (Paddle.getY() + Paddle.getHeight() / 2);
       let normalizedRelativeIntersectionY = relativeIntersectY / (Paddle.getHeight() / 2);
       let bounceAngle = normalizedRelativeIntersectionY * Math.PI / 4;
-      let factor = Paddle.getX() == 0 ? -1 : 1;
-      this.dx = - Math.cos(bounceAngle) * factor;
-      this.dy = 5 * Math.sin(bounceAngle);
+      this.dx = -Math.cos(bounceAngle) * factor;
+      this.dy = Math.sin(bounceAngle);
     }
 
     checkGoal(canvasWidth: number)
@@ -114,5 +116,15 @@ export class BallComponent {
       ctx.fillStyle = "#000000";
       ctx.fill();
       ctx.closePath();
+    }
+
+    speedUp(): void
+    {
+      this.speed++;
+    }
+
+    getRadius(): number
+    {
+      return(this.ballRadius);
     }
 }

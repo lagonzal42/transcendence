@@ -1,12 +1,3 @@
-import { Component } from '@angular/core';
-
-@Component({
-	selector: 'app-paddle',
-	standalone: true,
-	imports: [],
-	templateUrl: './paddle.component.html',
-	styleUrl: './paddle.component.css'
-})
 export class PaddleComponent {
 	
 	private xPosition: 		number;

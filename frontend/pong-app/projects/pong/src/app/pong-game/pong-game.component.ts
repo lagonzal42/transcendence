@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-import { PaddleComponent as Paddle } from './gameClasses/paddle/paddle.component';
+import { PaddleComponent as Paddle } from "./gameClasses/paddle/paddle.component"
 import { BallComponent as Ball } from './gameClasses/ball/ball.component';
 
 @Component({
@@ -15,38 +15,35 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   private ctx!: CanvasRenderingContext2D | null;
   public isGameInitialized: boolean = false;
 
-  // // Nombres de los jugadores
+  // Nombres de los jugadores
   public leftPlayerName: string = '';
   public rightPlayerName: string = '';
 
-  // Paddle instances
-  private leftPaddle!: Paddle;
-  private rightPaddle!: Paddle;
-
-  //Ball instance
-  private ball!: Ball;
-
-  // // Paddle settings
-  // private paddleHeight: number = 75;
-  // private paddleWidth: number = 10;
+  // Paddle settings
+  private paddleHeight: number = 75;
+  private paddleWidth: number = 10;
   // private leftPaddleY: number = 0;
   // private rightPaddleY: number = 0;
   // private paddleSpeed: number = 7;
 
-  // // Ball settings
+  private leftPaddle?: Paddle;
+  private rightPaddle?: Paddle;
+
+  // Ball settings
   // private ballRadius: number = 10;
   // private x: number = 0;
   // private y: number = 0;
   // private dx: number = 2;
   // private dy: number = -2;
+  private ball? : Ball;
 
-  // // Score
-  public leftPlayerScore: number = 0;
+  // Score
+  public leftPlayerScore: number = -1;
   public rightPlayerScore: number = 0;
   private winningScore: number = 3;
   private gameEnded: boolean = false;
 
-  // // Paddle movement flags
+  // Paddle movement flags
   private leftPaddleUp: boolean = false;
   private leftPaddleDown: boolean = false;
   private rightPaddleUp: boolean = false;
@@ -59,7 +56,9 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       if (players) {
         this.leftPlayerName = players.leftPlayerName;
         this.rightPlayerName = players.rightPlayerName;
+        
       }
+
     }
   }
 
@@ -82,18 +81,19 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   }  
 
   initializeGame(): void {
+
     // this.x = this.pongCanvas.nativeElement.width / 2;
     // this.y = this.pongCanvas.nativeElement.height / 2;
   
     // this.leftPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
     // this.rightPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
-    this.leftPaddle = new Paddle(10, (this.pongCanvas.nativeElement.height - 75) / 2);
-    this.rightPaddle = new Paddle(this.pongCanvas.nativeElement.width - 20, (this.pongCanvas.nativeElement.height - 75) / 2);
-    this.ball = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
   
-    this.leftPlayerScore = 0; // Resetea la puntuación al inicio
-    this.rightPlayerScore = 0; // Resetea la puntuación al inicio
+    // this.leftPlayerScore = 0; // Resetea la puntuación al inicio
+    // this.rightPlayerScore = 0; // Resetea la puntuación al inicio
     this.gameEnded = false; // Resetea el estado del juego
+    this.leftPaddle = new Paddle(10, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2);;
+    this.rightPaddle = new Paddle(this.pongCanvas.nativeElement.width - 10  - this.paddleWidth, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2);
+    this.ball = new Ball(this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
   
     this.isGameInitialized = true; // Marcar el juego como inicializado
   }
@@ -103,34 +103,8 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       window.addEventListener('keydown', this.keyHandler.bind(this));
       window.addEventListener('keyup', this.keyHandler.bind(this));
       requestAnimationFrame(this.draw.bind(this)); // Asegúrate de que se llama a draw
-      while (!this.gameEnded)
-      {
-        this.ball.move();
-        this.ball.calculateCollisions(this.pongCanvas.nativeElement.height, this.leftPaddle, this.rightPaddle);
-        this.paddleMovement();
-        this.checkGoal();
-        requestAnimationFrame(this.draw.bind(this));
-      }
-      this.displayWinner();
     }
-  }
-
-  checkGoal(): void
-  {
-    switch(this.ball.checkGoal(this.pongCanvas.nativeElement.width))
-    {
-      case 1:
-        this.leftPlayerScore++;
-        this.updateScoreDisplay();
-        this.resetBall();
-        break;
-      case 2:
-        this.rightPlayerScore++;
-        this.updateScoreDisplay();
-        this.resetBall();
-        break;
-    }
-  }
+  }  
 
   keyHandler(event: KeyboardEvent): void {
     const isKeyDown = event.type === 'keydown';  // Detect if the event is keydown or keyup
@@ -159,35 +133,35 @@ export class PongGameComponent implements OnInit, AfterViewInit {
 
     // Clear the canvas
     this.ctx.clearRect(0, 0, this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
-    this.leftPaddle.draw(this.ctx);
-    this.rightPaddle.draw(this.ctx);
-    this.ball.draw(this.ctx);
-    // // Draw the ball
-    // this.ctx.beginPath();
-    // this.ctx.arc(this.x, this.y, this.ballRadius, 0, Math.PI * 2);
-    // this.ctx.fillStyle = '#FFFFFF'; // Color de la pelota
-    // this.ctx.fill();
-    // this.ctx.closePath();
 
-    // // Draw the left paddle
-    // this.ctx.beginPath();
-    // this.ctx.rect(10, this.leftPaddleY, this.paddleWidth, this.paddleHeight);
-    // this.ctx.fillStyle = '#FFFFFF'; // Color de la pala izquierda
-    // this.ctx.fill();
-    // this.ctx.closePath();
+    // Draw the ball
+    this.ctx.beginPath();
+    this.ctx.arc(this.ball!.getX(), this.ball!.getY(), this.ball!.getRadius(), 0, Math.PI * 2);
+    this.ctx.fillStyle = '#FFFFFF'; // Color de la pelota
+    this.ctx.fill();
+    this.ctx.closePath();
 
-    // // Draw the right paddle
-    // this.ctx.beginPath();
-    // this.ctx.rect(this.pongCanvas.nativeElement.width - this.paddleWidth - 10, this.rightPaddleY, this.paddleWidth, this.paddleHeight);
-    // this.ctx.fillStyle = '#FFFFFF'; // Color de la pala derecha
-    // this.ctx.fill();
-    // this.ctx.closePath();
+    // Draw the left paddle
+    this.ctx.beginPath();
+    this.ctx.rect(this.leftPaddle!.getX(), this.leftPaddle!.getY(), this.paddleWidth, this.paddleHeight);
+    this.ctx.fillStyle = '#FFFFFF'; // Color de la pala izquierda
+    this.ctx.fill();
+    this.ctx.closePath();
+
+    // Draw the right paddle
+    this.ctx.beginPath();
+    this.ctx.rect(this.rightPaddle!.getX(), this.rightPaddle!.getY(), this.paddleWidth, this.paddleHeight);
+    this.ctx.fillStyle = '#FFFFFF'; // Color de la pala derecha
+    this.ctx.fill();
+    this.ctx.closePath();
 
     // Ball movement
     // this.x += this.dx;
     // this.y += this.dy;
+    this.ball?.move();
+    this.ball?.calculateCollisions(this.pongCanvas.nativeElement.height, this.leftPaddle!, this.rightPaddle!);
 
-    // Collision detection (borders)
+    // // Collision detection (borders)
     // if (this.y + this.dy > this.pongCanvas.nativeElement.height - this.ballRadius || this.y + this.dy < this.ballRadius) {
     //   this.dy = -this.dy;
     // }
@@ -199,55 +173,44 @@ export class PongGameComponent implements OnInit, AfterViewInit {
     //   this.dx = -this.dx;
     // }
 
+
     // Score logic: when the ball passes the paddle on either side
-    // if (this.x - this.ballRadius < 0) {
-    //   this.rightPlayerScore++;
-    //   this.updateScoreDisplay(); // Update display immediately after scoring
-    //   this.resetBall();
-    // } else if (this.x + this.ballRadius > this.pongCanvas.nativeElement.width) {
-    //   this.leftPlayerScore++;
-    //   this.updateScoreDisplay(); // Update display immediately after scoring
-    //   this.resetBall();
-    // }
+    switch (this.ball!.checkGoal(this.pongCanvas.nativeElement.width))
+    {
+      case 1:
+        this.rightPlayerScore++;
+        this.updateScoreDisplay(); // Update display immediately after scoring
+        this.resetBall();
+        break;
+      case 2:
+        this.leftPlayerScore++;
+        this.updateScoreDisplay(); // Update display immediately after scoring
+        this.resetBall();
+        break;
+    }
 
     // Check if game has ended
-    // if (this.leftPlayerScore >= this.winningScore || this.rightPlayerScore >= this.winningScore) {
-    //   this.gameEnded = true;
-    //   this.displayWinner();
-    //   return; // Stop drawing further
-    // }
+    if (this.leftPlayerScore >= this.winningScore || this.rightPlayerScore >= this.winningScore) {
+      this.gameEnded = true;
+      this.displayWinner();
+      return; // Stop drawing further
+    }
 
     // Paddle movement
-    // if (this.leftPaddleUp) {
-    //   this.leftPaddle.moveUp();
-    // }
-    // if (this.leftPaddleDown) {
-    //   this.leftPaddle.moveDown();
-    // }
-    // if (this.rightPaddleUp) {
-    //   this.rightPaddle.moveUp();
-    // }
-    // if (this.rightPaddleDown) {
-    //   this.rightPaddle.moveDown();
-    // }
+    if (this.leftPaddleUp && this.leftPaddle!.getY() > 0) {
+      this.leftPaddle!.moveUp();
+    }
+    if (this.leftPaddleDown && this.leftPaddle!.getY() < this.pongCanvas.nativeElement.height - this.leftPaddle!.getHeight()) {
+      this.leftPaddle?.moveDown();
+    }
+    if (this.rightPaddleUp && this.rightPaddle!.getY() > 0) {
+      this.rightPaddle?.moveUp();
+    }
+    if (this.rightPaddleDown && this.rightPaddle!.getY() < this.pongCanvas.nativeElement.height - this.rightPaddle!.getHeight()) {
+      this.rightPaddle?.moveDown();
+    }
 
-    // requestAnimationFrame(this.draw.bind(this));
-  }
-
-  paddleMovement(): void
-  {
-    if (this.leftPaddleUp) {
-      this.leftPaddle.moveUp();
-    }
-    if (this.leftPaddleDown) {
-      this.leftPaddle.moveDown();
-    }
-    if (this.rightPaddleUp) {
-      this.rightPaddle.moveUp();
-    }
-    if (this.rightPaddleDown) {
-      this.rightPaddle.moveDown();
-    }
+    requestAnimationFrame(this.draw.bind(this));
   }
 
   resetBall(): void {
