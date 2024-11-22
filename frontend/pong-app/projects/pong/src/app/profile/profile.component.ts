@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChatService } from '../services/chat.service';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { FormsModule } from '@angular/forms';
 
 interface User {
@@ -112,13 +112,13 @@ export class ProfileComponent implements OnInit {
         this.isOwnProfile = currentUser.username === username;
         
         // Then load the profile data
-        this.http.get<UserResponse>(`${this.authService.API_URL}/accounts/users/${username}/`).subscribe({
+        this.http.get<UserResponse>(`http://localhost:8000/accounts/users/${username}/`).subscribe({
           next: (response) => {
             console.log('Profile response:', response);
             if (response.user && response.user.username) {
               this.currentUsername = response.user.username;
               if (response.user.avatar) {
-                this.userAvatar = `${this.authService.API_URL}${response.user.avatar}?t=${new Date().getTime()}`;
+                this.userAvatar = `http://localhost:8000/${response.user.avatar}?t=${new Date().getTime()}`;
               } else {
                 this.userAvatar = 'assets/default-avatar.png';
               }
@@ -157,7 +157,7 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    this.http.get<Friend[]>(`${this.authService.API_URL}/accounts/users/${username}/friends/`).subscribe({
+    this.http.get<Friend[]>(`http://localhost:8000/accounts/users/${username}/friends/`).subscribe({
       next: (friends) => {
         console.log('Friends data:', friends);
         this.friends = friends;
@@ -177,22 +177,23 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/chat', roomName]);
   }
 
-  searchUsers() {
-    if (this.searchQuery.trim()) {
-      this.authService.searchUsers(this.searchQuery).subscribe({
-        next: (results) => {
-          this.searchResults = results;
-        },
-        error: (error) => {
-          console.error('Error searching users:', error);
-          this.error = 'Failed to search users';
-        }
-      });
-    }
-  }
+  // searchUsers() {
+  //   if (this.searchQuery.trim()) {
+  //     this.authService.searchUsers(this.searchQuery).subscribe({
+  //       next: (results) => {
+  //         this.searchResults = results;
+  //       },
+  //       error: (error) => {
+  //         console.error('Error searching users:', error);
+  //         this.error = 'Failed to search users';
+  //       }
+  //     });
+  //   }
+  // }
 
   sendFriendRequest(username: string) {
-    this.authService.sendFriendRequest(username).subscribe({
+
+      this.http.post("http://localhost:8000/accounts/friend-requests/send", {to_username: username}, {headers: {'Content-Type': 'application/json'}}).subscribe({
       next: (response) => {
         console.log('Friend request sent successfully:', response);
         this.searchResults = this.searchResults.filter(user => user.username !== username);
@@ -209,7 +210,7 @@ export class ProfileComponent implements OnInit {
   }
 
   loadFriendRequests() {
-    this.authService.getFriendRequests().subscribe({
+    this.http.get("http://localhost:8000/accounts/friend-requests/").subscribe({
       next: (requests) => {
         this.friendRequests = requests;
       },
@@ -289,7 +290,7 @@ export class ProfileComponent implements OnInit {
 
   updateAvatar(newAvatarUrl: string) {
     console.log('Updating avatar to:', newAvatarUrl);
-    this.userAvatar = `${this.authService.API_URL}${newAvatarUrl}?t=${new Date().getTime()}`;
+    this.userAvatar = `http://localhost:8000/${newAvatarUrl}?t=${new Date().getTime()}`;
     console.log('New userAvatar value:', this.userAvatar);
   }
 

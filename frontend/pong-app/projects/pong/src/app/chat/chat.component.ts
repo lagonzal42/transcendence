@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatService, ChatMessage } from '../services/chat.service';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule, Router } from '@angular/router';
 

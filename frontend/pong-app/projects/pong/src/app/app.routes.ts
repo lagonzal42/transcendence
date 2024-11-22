@@ -10,8 +10,6 @@ import { TournamentComponent } from './tournament/tournament.component';
 import { LocalPlayComponent } from './local-play/local-play.component';
 import { PongGameComponent } from './pong-game/pong-game.component';
 import { ChatComponent } from './chat/chat.component';
-import { MatchmakingComponent } from './matchmaking/matchmaking.component';
-import { RemotePongComponent } from './remote-pong/remote-pong.component';
 import { UpdateProfileComponent } from './update-profile-component/update-profile-component.component';
 
 
@@ -29,8 +27,6 @@ export const routes: Routes = [
       { path: 'tournament', component: TournamentComponent },
       { path: 'local-play', component: LocalPlayComponent },
       { path: 'pong-game', component: PongGameComponent },
-      { path: 'matchmaking', component: MatchmakingComponent },
-      { path: 'remote-pong/:gameId', component: RemotePongComponent },
       { path: 'profile/:username/update', component: UpdateProfileComponent },
     ]
   },

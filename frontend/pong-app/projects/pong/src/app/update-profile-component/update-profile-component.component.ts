@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
@@ -142,7 +142,7 @@ export class UpdateProfileComponent implements OnInit {
     if (this.selectedFile) {
       formData.append('avatar', this.selectedFile);
     }
-
+    
     if (tournamentName || email || this.selectedFile) {
       this.authService.updateProfile(formData, this.username).subscribe({
         next: (response) => {

@@ -17,10 +17,7 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private isBrowser: boolean;
   
-  constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) platformId: Object
-  ) {
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
     this.isAuthenticatedSubject.next(!!this.getAccessToken());
   }
@@ -91,19 +88,19 @@ export class AuthService {
     return this.isAuthenticatedSubject.asObservable();
   }
 
-  searchUsers(query: string): Observable<any> {
-    return this.http.get(`${this.API_URL}/accounts/users/search/?query=${query}`);
-  }
+  // searchUsers(query: string): Observable<any> {
+  //   return this.http.get(`${this.API_URL}/accounts/users/search/?query=${query}`);
+  // }
 
-  sendFriendRequest(to_username: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/accounts/friend-requests/send/`, {
-      to_username: to_username
-    }, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-  }
+  // sendFriendRequest(to_username: string): Observable<any> {
+  //   return this.http.post(`${this.API_URL}/accounts/friend-requests/send/`, {
+  //     to_username: to_username
+  //   }, {
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     }
+  //   });
+  // }
 
   getFriendRequests(): Observable<any> {
     return this.http.get(`${this.API_URL}/accounts/friend-requests/`);
@@ -123,9 +120,7 @@ export class AuthService {
     return this.http.get<User>(`${this.API_URL}/accounts/me/`);
   }
 
-  updateProfile(formData: FormData, username: string): Observable<any> {
-    return this.http.put(`${this.API_URL}/accounts/users/${username}/update/`, formData);
-  }
+
 
   getUserStats(username: string): Observable<any> {
     return this.http.get(`${this.API_URL}/accounts/users/${username}/stats/`);
