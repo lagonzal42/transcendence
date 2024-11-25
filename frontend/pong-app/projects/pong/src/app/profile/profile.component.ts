@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChatService } from '../services/chat.service';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../services/auth.service';
 import { FormsModule } from '@angular/forms';
 
 interface User {
@@ -177,19 +177,19 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/chat', roomName]);
   }
 
-  // searchUsers() {
-  //   if (this.searchQuery.trim()) {
-  //     this.authService.searchUsers(this.searchQuery).subscribe({
-  //       next: (results) => {
-  //         this.searchResults = results;
-  //       },
-  //       error: (error) => {
-  //         console.error('Error searching users:', error);
-  //         this.error = 'Failed to search users';
-  //       }
-  //     });
-  //   }
-  // }
+  searchUsers() {
+    if (this.searchQuery.trim()) {
+      this.authService.searchUsers(this.searchQuery).subscribe({
+        next: (results) => {
+          this.searchResults = results;
+        },
+        error: (error) => {
+          console.error('Error searching users:', error);
+          this.error = 'Failed to search users';
+        }
+      });
+    }
+  }
 
   sendFriendRequest(username: string) {
 
@@ -210,7 +210,7 @@ export class ProfileComponent implements OnInit {
   }
 
   loadFriendRequests() {
-    this.http.get("http://localhost:8000/accounts/friend-requests/").subscribe({
+    this.http.get<FriendRequest[]>("http://localhost:8000/accounts/friend-requests/").subscribe({
       next: (requests) => {
         this.friendRequests = requests;
       },

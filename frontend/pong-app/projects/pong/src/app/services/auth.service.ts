@@ -88,19 +88,19 @@ export class AuthService {
     return this.isAuthenticatedSubject.asObservable();
   }
 
-  // searchUsers(query: string): Observable<any> {
-  //   return this.http.get(`${this.API_URL}/accounts/users/search/?query=${query}`);
-  // }
+  searchUsers(query: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/accounts/users/search/?query=${query}`);
+  }
 
-  // sendFriendRequest(to_username: string): Observable<any> {
-  //   return this.http.post(`${this.API_URL}/accounts/friend-requests/send/`, {
-  //     to_username: to_username
-  //   }, {
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     }
-  //   });
-  // }
+  sendFriendRequest(to_username: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/accounts/friend-requests/send/`, {
+      to_username: to_username
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
 
   getFriendRequests(): Observable<any> {
     return this.http.get(`${this.API_URL}/accounts/friend-requests/`);
