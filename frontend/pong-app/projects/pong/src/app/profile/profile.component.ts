@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChatService } from '../services/chat.service';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { FormsModule } from '@angular/forms';
 
 interface User {
@@ -60,6 +60,7 @@ export class ProfileComponent implements OnInit {
   friendRequests: FriendRequest[] = [];
   friends: Friend[] = [];
   blockedUsers: any[] = [];
+  public readonly API_URL = 'http://localhost:8000';
 
   userAvatar: string = 'assets/default-avatar.png';
   isUserOnline: boolean = false;
@@ -177,18 +178,31 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/chat', roomName]);
   }
 
-  searchUsers() {
-    if (this.searchQuery.trim()) {
-      this.authService.searchUsers(this.searchQuery).subscribe({
-        next: (results) => {
-          this.searchResults = results;
-        },
-        error: (error) => {
-          console.error('Error searching users:', error);
-          this.error = 'Failed to search users';
-        }
-      });
-    }
+  // searchUsers() {
+  //   if (this.searchQuery.trim()) {
+  //     this.authService.searchUsers(this.searchQuery).subscribe({
+  //       next: (results) => {
+  //         this.searchResults = results;
+  //       },
+  //       error: (error) => {
+  //         console.error('Error searching users:', error);
+  //         this.error = 'Failed to search users';
+  //       }
+  //     });
+  //   }
+  // }
+
+  searchUsers()
+  {
+    this.http.get<any[]>(`${this.API_URL}/accounts/users/search/?query=${this.searchQuery.trim()}`).subscribe({
+      next: (results) => {
+        this.searchResults = results;
+      },
+      error: (error) => {
+        console.error('Error searching users:', error);
+        this.error = 'Failed to search users';
+      }
+    })
   }
 
   sendFriendRequest(username: string) {
@@ -221,8 +235,25 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  // acceptFriendRequest(request: FriendRequest) {
+  //   this.authService.acceptFriendRequest(request.from_user.username).subscribe({
+  //     next: () => {
+  //       this.friendRequests = this.friendRequests.filter(
+  //         req => req.from_user.username !== request.from_user.username
+  //       );
+  //       this.loadUserProfile(this.currentUsername);
+  //     },
+  //     error: (error) => {
+  //       console.error('Error accepting friend request:', error);
+  //       this.error = 'Failed to accept friend request';
+  //     }
+  //   });
+  // }
+
   acceptFriendRequest(request: FriendRequest) {
-    this.authService.acceptFriendRequest(request.from_user.username).subscribe({
+    this.http.post(`${this.API_URL}/accounts/friend-requests/accept/`, {
+      from_username: request.from_user.username
+    }).subscribe({
       next: () => {
         this.friendRequests = this.friendRequests.filter(
           req => req.from_user.username !== request.from_user.username
@@ -233,11 +264,23 @@ export class ProfileComponent implements OnInit {
         console.error('Error accepting friend request:', error);
         this.error = 'Failed to accept friend request';
       }
-    });
+    })
   }
 
+  // declineFriendRequest(requestId: number) {
+  //   this.authService.declineFriendRequest(requestId).subscribe({
+  //     next: () => {
+  //       this.friendRequests = this.friendRequests.filter(req => req.id !== requestId);
+  //     },
+  //     error: (error) => {
+  //       console.error('Error declining friend request:', error);
+  //       this.error = 'Failed to decline friend request';
+  //     }
+  //   });
+  // }
+
   declineFriendRequest(requestId: number) {
-    this.authService.declineFriendRequest(requestId).subscribe({
+    this.http.post(`${this.API_URL}/accounts/friend-requests/${requestId}/decline/`, {}).subscribe({
       next: () => {
         this.friendRequests = this.friendRequests.filter(req => req.id !== requestId);
       },

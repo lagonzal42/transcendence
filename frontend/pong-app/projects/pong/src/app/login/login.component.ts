@@ -3,7 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../auth/auth.service';
+import { userInfo } from 'os';
+import { UserInterface } from '../auth/login/interfaces/user.interface';
 
 @Component({
 	selector: 'app-login',
@@ -18,7 +20,7 @@ export class LoginComponent {
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
-		private router: Router
+		private router: Router,
 	) {
 		this.loginForm = this.fb.group({
 			username: ['', Validators.required],
@@ -28,9 +30,13 @@ export class LoginComponent {
 
 	onSubmit() {
 		if (this.loginForm.valid) {
-			const { username, password } = this.loginForm.value;
-			console.log('Attempting login with:', username);
-			this.authService.login(username, password).subscribe({
+			const credentials: UserInterface = {
+				username: this.loginForm.value.username,
+				password: this.loginForm.value.password
+			};
+
+			console.log('Attempting login with:', credentials.username);
+			this.authService.login(credentials).subscribe({
 				next: (response) => {
 					console.log('Login backend response:', response);
 					this.router.navigate(['']);

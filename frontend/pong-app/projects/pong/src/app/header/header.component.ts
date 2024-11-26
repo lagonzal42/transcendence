@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AuthService } from '../auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -10,9 +11,10 @@ import { CommonModule } from '@angular/common';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   currentUsername: string = '';
   isLoggedIn: boolean = false;
+  private authSubscription?: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -20,8 +22,8 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.isAuthenticated().subscribe({
-      next: (isAuthenticated) => {
+    this.authSubscription = this.authService.isAuthenticated().subscribe(
+      isAuthenticated => {
         this.isLoggedIn = isAuthenticated;
         if (isAuthenticated) {
           this.loadCurrentUser();
@@ -29,7 +31,13 @@ export class HeaderComponent implements OnInit {
           this.currentUsername = '';
         }
       }
-    });
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
   loadCurrentUser() {

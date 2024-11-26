@@ -57,10 +57,11 @@ class RegisterView(APIView):
     permission_classes = [AllowAny]
     serializer_class = UserRegisterSerializer
 
-
     def post(self, request):
+        print("Error is happening here")
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+    
+        if serializer.is_valid():
             user = serializer.save()
             refresh = RefreshToken.for_user(user)
 
@@ -75,7 +76,8 @@ class RegisterView(APIView):
                     'access': str(refresh.access_token),
                 }
             }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print(f"Validation errors for register: {serializer.errors}")
+        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]
@@ -115,7 +117,8 @@ class LoginView(GenericAPIView):
         if serializer.is_valid(raise_exception=True):
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
-
+            # print(username)
+            # print(password)
             user = authenticate(username=username, password=password)
 
             if user:
@@ -129,9 +132,10 @@ class LoginView(GenericAPIView):
                     'tokens': {
                         'refresh': str(refresh),
                         'access': str(refresh.access_token),
-                    }
+                    }       
                 }, status=status.HTTP_200_OK)
             else:
+                print("entering here")
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -140,12 +144,19 @@ class LogoutView(APIView):
 
     def post(self, request):
         try:
-            refresh_token = request.data["refresh"]
+            refresh_token = request.data.get("refresh_token")
+            if not refresh_token:
+                return Response(
+                    {"error": "Refresh token is required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
             token = RefreshToken(refresh_token)
             token.blacklist()
+
             return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
         except Exception:
-            return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Invalid token or token has been blacklisted"}, status=status.HTTP_400_BAD_REQUEST)
 
 class UpdateProfileView(UpdateAPIView):
     queryset = User.objects.all()
