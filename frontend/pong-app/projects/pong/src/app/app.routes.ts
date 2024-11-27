@@ -23,7 +23,7 @@ export const routes: Routes = [
       { path: 'signup', component: SignupComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'profile/:username', component: ProfileComponent },
-      { path: 'search', component: SearchComponent },
+      //{ path: 'search', component: SearchComponent },
       { path: 'tournament', component: TournamentComponent },
       { path: 'local-play', component: LocalPlayComponent },
       { path: 'pong-game', component: PongGameComponent },

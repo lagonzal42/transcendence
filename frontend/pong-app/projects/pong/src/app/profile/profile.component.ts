@@ -80,19 +80,14 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Get avatar URL from router state if available
-    const navigation = this.router.getCurrentNavigation();
-    console.log('Router state:', navigation?.extras.state);
-
-    if (navigation?.extras.state && 'newAvatarUrl' in navigation.extras.state) {
-      const newAvatarUrl = navigation.extras.state['newAvatarUrl'];
-      console.log('New avatar URL from state:', newAvatarUrl);
-      if (newAvatarUrl) {
-        this.updateAvatar(newAvatarUrl);
+    this.route.queryParams.subscribe(params => {
+      if (params['newAvatar']) {
+        this.updateAvatar(params['newAvatar']);
       }
-    }
+    })
 
     this.route.params.subscribe(params => {
+      console.log(params);
       const username = params['username'];
       if (username) {
         this.currentUsername = username;
@@ -106,25 +101,23 @@ export class ProfileComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    // First get the current logged-in user
     this.authService.getCurrentUser().subscribe({
       next: (currentUser) => {
-        // Set isOwnProfile flag by comparing usernames
         this.isOwnProfile = currentUser.username === username;
         
-        // Then load the profile data
         this.http.get<UserResponse>(`http://localhost:8000/accounts/users/${username}/`).subscribe({
           next: (response) => {
             console.log('Profile response:', response);
             if (response.user && response.user.username) {
               this.currentUsername = response.user.username;
               if (response.user.avatar) {
+                const avatarPath = response.user.avatar.replace(/^\/+/, '');
                 this.userAvatar = `http://localhost:8000/${response.user.avatar}?t=${new Date().getTime()}`;
               } else {
                 this.userAvatar = 'assets/default-avatar.png';
               }
               this.isUserOnline = response.user.is_online ?? false;
-              console.log('User online status:', this.isUserOnline); // Add this debug log
+              console.log('User online status:', this.isUserOnline);
               this.userStats = {
                 games_played: response.user.games_played ?? 0,
                 games_won: response.user.games_won ?? 0,
@@ -178,20 +171,6 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/chat', roomName]);
   }
 
-  // searchUsers() {
-  //   if (this.searchQuery.trim()) {
-  //     this.authService.searchUsers(this.searchQuery).subscribe({
-  //       next: (results) => {
-  //         this.searchResults = results;
-  //       },
-  //       error: (error) => {
-  //         console.error('Error searching users:', error);
-  //         this.error = 'Failed to search users';
-  //       }
-  //     });
-  //   }
-  // }
-
   searchUsers()
   {
     this.http.get<any[]>(`${this.API_URL}/accounts/users/search/?query=${this.searchQuery.trim()}`).subscribe({
@@ -207,7 +186,7 @@ export class ProfileComponent implements OnInit {
 
   sendFriendRequest(username: string) {
 
-      this.http.post("http://localhost:8000/accounts/friend-requests/send", {to_username: username}, {headers: {'Content-Type': 'application/json'}}).subscribe({
+      this.http.post(`${this.API_URL}/accounts/friend-requests/send/`, {to_username: username}, {headers: {'Content-Type': 'application/json'}}).subscribe({
       next: (response) => {
         console.log('Friend request sent successfully:', response);
         this.searchResults = this.searchResults.filter(user => user.username !== username);
@@ -235,21 +214,6 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // acceptFriendRequest(request: FriendRequest) {
-  //   this.authService.acceptFriendRequest(request.from_user.username).subscribe({
-  //     next: () => {
-  //       this.friendRequests = this.friendRequests.filter(
-  //         req => req.from_user.username !== request.from_user.username
-  //       );
-  //       this.loadUserProfile(this.currentUsername);
-  //     },
-  //     error: (error) => {
-  //       console.error('Error accepting friend request:', error);
-  //       this.error = 'Failed to accept friend request';
-  //     }
-  //   });
-  // }
-
   acceptFriendRequest(request: FriendRequest) {
     this.http.post(`${this.API_URL}/accounts/friend-requests/accept/`, {
       from_username: request.from_user.username
@@ -266,18 +230,6 @@ export class ProfileComponent implements OnInit {
       }
     })
   }
-
-  // declineFriendRequest(requestId: number) {
-  //   this.authService.declineFriendRequest(requestId).subscribe({
-  //     next: () => {
-  //       this.friendRequests = this.friendRequests.filter(req => req.id !== requestId);
-  //     },
-  //     error: (error) => {
-  //       console.error('Error declining friend request:', error);
-  //       this.error = 'Failed to decline friend request';
-  //     }
-  //   });
-  // }
 
   declineFriendRequest(requestId: number) {
     this.http.post(`${this.API_URL}/accounts/friend-requests/${requestId}/decline/`, {}).subscribe({
@@ -333,7 +285,7 @@ export class ProfileComponent implements OnInit {
 
   updateAvatar(newAvatarUrl: string) {
     console.log('Updating avatar to:', newAvatarUrl);
-    this.userAvatar = `http://localhost:8000/${newAvatarUrl}?t=${new Date().getTime()}`;
+    this.userAvatar = `http//:localhost:8000/backend/media/avatars/${newAvatarUrl.replace(/^\/+/, '')}?t=${new Date().getTime()}`;
     console.log('New userAvatar value:', this.userAvatar);
   }
 

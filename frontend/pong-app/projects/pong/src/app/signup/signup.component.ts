@@ -68,8 +68,7 @@ export class SignupComponent {
 			})
     } else {
       console.log('Form is invalid');
-      // Optionally, you can mark all controls as touched to trigger validation messages
-      this.signupForm.markAllAsTouched();
+      // this.signupForm.markAllAsTouched();
     }
   }
 }

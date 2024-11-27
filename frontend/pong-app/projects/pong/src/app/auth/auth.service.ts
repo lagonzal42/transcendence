@@ -22,7 +22,7 @@ export class AuthService {
 
   private checkAuthStatus(): boolean {
     if (isPlatformBrowser(this.platformId)) {
-      const token = localStorage.getItem('access');
+      const token = localStorage.getItem('access_token');
       return token ? !this.jwtHelper.isTokenExpired(token) : false;
     }
     return false;
@@ -38,9 +38,6 @@ export class AuthService {
       map((response: any) => {
         if (isPlatformBrowser(this.platformId))
         {
-          // console.log("response.access-->" + response.tokens.access);
-          // console.log("response.refresh-->" + response.tokens.refresh);
-          // console.log("response.username-->" + response.user.username);
           localStorage.setItem('access_token', response.tokens.access);
           localStorage.setItem('refresh_token', response.tokens.refresh);
           localStorage.setItem('username', response.user.username);
@@ -62,6 +59,7 @@ export class AuthService {
     {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
+      localStorage.removeItem('username');
       this.isAuthenticatedSubject.next(false);
     }
     this.router.navigate(['/login']);
@@ -71,14 +69,14 @@ export class AuthService {
   {
     if (!isPlatformBrowser(this.platformId))
       return (of(401));
-    const refresh = localStorage.getItem('refresh');
+    const refresh = localStorage.getItem('refresh_token');
 
     if (!refresh)
       return (of(401));
     return (this.httpClient.post('http://localhost:8000/accounts/account_refresh/', {refresh: refresh}).pipe(
       map((response: any) => {
-        localStorage.setItem('access', response.access);
-        localStorage.setItem('refresh', response.refresh);
+        localStorage.setItem('access_token', response.access);
+        localStorage.setItem('refresh_token', response.refresh);
         return (0);
       }),
       catchError((error: any) => {
@@ -87,7 +85,7 @@ export class AuthService {
     ));
   }
 
-  getCurrentUser() {
+  getCurrentUser(): Observable<UserInterface> {
     return this.httpClient.get<UserInterface>(`http://localhost:8000/accounts/me/`);
   }
  
@@ -96,7 +94,10 @@ export class AuthService {
   }
 
   getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
+    if (isPlatformBrowser(this.platformId)){
+      return localStorage.getItem('access_token');
+    }
+    return null;
   }
 
 } 

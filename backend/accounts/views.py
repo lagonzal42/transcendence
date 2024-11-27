@@ -58,7 +58,6 @@ class RegisterView(APIView):
     serializer_class = UserRegisterSerializer
 
     def post(self, request):
-        print("Error is happening here")
         serializer = self.serializer_class(data=request.data)
     
         if serializer.is_valid():
