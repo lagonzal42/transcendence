@@ -1,0 +1,35 @@
+<div class="chat-container">
+    <div class="chat-header">
+      <button (click)="toggleUserActions()">⋮</button>
+      <div *ngIf="showUserActions" class="user-actions">
+        <button (click)="viewProfile()">View Profile</button>
+        <button (click)="toggleBlock()">
+          {{isUserBlocked ? 'Unblock User' : 'Block User'}}
+        </button>
+      </div>
+    </div>
+    <div class="messages-container">
+      <div *ngFor="let message of messages$ | async" 
+           [ngClass]="{'own-message': message.username === username}">
+        <div class="message-bubble">
+          <div class="message-sender" *ngIf="message.username !== username">
+            <a [routerLink]="['/profile', message.username]">
+              {{ message.username }}
+            </a>
+          </div>
+          <div class="message-content">
+            {{ message.message }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="input-container" *ngIf="!isUserBlocked">
+      <input [(ngModel)]="newMessage" 
+             (keyup.enter)="sendMessage()"
+             placeholder="Type a message...">
+      <button (click)="sendMessage()">Send</button>
+    </div>
+    <div class="blocked-message" *ngIf="isUserBlocked">
+      You have blocked this user
+    </div>
+  </div>

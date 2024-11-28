@@ -102,7 +102,7 @@ class UserDetailView(APIView):
                 "avatar": avatar_url,
                 "last_login": user.last_login,
                 "date_joined": user.date_joined,
-                "is_online": user.is_online,
+                "is_online": user.is_online,#Se
             }
         }
         return Response(response_data, status=200)
@@ -335,7 +335,18 @@ class SearchUsersView(APIView):
         if not query:
             return Response({'error': 'Search query is required'}, status=400)
 
+        #print(f"Search query: {query}")
+        
+        # Debug: Check total users in database
+        all_users = User.objects.all()
+        # print(f"Total users in database: {all_users.count()}")
+        # print(f"All usernames and IDs: {[(user.username, user.id) for user in all_users]}")
+        # print(f"Current user ID: {request.user.id}")
+        
+        # Original query with debug
         users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)[:10]
+        #print(f"Found users for query '{query}': {[(user.username, user.id) for user in users]}")
+        
         user_data = [{
             'id': user.id,
             'username': user.username,

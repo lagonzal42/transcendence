@@ -14,9 +14,6 @@
                     <div class="avatar-container">
                         <img [src]="userAvatar" alt="User avatar" class="user-avatar" [attr.cache-control]="'no-cache'">
                         <span class="online-status" [class.online]="isUserOnline"></span>
-                        <!-- <button *ngIf="isOwnProfile" (click)="showUpdateProfile()" class="edit-profile-btn">
-                            Edit Profile
-                        </button> -->
                     </div>
                 </div>
 
@@ -56,7 +53,7 @@
                     >
                     <button (click)="searchUsers()" class="search-button">Search</button>
                 </div>
-                
+
                 <ul *ngIf="searchResults.length > 0" class="search-results">
                     <li *ngFor="let user of searchResults" class="search-result-item">
                         <span>{{ user.username }}</span>
