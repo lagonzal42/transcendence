@@ -16,6 +16,7 @@ import { UserInterface } from '../auth/login/interfaces/user.interface';
 })
 export class LoginComponent {
 	loginForm: FormGroup;
+	loginError: string = '';
 
 	constructor(
 		private fb: FormBuilder,
@@ -29,6 +30,8 @@ export class LoginComponent {
 	}
 
 	onSubmit() {
+		this.loginError = '';
+
 		if (this.loginForm.valid) {
 			const credentials: UserInterface = {
 				username: this.loginForm.value.username,
@@ -42,7 +45,12 @@ export class LoginComponent {
 					this.router.navigate(['']);
 				},
 				error: (err) => {
-					console.error('Server error:', err.error.detail);
+					console.error('Server error:', err.error);
+					if (err.error.error) {
+						this.loginError = err.error.error;
+					} else {
+						this.loginError = 'Login failed. Please try again.';
+					}
 				}
 			});
 		} else {

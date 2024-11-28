@@ -87,7 +87,7 @@ export class ProfileComponent implements OnInit {
     })
 
     this.route.params.subscribe(params => {
-      console.log(params);
+      console.log("params: ", params);
       const username = params['username'];
       if (username) {
         this.currentUsername = username;
@@ -103,21 +103,23 @@ export class ProfileComponent implements OnInit {
 
     this.authService.getCurrentUser().subscribe({
       next: (currentUser) => {
+        console.log('currentUser.username: ', currentUser.username);
+        console.log('username: ', username);
         this.isOwnProfile = currentUser.username === username;
-        
+        console.log(this.isOwnProfile);
+        console.log('================================================');
         this.http.get<UserResponse>(`http://localhost:8000/accounts/users/${username}/`).subscribe({
           next: (response) => {
             console.log('Profile response:', response);
             if (response.user && response.user.username) {
               this.currentUsername = response.user.username;
               if (response.user.avatar) {
-                const avatarPath = response.user.avatar.replace(/^\/+/, '');
-                this.userAvatar = `http://localhost:8000/${response.user.avatar}?t=${new Date().getTime()}`;
+                console.log("loooook ", response.user.avatar);
+                this.userAvatar = `http://localhost:8000${response.user.avatar}`;
               } else {
                 this.userAvatar = 'assets/default-avatar.png';
               }
               this.isUserOnline = response.user.is_online ?? false;
-              console.log('User online status:', this.isUserOnline);
               this.userStats = {
                 games_played: response.user.games_played ?? 0,
                 games_won: response.user.games_won ?? 0,

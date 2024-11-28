@@ -102,6 +102,7 @@ class UserDetailView(APIView):
                 "avatar": avatar_url,
                 "last_login": user.last_login,
                 "date_joined": user.date_joined,
+                "is_online": user.is_online,
             }
         }
         return Response(response_data, status=200)
@@ -365,7 +366,7 @@ class FriendRequestListView(APIView):
                 'username': req.to_user.username,
                 'email': req.to_user.email
             },
-            'status': req.status,
+            'status': req.status,   
             'created_at': req.created_at
         } for req in pending_requests]
         

@@ -48,7 +48,7 @@ export class AuthService {
         return (0);
       }),
       catchError((error: any) => {
-        return of(error.status);
+        return throwError(() => error);
       })
     ));
   }
