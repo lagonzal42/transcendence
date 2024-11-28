@@ -36,9 +36,23 @@ export class ChatService {
     return this.messageSubjects.get(roomName)!.asObservable();
   }
 
+  fetchPreviousMessages(roomName: string): Observable<ChatMessage[]> {
+    return this.http.get<ChatMessage[]>(`${this.API_URL}/chat/messages/${roomName}/`);
+  }
+
   connectToChat(roomName: string, username: string): void {
     if (!this.isBrowser) return;
     
+    this.fetchPreviousMessages(roomName).subscribe({
+      next: (messages) => {
+        const subject = this.messageSubjects.get(roomName);
+        if (subject) {
+          subject.next(messages);
+        }
+      },
+      error: (error) => console.error('Error fetching messages', error)
+    });
+
     this.socket = new WebSocket(`ws://localhost:8000/ws/chat/${roomName}/`);
 
     this.socket.onopen = () => {
