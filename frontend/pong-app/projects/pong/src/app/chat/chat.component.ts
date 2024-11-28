@@ -113,4 +113,10 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  navigateToProfile(username: string) {
+    this.router.navigate(['/profile'], {
+      queryParams: {username: username}
+    });
+  }
 }

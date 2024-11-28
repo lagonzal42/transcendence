@@ -13,9 +13,9 @@
            [ngClass]="{'own-message': message.username === username}">
         <div class="message-bubble">
           <div class="message-sender" *ngIf="message.username !== username">
-            <a [routerLink]="['/profile', message.username]">
+            <span class="username-link" (click)="navigateToProfile(message.username)">
               {{ message.username }}
-            </a>
+            </span>
           </div>
           <div class="message-content">
             {{ message.message }}

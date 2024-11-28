@@ -98,3 +98,13 @@
     width: 24px;
     height: 24px;
   }
+
+  .username-link {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .username-link:hover {
+    color: #0056b3;
+  }

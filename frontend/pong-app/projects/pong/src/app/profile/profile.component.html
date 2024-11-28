@@ -42,7 +42,7 @@
         </section>
 
         <div class="content-sections">
-            <section class="search-section content-card">
+            <section *ngIf="isOwnProfile" class="search-section content-card">
                 <h3 class="section-title">Find Friends</h3>
                 <div class="search-box">
                     <input 
@@ -64,7 +64,7 @@
                 </ul>
             </section>
 
-            <section *ngIf="friendRequests.length > 0" class="friend-requests-section content-card">
+            <section *ngIf="isOwnProfile && friendRequests.length > 0" class="friend-requests-section content-card">
                 <h3 class="section-title">Friend Requests</h3>
                 <ul class="request-list">
                     <li *ngFor="let request of friendRequests" class="request-item">
@@ -86,7 +86,7 @@
                             <span class="friend-name">{{ friend.username }}</span>
                             <span class="online-status" [class.online]="friend.is_online"></span>
                         </div>
-                        <div class="action-buttons">
+                        <div class="action-buttons" *ngIf="isOwnProfile">
                             <button (click)="startChat(friend.username)" class="action-button chat">Chat</button>
                             <button (click)="blockUser(friend.id)" class="action-button block">Block</button>
                         </div>
@@ -94,7 +94,7 @@
                 </ul>
             </section>
 
-            <section class="blocked-section content-card">
+            <section *ngIf="isOwnProfile" class="blocked-section content-card">
                 <h3 class="section-title">Blocked Users</h3>
                 <div *ngIf="blockedUsers.length === 0" class="empty-state">No blocked users</div>
                 <ul *ngIf="blockedUsers.length > 0" class="blocked-list">

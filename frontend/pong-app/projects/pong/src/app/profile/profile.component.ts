@@ -80,8 +80,15 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      const username = params['username'];
+      if (username) {
+        this.currentUsername = username;
+        this.loadUserProfile(username);
+      }
+    });
+
     this.route.params.subscribe(params => {
-      //console.log("params: ", params);
       const username = params['username'];
       if (username) {
         this.currentUsername = username;
