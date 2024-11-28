@@ -146,9 +146,9 @@ export class UpdateProfileComponent implements OnInit {
     if (tournamentName || email || this.selectedFile) {
       this.authService.updateProfile(formData, this.username).subscribe({
         next: (response) => {
-          console.log("response", response);
+          //console.log("response", response);
           const avatarFilename = response.avatar.split('/').pop();
-          console.log("response.avatar:", response.avatar);
+          //console.log("response.avatar:", response.avatar);
           if (response.avatar) {
             this.router.navigate(['/profile', this.username], {
               queryParams: { newAvatarUrl: avatarFilename }

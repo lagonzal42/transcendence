@@ -80,14 +80,8 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      if (params['newAvatar']) {
-        this.updateAvatar(params['newAvatar']);
-      }
-    })
-
     this.route.params.subscribe(params => {
-      console.log("params: ", params);
+      //console.log("params: ", params);
       const username = params['username'];
       if (username) {
         this.currentUsername = username;
@@ -103,11 +97,11 @@ export class ProfileComponent implements OnInit {
 
     this.authService.getCurrentUser().subscribe({
       next: (currentUser) => {
-        console.log('currentUser.username: ', currentUser.username);
-        console.log('username: ', username);
+        //console.log('currentUser.username: ', currentUser.username);
+        //console.log('username: ', username);
         this.isOwnProfile = currentUser.username === username;
-        console.log(this.isOwnProfile);
-        console.log('================================================');
+        //console.log(this.isOwnProfile);
+        //console.log('================================================');
         this.http.get<UserResponse>(`http://localhost:8000/accounts/users/${username}/`).subscribe({
           next: (response) => {
             console.log('Profile response:', response);
@@ -284,11 +278,4 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
-
-  updateAvatar(newAvatarUrl: string) {
-    console.log('Updating avatar to:', newAvatarUrl);
-    this.userAvatar = `http//:localhost:8000/backend/media/avatars/${newAvatarUrl.replace(/^\/+/, '')}?t=${new Date().getTime()}`;
-    console.log('New userAvatar value:', this.userAvatar);
-  }
-
 }
