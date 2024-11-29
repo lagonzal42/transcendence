@@ -35,7 +35,7 @@ from .models import AccountActivateToken
 from django.shortcuts import redirect
 from django.urls import reverse
 import requests
-
+from two_factor_auth.views import Send2FACodeView
 
 class AccountList(ListAPIView):
     queryset = User.objects.all()
@@ -135,10 +135,8 @@ class UserDetailView(APIView):
 
 # # # # --- LoginView separated 2fa version --- # # # # # 
 class LoginView(GenericAPIView):
-    """API login class"""
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
-    # print("Entered LoginView")
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -149,24 +147,58 @@ class LoginView(GenericAPIView):
             )
 
             if user is not None:
-                # Store user info for 2FA verification
+                # Instead of making a new request, call the 2FA view directly
+                from two_factor_auth.views import Send2FACodeView
+                
+                # Store user_id in session
                 request.session['user_id'] = user.id
-
-                # Prepare to call the send_2fa_code endpoint in the two_factor_auth app
-                url = reverse('two_factor_auth:send_2fa_code', kwargs={'user_id': user.id})
-                response = requests.post(request.build_absolute_uri(url))
-
-                # Check if the response is valid
-                try:
-                    response_data = response.json()  # Attempt to decode the JSON response
-                    return Response(response_data, status=response.status_code)
-                except ValueError as e:
-                    # logger.error(f"JSON decode error: {e} - Response text: {response.text}")
-                    return Response({'error': 'Invalid response format from 2FA service'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                request.session.save()
+                
+                # Use the same session for 2FA
+                two_factor_view = Send2FACodeView()
+                two_factor_response = two_factor_view.post(request, user_id=user.id)
+                
+                return two_factor_response
             else:
-                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'error': 'Invalid credentials'}, 
+                              status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class LoginView(GenericAPIView):
+#     """API login class"""
+#     permission_classes = [AllowAny]
+#     serializer_class = LoginSerializer
+#     # print("Entered LoginView")
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             user = authenticate(
+#                 username=serializer.validated_data['username'],
+#                 password=serializer.validated_data['password']
+#             )
+
+#             if user is not None:
+#                 # Store user info for 2FA verification
+#                 request.session['user_id'] = user.id
+
+#                 # Prepare to call the send_2fa_code endpoint in the two_factor_auth app
+#                 url = reverse('two_factor_auth:send_2fa_code', kwargs={'user_id': user.id})
+#                 response = requests.post(request.build_absolute_uri(url))
+
+#                 # Check if the response is valid
+#                 try:
+#                     response_data = response.json()  # Attempt to decode the JSON response
+#                     return Response(response_data, status=response.status_code)
+#                 except ValueError as e:
+#                     # logger.error(f"JSON decode error: {e} - Response text: {response.text}")
+#                     return Response({'error': 'Invalid response format from 2FA service'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#             else:
+#                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # class LoginView(GenericAPIView):
