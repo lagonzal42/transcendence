@@ -26,6 +26,8 @@ curl -c cookies.txt -X POST http://localhost:8000/accounts/account_login/ -H "Co
 curl -b cookies.txt -X POST http://localhost:8000/two_factor_auth/verify/ -H "Content-Type: application/json" -d '{"code": "<received_code>"}'
 
 
+ docker-compose exec redis redis-cli
+
 
 // Command to migrate
  docker-compose exec backend python backend/manage.py migrate

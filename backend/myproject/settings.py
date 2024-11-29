@@ -223,15 +223,23 @@ ACTIVATE_URL = 'http://localhost:8000/accounts'
 
 
 # # # Session engine to use redis
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_NAME = 'sessionid'
+SESSION_COOKIE_SECURE = False  # Set to True for HTTPS
+SESSION_SAVE_EVERY_REQUEST = True  # Ensure session is saved on every request
+SESSION_COOKIE_AGE = 3600
+
 
 # Cache configuration to point to Redis
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        # "LOCATION": "redis://redis:6379/1",  # Redis URL (matches the Redis service name in Docker Compose)
- "LOCATION": f"redis://{os.environ.get('REDIS_HOST', 'redis')}:6379/1",
+        "LOCATION": "redis://redis:6379/1",  # Redis URL (matches the Redis service name in Docker Compose)
+    # "LOCATION": f"redis://{os.environ.get('REDIS_HOST', 'redis')}:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -243,10 +251,10 @@ CACHES = {
 
 # SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 # settings.py
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
-SESSION_COOKIE_AGE = 300  # Session lasts for 5 minutes, adjust as needed
-SESSION_SAVE_EVERY_REQUEST = True  # Optional: Save session data on each request
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"
+# SESSION_COOKIE_AGE = 300  # Session lasts for 5 minutes, adjust as needed
+# SESSION_SAVE_EVERY_REQUEST = True  # Optional: Save session data on each request
 
 
 AUTHENTICATION_BACKENDS = [
