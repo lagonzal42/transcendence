@@ -1,8 +1,8 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-import { PaddleComponent as Paddle } from "./gameClasses/paddle/paddle.component"
-import { BallComponent as Ball } from './gameClasses/ball/ball.component';
+import { PaddleComponent as Paddle } from "../gameClasses/paddle/paddle.component"
+import { BallComponent as Ball } from '../gameClasses/ball/ball.component';
 
 @Component({
   selector: 'app-pong-game',
@@ -22,19 +22,10 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   // Paddle settings
   private paddleHeight: number = 75;
   private paddleWidth: number = 10;
-  // private leftPaddleY: number = 0;
-  // private rightPaddleY: number = 0;
-  // private paddleSpeed: number = 7;
-
   private leftPaddle?: Paddle;
   private rightPaddle?: Paddle;
 
   // Ball settings
-  // private ballRadius: number = 10;
-  // private x: number = 0;
-  // private y: number = 0;
-  // private dx: number = 2;
-  // private dy: number = -2;
   private ball? : Ball;
 
   // Score
@@ -81,15 +72,6 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   }  
 
   initializeGame(): void {
-
-    // this.x = this.pongCanvas.nativeElement.width / 2;
-    // this.y = this.pongCanvas.nativeElement.height / 2;
-  
-    // this.leftPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
-    // this.rightPaddleY = (this.pongCanvas.nativeElement.height - this.paddleHeight) / 2;
-  
-    // this.leftPlayerScore = 0; // Resetea la puntuación al inicio
-    // this.rightPlayerScore = 0; // Resetea la puntuación al inicio
     this.gameEnded = false; // Resetea el estado del juego
     this.leftPaddle = new Paddle(10, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2);;
     this.rightPaddle = new Paddle(this.pongCanvas.nativeElement.width - 10  - this.paddleWidth, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2);
@@ -156,22 +138,8 @@ export class PongGameComponent implements OnInit, AfterViewInit {
     this.ctx.closePath();
 
     // Ball movement
-    // this.x += this.dx;
-    // this.y += this.dy;
     this.ball?.move();
-    this.ball?.calculateCollisions(this.pongCanvas.nativeElement.height, this.leftPaddle!, this.rightPaddle!);
-
-    // // Collision detection (borders)
-    // if (this.y + this.dy > this.pongCanvas.nativeElement.height - this.ballRadius || this.y + this.dy < this.ballRadius) {
-    //   this.dy = -this.dy;
-    // }
-
-    // // Collision with paddles
-    // if (this.x - this.ballRadius < 20 + this.paddleWidth && this.y > this.leftPaddleY && this.y < this.leftPaddleY + this.paddleHeight) {
-    //   this.dx = -this.dx;
-    // } else if (this.x + this.ballRadius > this.pongCanvas.nativeElement.width - 20 - this.paddleWidth && this.y > this.rightPaddleY && this.y < this.rightPaddleY + this.paddleHeight) {
-    //   this.dx = -this.dx;
-    // }
+    this.ball?.calculateCollisions2P(this.pongCanvas.nativeElement.height, this.leftPaddle!, this.rightPaddle!);
 
 
     // Score logic: when the ball passes the paddle on either side

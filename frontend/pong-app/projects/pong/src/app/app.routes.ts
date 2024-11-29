@@ -8,7 +8,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { SearchComponent } from './search/search.component';
 import { TournamentComponent } from './tournament/tournament.component';
 import { LocalPlayComponent } from './local-play/local-play.component';
-import { PongGameComponent } from './pong-game/pong-game.component';
+import { PongGameComponent } from './pong-game/dualplayer/pong-game.component';
 import { AuthenticationGuard } from './auth/authentication.guard';
 
 

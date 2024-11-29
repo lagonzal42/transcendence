@@ -18,7 +18,7 @@ export class BallComponent {
       this.dx = this.getRandomNumber(-0.5, 0.5);
       this.dy = this.getRandomNumber(-0.5, 0.5);
       this.touches = 0;
-      this.speed = 4;
+      this.speed = 8;
     }
 
     getRandomNumber(min: number, max: number)
@@ -40,7 +40,7 @@ export class BallComponent {
       this.dy = dy;
     }
     
-    calculateCollisions(canvasHeight: number, Paddle1: Paddle, Paddle2: Paddle)
+    calculateCollisions2P(canvasHeight: number, Paddle1: Paddle, Paddle2: Paddle)
     {
       if(this.yPosition >= canvasHeight - this.ballRadius || this.yPosition <= this.ballRadius) // colisiones arriba y abajo
         this.dy = -this.dy;
@@ -63,8 +63,6 @@ export class BallComponent {
       }
       else if (this.xPosition >= Paddle2.getX() - Paddle2.getWidth() - this.ballRadius)
       {
-
-        console.log("paddle 2 position " + Paddle2.getX() + "ball x" + this.xPosition)
         if (this.yPosition >= Paddle2.getY() && this.yPosition <= Paddle2.getY() + Paddle2.getHeight())
         {
           if (this.dx > 0)
@@ -79,6 +77,11 @@ export class BallComponent {
         this.speed += 1;
         this.touches = 0;
       }
+    }
+
+    calculateCollisions4p(PaddleLeft: Paddle, PaddleRight: Paddle, PaddleUp: Paddle, PaddleDown: Paddle)
+    {
+      this.calculateCollisions2P(PaddleLeft, PaddleRight)
     }
 
     calculateReboundAngle(Paddle: Paddle, factor: number)

@@ -36,7 +36,8 @@ export class LocalPlayComponent {
 
       // Navegar a pong-game pasando el estado de los jugadores
       this.router.navigate(['/pong-game'], { state: { players } });
-    } else {
+    }
+    else {
       this.localPlayForm.markAllAsTouched();
     } 
   }
