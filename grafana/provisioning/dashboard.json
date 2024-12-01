@@ -1,0 +1,38 @@
+{
+    "datasource": {
+      "uid": "fe11qr724cef4e",
+      "type": "prometheus"
+    },
+    "gridPos": {
+      "h": 15,
+      "w": 12,
+      "x": 0,
+      "y": 12
+    },
+    "id": 3,
+    "options": {
+      "keepTime": false,
+      "includeVars": false,
+      "showStarred": true,
+      "showRecentlyViewed": true,
+      "showSearch": false,
+      "showHeadings": true,
+      "showFolderNames": true,
+      "maxItems": 30,
+      "query": "",
+      "tags": [],
+      "folderUID": ""
+    },
+    "title": "Dashboards",
+    "type": "dashlist",
+    "targets": [
+      {
+        "refId": "A",
+        "datasource": {
+          "uid": "fe11qr724cef4e",
+          "type": "prometheus"
+        }
+      }
+    ],
+    "pluginVersion": "11.2.0"
+  }

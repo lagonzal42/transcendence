@@ -1,0 +1,436 @@
+/* Contenedor del perfil */
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* Marco alrededor de la imagen de perfil */
+.profile-image {
+    width: 180px; /* Aumentar el ancho del marco */
+    height: 180px; /* Aumentar la altura del marco */
+    border-radius: 20px; /* Bordes redondeados */
+    border: 5px solid #10a834; /* Marco alrededor de la imagen */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Para asegurar que la imagen no se salga del marco */
+}
+
+.profile-image img {
+    width: 100%; /* Para que la imagen ocupe el 100% del marco */
+    height: 100%; /* Para que la imagen ocupe el 100% del marco */
+    object-fit: cover; /* Para recortar la imagen en lugar de estirarla */
+}
+
+/* Espaciar más el contenido dentro del header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%; /* Mantener ancho relativo */
+    margin-bottom: 60px;
+}
+
+/* Detalles del jugador */
+.profile-details {
+    margin-left: 80px; /* Separación mayor de la imagen */
+    text-align: left;
+}
+
+.player-name {
+    font-size: 26px;
+    margin-bottom: 15px;
+}
+
+.player-stats {
+    font-size: 18px;
+    color: #555;
+}
+
+.player-stats p {
+    margin: 8px 0;
+}
+
+/* Contenido del cuerpo con mayor separación */
+.profile-body {
+    display: flex;
+    justify-content: space-between;
+    width: 90%; /* Aumentar el ancho total del cuerpo */
+    margin-top: 40px;
+}
+
+/* Aumentar el ancho de las secciones de amigos y partidos */
+.friends-list, .match-history {
+    flex: 1; /* Dejar que ambos se expandan igualmente */
+    margin: 0 10px; /* Separación horizontal entre secciones */
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ccc; /* Marco alrededor de cada sección */
+    height: auto; /* Dejar que crezca en altura si es necesario */
+    min-width: 300px; /* Establecer un ancho mínimo */
+}
+
+/* Estilo del título para que ocupe solo una línea */
+.friends-list h3, .match-history h3 {
+    font-size: 24px; /* Tamaño del título */
+    white-space: nowrap; /* Evitar que el texto se desborde a la siguiente línea */
+    overflow: hidden; /* Ocultar el desbordamiento */
+    text-overflow: ellipsis; /* Agregar puntos suspensivos si el texto es demasiado largo */
+}
+
+/* Eliminar los puntos de la lista */
+.friends-list ul, .match-history ul {
+    list-style-type: none; /* Eliminar puntos de la lista */
+    padding: 0; /* Sin padding */
+}
+
+/* Estilo para las separaciones entre los partidos */
+.match-history ul li {
+    position: relative;
+    padding: 10px 0;
+}
+
+.separator {
+    border: 0;
+    border-top: 1px solid #16a085; /* Cambia el color de la barra */
+    margin: 10px 0;
+}
+
+/* Estilo de las barras de partidos */
+.match {
+    font-size: 18px;
+    display: block;
+}
+
+/* Ajustar el margen superior de las listas */
+.friends-list ul, .match-history ul {
+    margin-top: 20px; /* Separar la lista del título */
+}
+
+.search-section {
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-results ul {
+    list-style: none;
+    padding: 0;
+}
+
+.search-results li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.friend-requests {
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.request-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.accept-button {
+    background-color: #10a834;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.decline-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.friend-request-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.friend-item, .blocked-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.friend-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.block-button {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.unblock-button {
+    background-color: #666;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.unblock-button:hover {
+    background-color: #888;
+}
+
+.blocked-users {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.blocked-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.no-blocked {
+    color: #666;
+    font-style: italic;
+    padding: 10px 0;
+}
+
+.user-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.online-status {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ccc;
+    border: 2px solid white;
+}
+
+.online-status.online {
+    background-color: #2ecc71;
+}
+
+.stats-section {
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-layout {
+    display: flex;
+    gap: 3rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+.profile-left {
+    flex: 0 0 200px;
+}
+
+.profile-right {
+    flex: 1;
+}
+
+.avatar-container {
+    position: relative;
+    text-align: center;
+}
+
+.user-avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.profile-username {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #444;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.stat-item {
+    background: #f8f9fa;
+    padding: 1.25rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.content-sections {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.content-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.search-box {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.action-button {
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.empty-state {
+    text-align: center;
+    color: #666;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.friend-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.friend-name {
+    margin-right: 8px;
+}
+
+.list-item .online-status {
+    position: relative;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ccc;
+    border: 1px solid white;
+    bottom: 0;
+    right: 0;
+}
+
+.list-item .online-status.online {
+    background-color: #2ecc71;
+}

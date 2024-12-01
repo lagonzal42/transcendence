@@ -12,6 +12,7 @@ import { platform } from 'os';
   templateUrl: './tournament.component.html',
   styleUrl: './tournament.component.css'
 })
+
 export class TournamentComponent {
   tournamentForm: FormGroup;
   group1: string[] = [];
@@ -24,7 +25,7 @@ export class TournamentComponent {
       player2: ['', Validators.required],
       player3: ['', Validators.required],
       player4: ['', Validators.required],
-    }, { validator: uniquePlayerNamesValidator() });
+    }, { validator: uniquePlayerNamesValidator(['palyer1', 'player2', 'player3', 'player4']) });
   }
 
   onSubmit() 

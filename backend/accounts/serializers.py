@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, FriendRequest
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, write_only=True)
@@ -7,13 +7,22 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'password2')
+        fields = ('username', 'email', 'password', 'password2', 'id', 'tournament_name', 'avatar', 'last_login', 'date_joined', 'games_played', 'games_won', 'games_lost', 'friends')
 
     def validate(self, attrs):
         password = attrs.get('password', '')
         password2 = attrs.get('password2', '')
+        username = attrs.get('username', '')
+        email = attrs.get('email', '')
         if password != password2:
             raise serializers.ValidationError('passwords do not match')
+        
+        if User.objects.filter(username=username).exists():
+            raise serializers.ValidationError('This username is already taken')
+        
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError('This email is already taken')
+
         return attrs
 
     def create(self, validated_data):
@@ -23,8 +32,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username = validated_data.get('username'),
             email = validated_data.get('email'),
-            first_name = validated_data.get('first_name'),
-            last_name = validated_data.get('last_name'),
         )
         user.set_password(password)
         user.save()
@@ -49,34 +56,29 @@ class LoginSerializer(serializers.ModelSerializer):
         return data
 
 class UpdateUserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=True)
-
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email')
+        fields = ('email', 'tournament_name', 'avatar')
         extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True},
+            'email': {'required': False},
+            'tournament_name': {'required': False},
+            'avatar': {'required': False}
         }
 
-    def validate_email(self, value):
-        user = self.context['request'].user
-        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
-            raise serializers.ValidationError({"email": "This email is already in use."})
-        return value
-
-    def validate_username(self, value):
-        user = self.context['request'].user
-        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
-            raise serializers.ValidationError({"username": "This username is already in use."})
-        return value
-
     def update(self, instance, validated_data):
-        instance.first_name = validated_data['first_name']
-        instance.last_name = validated_data['last_name']
-        instance.email = validated_data['email']
-        instance.username = validated_data['username']
-
+        # Only update fields that were actually passed
+        if 'email' in validated_data:
+            instance.email = validated_data['email']
+        if 'tournament_name' in validated_data:
+            instance.tournament_name = validated_data['tournament_name']
+        if 'avatar' in validated_data:
+            instance.avatar = validated_data['avatar']
+        
         instance.save()
-
         return instance
+
+class FriendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FriendRequest
+        fields = ['from_user', 'to_user']
+

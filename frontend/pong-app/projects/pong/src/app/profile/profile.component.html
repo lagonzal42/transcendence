@@ -1,1 +1,109 @@
-<p>profile works!</p>
+<div class="profile-container">
+    <div *ngIf="isLoading" class="loading">
+        Loading...
+    </div>
+
+    <div *ngIf="error" class="error">
+        {{ error }}
+    </div>
+
+    <div *ngIf="!isLoading && !error" class="profile-content">
+        <section class="profile-header-section">
+            <div class="profile-layout">
+                <div class="profile-left">
+                    <div class="avatar-container">
+                        <img [src]="userAvatar" alt="User avatar" class="user-avatar" [attr.cache-control]="'no-cache'">
+                        <span class="online-status" [class.online]="isUserOnline"></span>
+                    </div>
+                </div>
+
+                <div class="profile-right">
+                    <h2 class="profile-username">{{ currentUsername }}'s Profile</h2>
+                    
+                    <div class="stats-section">
+                        <h3 class="section-title">Stats</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Games Played</span>
+                                <span class="stat-value">{{userStats.games_played}}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Wins</span>
+                                <span class="stat-value">{{userStats.games_won}}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Losses</span>
+                                <span class="stat-value">{{userStats.games_lost}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="content-sections">
+            <section *ngIf="isOwnProfile" class="search-section content-card">
+                <h3 class="section-title">Find Friends</h3>
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        [(ngModel)]="searchQuery" 
+                        placeholder="Search users..."
+                        class="search-input"
+                    >
+                    <button (click)="searchUsers()" class="search-button">Search</button>
+                </div>
+
+                <ul *ngIf="searchResults.length > 0" class="search-results">
+                    <li *ngFor="let user of searchResults" class="search-result-item">
+                        <span>{{ user.username }}</span>
+                        <button (click)="sendFriendRequest(user.username)" class="action-button">
+                            Send Friend Request
+                        </button>
+                    </li>
+                </ul>
+            </section>
+
+            <section *ngIf="isOwnProfile && friendRequests.length > 0" class="friend-requests-section content-card">
+                <h3 class="section-title">Friend Requests</h3>
+                <ul class="request-list">
+                    <li *ngFor="let request of friendRequests" class="request-item">
+                        <span>{{ request.from_user.username }}</span>
+                        <div class="action-buttons">
+                            <button (click)="acceptFriendRequest(request)" class="action-button accept">Accept</button>
+                            <button (click)="declineFriendRequest(request.id)" class="action-button decline">Decline</button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="friends-section content-card">
+                <h3 class="section-title">Friends</h3>
+                <div *ngIf="friends.length === 0" class="empty-state">No friends found</div>
+                <ul *ngIf="friends.length > 0" class="friends-list">
+                    <li *ngFor="let friend of friends" class="list-item">
+                        <div class="friend-info">
+                            <span class="friend-name">{{ friend.username }}</span>
+                            <span class="online-status" [class.online]="friend.is_online"></span>
+                        </div>
+                        <div class="action-buttons" *ngIf="isOwnProfile">
+                            <button (click)="startChat(friend.username)" class="action-button chat">Chat</button>
+                            <button (click)="blockUser(friend.id)" class="action-button block">Block</button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section *ngIf="isOwnProfile" class="blocked-section content-card">
+                <h3 class="section-title">Blocked Users</h3>
+                <div *ngIf="blockedUsers.length === 0" class="empty-state">No blocked users</div>
+                <ul *ngIf="blockedUsers.length > 0" class="blocked-list">
+                    <li *ngFor="let user of blockedUsers" class="list-item">
+                        <span>{{ user.username }}</span>
+                        <button (click)="unblockUser(user.id)" class="action-button unblock">Unblock</button>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</div>

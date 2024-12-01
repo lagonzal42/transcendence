@@ -1,48 +1,59 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common'; // Import CommonModule
-import { HttpClient} from '@angular/common/http'
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
+import { userInfo } from 'os';
+import { UserInterface } from '../auth/login/interfaces/user.interface';
 
 @Component({
 	selector: 'app-login',
 	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule], 
+	imports: [ReactiveFormsModule, CommonModule],
 	templateUrl: './login.component.html',
 	styleUrl: './login.component.css'
 })
 export class LoginComponent {
 	loginForm: FormGroup;
+	loginError: string = '';
 
-	constructor(private fb: FormBuilder, private httpClient: HttpClient)
-	{
+	constructor(
+		private fb: FormBuilder,
+		private authService: AuthService,
+		private router: Router,
+	) {
 		this.loginForm = this.fb.group({
 			username: ['', Validators.required],
 			password: ['', Validators.required]
 		});
 	}
 
-	onSubmit()
-	{
-		if (this.loginForm.valid)
-		{
-			const formData = this.loginForm.value;
-			console.log('Form Submitted!', this.loginForm.value);
-			//direction must be changed this is only for test
-			this.httpClient.post('http://localhost:8000/accounts/account_login/', formData).subscribe({
-				next: (response: any) =>
-				{
-					console.log("Server response: ", response);
+	onSubmit() {
+		this.loginError = '';
+
+		if (this.loginForm.valid) {
+			const credentials: UserInterface = {
+				username: this.loginForm.value.username,
+				password: this.loginForm.value.password
+			};
+
+			console.log('Attempting login with:', credentials.username);
+			this.authService.login(credentials).subscribe({
+				next: (response) => {
+					console.log('Login backend response:', response);
+					this.router.navigate(['']);
 				},
-				error: (err: any) => {
-					console.error("Server error response", err);
+				error: (err) => {
+					console.error('Server error:', err.error);
+					if (err.error.error) {
+						this.loginError = err.error.error;
+					} else {
+						this.loginError = 'Login failed. Please try again.';
+					}
 				}
-			})
-		}
-		else
-		{
-			console.log('Form is invalid');
-			// Optionally, you can mark all controls as touched to trigger validation messages
+			});
+		} else {
 			this.loginForm.markAllAsTouched();
 		}
 	}
