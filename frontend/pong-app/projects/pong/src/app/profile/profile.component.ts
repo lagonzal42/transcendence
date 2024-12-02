@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChatService } from '../services/chat.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
 import { FormsModule } from '@angular/forms';
+import { WebSocketService } from '../services/websocket.service';
 
 interface User {
   id: number;
@@ -51,7 +52,7 @@ interface UserResponse {
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   currentUsername: string = '';
   isLoading: boolean = false;
   error: string | null = null;
@@ -76,7 +77,8 @@ export class ProfileComponent implements OnInit {
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private webSocketService: WebSocketService
   ) {}
 
   ngOnInit() {
@@ -96,6 +98,22 @@ export class ProfileComponent implements OnInit {
         this.loadFriendRequests();
       }
     });
+
+    // Subscribe to user status updates
+    this.webSocketService.userStatus$.subscribe(statusUpdate => {
+      console.log('Received status update in profile:', statusUpdate);
+      this.friends = this.friends.map(friend => {
+        if (friend.id === statusUpdate.user_id) {
+          console.log(`Updating status for friend ${friend.username} to ${statusUpdate.status}`);
+          return { ...friend, is_online: statusUpdate.status === 'online' };
+        }
+        return friend;
+      });
+    });
+  }
+
+  ngOnDestroy() {
+    // Unsubscribe from WebSocket updates if needed
   }
 
   loadUserProfile(username: string) {

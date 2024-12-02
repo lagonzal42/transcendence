@@ -123,3 +123,73 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return receiver.blocked_users.filter(id=sender.id).exists()
         except User.DoesNotExist:
             return False
+        
+class StatusConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        # Get the user from the scope
+        user = self.scope["user"]
+        
+        if not user.is_authenticated:
+            print("Rejecting unauthenticated connection")
+            await self.close()
+            return
+            
+        print(f"User {user.username} connected to status websocket")
+        
+        await self.channel_layer.group_add(
+            'status_updates',
+            self.channel_name
+        )
+        
+        # Mark user as online when they connect
+        await self.set_user_status(user.id, True)
+        
+        # Broadcast status change to all connected clients
+        await self.channel_layer.group_send(
+            'status_updates',
+            {
+                'type': 'user_status',
+                'user_id': user.id,
+                'status': 'online'
+            }
+        )
+        
+        await self.accept()
+        print(f"Connection accepted for user {user.username}")
+
+    async def disconnect(self, close_code):
+        # Mark user as offline when they disconnect
+        if self.scope["user"].is_authenticated:
+            await self.set_user_status(self.scope["user"].id, False)
+            
+            # Broadcast status change to all connected clients
+            await self.channel_layer.group_send(
+                'status_updates',
+                {
+                    'type': 'user_status',
+                    'user_id': self.scope["user"].id,
+                    'status': 'offline'
+                }
+            )
+        
+        await self.channel_layer.group_discard(
+            'status_updates',
+            self.channel_name
+        )
+
+    async def user_status(self, event):
+        # Send status update to WebSocket
+        await self.send(text_data=json.dumps({
+            'type': 'user_status',
+            'user_id': event['user_id'],
+            'status': event['status']
+        }))
+
+    @database_sync_to_async
+    def set_user_status(self, user_id: int, is_online: bool):
+        try:
+            user = User.objects.get(id=user_id)
+            user.is_online = is_online
+            user.save(update_fields=['is_online'])
+        except User.DoesNotExist:
+            pass
