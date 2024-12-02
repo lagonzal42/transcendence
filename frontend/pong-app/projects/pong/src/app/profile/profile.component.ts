@@ -125,18 +125,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     this.authService.getCurrentUser().subscribe({
       next: (currentUser) => {
-        //console.log('currentUser.username: ', currentUser.username);
-        //console.log('username: ', username);
         this.isOwnProfile = currentUser.username === username;
-        //console.log(this.isOwnProfile);
-        //console.log('================================================');
         this.http.get<UserResponse>(`http://localhost:8000/accounts/users/${username}/`).subscribe({
           next: (response) => {
-            console.log('Profile response:', response);
             if (response.user && response.user.username) {
               this.currentUsername = response.user.username;
               if (response.user.avatar) {
-                console.log("loooook ", response.user.avatar);
                 this.userAvatar = `http://localhost:8000${response.user.avatar}`;
               } else {
                 this.userAvatar = 'assets/default-avatar.png';

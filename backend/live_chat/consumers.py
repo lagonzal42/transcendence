@@ -132,12 +132,12 @@ class StatusConsumer(AsyncWebsocketConsumer):
         query_string = self.scope['query_string'].decode()
         query_params = dict(qp.split('=') for qp in query_string.split('&') if qp)
         token = query_params.get('token')
-        
+
         if not token:
             print("No token provided")
             await self.close()
             return
-        
+
         try:
             valid_user = await self.get_user_from_token(token)
             if not valid_user:
