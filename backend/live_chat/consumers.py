@@ -6,6 +6,8 @@ from channels.db import database_sync_to_async
 from asgiref.sync import async_to_sync, sync_to_async
 from django.contrib.auth import get_user_model
 from .models import Room, Message
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 User = get_user_model()
 
@@ -126,25 +128,59 @@ class ChatConsumer(AsyncWebsocketConsumer):
         
 class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # Get the user from the scope
-        user = self.scope["user"]
+        # Get token and validate user first
+        query_string = self.scope['query_string'].decode()
+        query_params = dict(qp.split('=') for qp in query_string.split('&') if qp)
+        token = query_params.get('token')
         
+        if not token:
+            print("No token provided")
+            await self.close()
+            return
+        
+        try:
+            valid_user = await self.get_user_from_token(token)
+            if not valid_user:
+                print("Invalid token or user not found")
+                await self.close()
+                return
+            
+            self.scope["user"] = valid_user
+            
+        except Exception as e:
+            print(f"Token validation error: {e}")
+            await self.close()
+            return
+        
+        user = self.scope["user"]
         if not user.is_authenticated:
             print("Rejecting unauthenticated connection")
             await self.close()
             return
-            
-        print(f"User {user.username} connected to status websocket")
-        
+
+        # First accept the connection
+        await self.accept()
+        print(f"Connection accepted for user {user.username}")
+
+        # Then join the group
         await self.channel_layer.group_add(
             'status_updates',
             self.channel_name
         )
-        
-        # Mark user as online when they connect
+
+        # Mark user as online
         await self.set_user_status(user.id, True)
+
+        # Get current online users
+        online_users = await self.get_online_users()
         
-        # Broadcast status change to all connected clients
+        # Send initial status after connection is accepted
+        await self.send(text_data=json.dumps({
+            'type': 'initial_status',
+            'online_users': online_users
+        }))
+
+        # Broadcast user's online status
         await self.channel_layer.group_send(
             'status_updates',
             {
@@ -153,9 +189,6 @@ class StatusConsumer(AsyncWebsocketConsumer):
                 'status': 'online'
             }
         )
-        
-        await self.accept()
-        print(f"Connection accepted for user {user.username}")
 
     async def disconnect(self, close_code):
         # Mark user as offline when they disconnect
@@ -193,3 +226,24 @@ class StatusConsumer(AsyncWebsocketConsumer):
             user.save(update_fields=['is_online'])
         except User.DoesNotExist:
             pass
+
+    @database_sync_to_async
+    def get_user_from_token(self, token):
+        try:
+            # Decode and validate the token
+            access_token = AccessToken(token)
+            user_id = access_token['user_id']
+            
+            # Get the user from the database
+            try:
+                user = User.objects.get(id=user_id)
+                return user if user.is_active else None
+            except User.DoesNotExist:
+                return None
+                
+        except TokenError:
+            return None
+
+    @database_sync_to_async
+    def get_online_users(self):
+        return list(User.objects.filter(is_online=True).values_list('id', flat=True))

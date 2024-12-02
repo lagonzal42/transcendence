@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { WebSocketService } from '../services/websocket.service';
+import { Subscription } from 'rxjs';
 
 interface User {
   id: number;
@@ -71,6 +72,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     games_lost: 0
   };
   isOwnProfile: boolean = false;
+  private userStatusSubscription!  : Subscription;
+  onlineUsers: Set<number> = new Set();
 
   constructor(
     private http: HttpClient,
@@ -100,20 +103,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
 
     // Subscribe to user status updates
-    this.webSocketService.userStatus$.subscribe(statusUpdate => {
-      console.log('Received status update in profile:', statusUpdate);
-      this.friends = this.friends.map(friend => {
-        if (friend.id === statusUpdate.user_id) {
-          console.log(`Updating status for friend ${friend.username} to ${statusUpdate.status}`);
-          return { ...friend, is_online: statusUpdate.status === 'online' };
-        }
-        return friend;
-      });
+    this.userStatusSubscription = this.webSocketService.userStatus$.subscribe(status => {
+      if (status.status === 'online') {
+        this.onlineUsers.add(status.user_id);
+      } else {
+        this.onlineUsers.delete(status.user_id);
+      }
+      this.friends = [...this.friends];
     });
   }
 
   ngOnDestroy() {
-    // Unsubscribe from WebSocket updates if needed
+    if (this.userStatusSubscription) {
+      this.userStatusSubscription.unsubscribe();
+    }
   }
 
   loadUserProfile(username: string) {
@@ -302,5 +305,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.error = 'Failed to unblock user';
       }
     });
+  }
+
+  isUserOnline_f(userId: number): boolean {
+    return this.webSocketService.isUserOnline(userId);
   }
 }

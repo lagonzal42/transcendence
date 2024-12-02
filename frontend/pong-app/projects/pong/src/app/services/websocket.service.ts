@@ -16,6 +16,7 @@ export class WebSocketService {
   private userStatusSubject = new Subject<UserStatus>();
   userStatus$ = this.userStatusSubject.asObservable();
   private isBrowser: boolean;
+  private onlineUsers: Set<number> = new Set();
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -34,15 +35,37 @@ export class WebSocketService {
     if (!this.isBrowser) return;
     
     const token = this.authService.getAccessToken();
+    if (!token) return;
+
     this.socket = new (window as any).WebSocket(`ws://localhost:8000/ws/status/?token=${token}`);
     
     this.socket.onopen = () => {
+      this.socket.send(JSON.stringify({
+        token: token
+      }));
       console.log('Status WebSocket connected');
     };
     
     this.socket.onmessage = (event: any) => {
       const data = JSON.parse(event.data);
-      if (data.type === 'user_status') {
+      console.log('Received WebSocket message:', data);
+      
+      if (data.type === 'initial_status') {
+        // Handle initial status update
+        this.onlineUsers.clear();
+        data.online_users.forEach((userId: number) => {
+          this.onlineUsers.add(userId);
+          this.userStatusSubject.next({
+            user_id: userId,
+            status: 'online'
+          });
+        });
+      } else if (data.type === 'user_status') {
+        if (data.status === 'online') {
+          this.onlineUsers.add(data.user_id);
+        } else {
+          this.onlineUsers.delete(data.user_id);
+        }
         this.userStatusSubject.next({
           user_id: data.user_id,
           status: data.status
@@ -51,12 +74,19 @@ export class WebSocketService {
     };
 
     this.socket.onclose = () => {
-      console.log('Status WebSocket closed. Reconnecting...');
-      setTimeout(() => this.connectWebSocket(), 1000);
+      console.log('Status WebSocket closed');
+      if (this.authService.getAccessToken()) {
+        console.log('Attempting to reconnect...');
+        setTimeout(() => this.connectWebSocket(), 5000);
+      }
     };
 
     this.socket.onerror = (error: any) => {
       console.error('Status WebSocket error:', error);
     };
+  }
+
+  isUserOnline(userId: number): boolean {
+    return this.onlineUsers.has(userId);
   }
 }
