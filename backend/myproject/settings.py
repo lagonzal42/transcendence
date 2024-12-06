@@ -213,8 +213,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='user@gmail.com')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='user')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Gmail address (in .env file)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Gmail app password (in .env file)
 # # # Setting to send a mail to gmail
 
 LOGIN_URL = 'two_factor_auth:login' # # # not implemented yet
