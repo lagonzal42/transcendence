@@ -28,6 +28,18 @@ export class PaddleComponent {
 			this.yPosition += this.paddleSpeed;
 	}
 
+	moveLeft()
+	{
+		if (this.xPosition > 0)
+			this.xPosition -= this.paddleSpeed;
+	}
+
+	moveRight()
+	{
+		if (this.xPosition < 500 - this.paddleWidth)
+			this.xPosition += this.paddleSpeed;
+	}
+
 	refreshPosition(xPos: number, yPos: number)
 	{
 		this.xPosition = xPos;

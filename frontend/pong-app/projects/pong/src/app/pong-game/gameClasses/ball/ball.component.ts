@@ -2,13 +2,13 @@ import { PaddleComponent as Paddle } from '../paddle/paddle.component';
 
 export class BallComponent {
     
-    private xPosition: number;
-    private yPosition: number;
-    private ballRadius: number;
-    private dx: number;
-    private dy: number;
-    private touches: number;
-    private speed: number;
+    protected xPosition: number;
+    protected yPosition: number;
+    protected ballRadius: number;
+    protected dx: number;
+    protected dy: number;
+    protected touches: number;
+    protected speed: number;
     
     constructor(xPos: number, yPos: number)
     {
@@ -40,7 +40,7 @@ export class BallComponent {
       this.dy = dy;
     }
     
-    calculateCollisions2P(canvasHeight: number, Paddle1: Paddle, Paddle2: Paddle)
+    calculateCollisions(canvasHeight: number, Paddle1: Paddle, Paddle2: Paddle)
     {
       if(this.yPosition >= canvasHeight - this.ballRadius || this.yPosition <= this.ballRadius) // colisiones arriba y abajo
         this.dy = -this.dy;
@@ -48,8 +48,9 @@ export class BallComponent {
       this.calculatePaddleCollisions(Paddle1, Paddle2);
     }
 
-    calculatePaddleCollisions(Paddle1: Paddle, Paddle2: Paddle)
+    calculatePaddleCollisions(Paddle1: Paddle, Paddle2: Paddle) : number
     {
+      let retVal: number = 0;
       if (this.xPosition <= Paddle1.getWidth() + Paddle1.getX() + this.ballRadius)
       {
         if (this.yPosition >= Paddle1.getY() && this.yPosition <= Paddle1.getY() + Paddle1.getHeight())
@@ -58,10 +59,11 @@ export class BallComponent {
           {
             this.calculateReboundAngle(Paddle1, -1);
             this.touches += 1;
+            retVal = 1;
           }
         }
       }
-      else if (this.xPosition >= Paddle2.getX() - Paddle2.getWidth() - this.ballRadius)
+      else if (this.xPosition >= Paddle2.getX() - this.ballRadius)
       {
         if (this.yPosition >= Paddle2.getY() && this.yPosition <= Paddle2.getY() + Paddle2.getHeight())
         {
@@ -69,6 +71,7 @@ export class BallComponent {
           {
             this.calculateReboundAngle(Paddle2, 1);
             this.touches += 1;
+            retVal = 2;
           }
         }
       }
@@ -77,11 +80,7 @@ export class BallComponent {
         this.speed += 1;
         this.touches = 0;
       }
-    }
-
-    calculateCollisions4p(PaddleLeft: Paddle, PaddleRight: Paddle, PaddleUp: Paddle, PaddleDown: Paddle)
-    {
-      this.calculateCollisions2P(PaddleLeft, PaddleRight)
+      return retVal;
     }
 
     calculateReboundAngle(Paddle: Paddle, factor: number)

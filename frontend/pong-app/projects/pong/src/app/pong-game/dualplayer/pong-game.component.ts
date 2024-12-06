@@ -139,7 +139,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
 
     // Ball movement
     this.ball?.move();
-    this.ball?.calculateCollisions2P(this.pongCanvas.nativeElement.height, this.leftPaddle!, this.rightPaddle!);
+    this.ball?.calculateCollisions(this.pongCanvas.nativeElement.height, this.leftPaddle!, this.rightPaddle!);
 
 
     // Score logic: when the ball passes the paddle on either side

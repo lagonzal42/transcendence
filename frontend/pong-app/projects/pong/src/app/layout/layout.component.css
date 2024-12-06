@@ -1,18 +1,53 @@
-body
-{
-	background-color: rgb(249, 249, 249);
-	color: white;
-	margin: 0;
-	display: flex;
-	flex-direction: column;
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full viewport height */
+    position: relative; /* For absolute positioning of footer */
 }
 
-.main-container
-{
-	flex: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 10vh;
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    /* Add padding bottom to prevent content from going behind footer */
+    padding-bottom: 60px; /* Adjust this value based on your footer height */
+}
+
+app-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--background-color);
+    width: 100%;
+}
+
+app-footer {
+    position: fixed; /* Changed from sticky to fixed */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: var(--background-color);
+}
+
+/* Game layout specific styles */
+.game-layout {
+    padding: 0;
+    margin: 0;
+}
+
+.game-layout .main-content {
+    padding: 0;
+    margin: 0;
     height: 100vh;
+}
+
+/* Make sure router-outlet content is centered */
+:host ::ng-deep router-outlet + * {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
