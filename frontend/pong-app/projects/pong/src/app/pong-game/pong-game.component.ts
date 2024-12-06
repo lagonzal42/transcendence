@@ -1,7 +1,6 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-
 @Component({
   selector: 'app-pong-game',
   standalone: true,
@@ -53,7 +52,6 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       }
     }
   }
-
   ngOnInit(): void {
     console.log("PongGameComponent initialized with players:", this.leftPlayerName, this.rightPlayerName);
   }
@@ -92,8 +90,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       window.addEventListener('keyup', this.keyHandler.bind(this));
       requestAnimationFrame(this.draw.bind(this)); // Asegúrate de que se llama a draw
     }
-  }  
-
+  }
   keyHandler(event: KeyboardEvent): void {
     const isKeyDown = event.type === 'keydown';  // Detect if the event is keydown or keyup
     switch (event.key) {
@@ -113,7 +110,6 @@ export class PongGameComponent implements OnInit, AfterViewInit {
         break;
     }
   }
-
   draw(): void {
     if (!this.ctx || !this.pongCanvas || this.gameEnded) {
       return;
@@ -158,7 +154,6 @@ export class PongGameComponent implements OnInit, AfterViewInit {
     } else if (this.x + this.ballRadius > this.pongCanvas.nativeElement.width - 20 - this.paddleWidth && this.y > this.rightPaddleY && this.y < this.rightPaddleY + this.paddleHeight) {
       this.dx = -this.dx;
     }
-
     // Score logic: when the ball passes the paddle on either side
     if (this.x - this.ballRadius < 0) {
       this.rightPlayerScore++;
@@ -190,10 +185,8 @@ export class PongGameComponent implements OnInit, AfterViewInit {
     if (this.rightPaddleDown && this.rightPaddleY < this.pongCanvas.nativeElement.height - this.paddleHeight) {
       this.rightPaddleY += this.paddleSpeed;
     }
-
     requestAnimationFrame(this.draw.bind(this));
   }
-
   resetBall(): void {
     this.x = this.pongCanvas.nativeElement.width / 2;
     this.y = this.pongCanvas.nativeElement.height / 2;

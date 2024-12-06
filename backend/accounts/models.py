@@ -14,7 +14,7 @@ import secrets
 import random    
 
 class User(AbstractUser):
-    avatar = models.ImageField(default="noob.png")
+    avatar = models.ImageField(upload_to='avatars/', default="noob.png")
     username = models.CharField(max_length=100, unique=True, null=True)
     email = models.EmailField(unique=True, null=True)
     password = models.CharField(max_length=100)
@@ -26,6 +26,7 @@ class User(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(default=timezone.now)
     friends = models.ManyToManyField('self', blank=True, symmetrical=True)
+    blocked_users = models.ManyToManyField('self', symmetrical=False, related_name='blocked_by', blank=True)
 
 
     #USERNAME_FIELD = 'email'
@@ -41,8 +42,17 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
 class FriendRequest(models.Model):
-    from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
-    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
+    from_user = models.ForeignKey(User, related_name='friend_requests_sent', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='friend_requests_received', on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('declined', 'Declined')
+    ], default='pending')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('from_user', 'to_user')
 
     def __str__(self):
 	    return "From {}, to {}".format(self.from_user.username, self.to_user.username)

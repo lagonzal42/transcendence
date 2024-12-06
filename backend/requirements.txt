@@ -11,3 +11,6 @@ gunicorn
 python-decouple
 requests
 django-redis
+daphne
+channels
+channels-redis==4.1.0

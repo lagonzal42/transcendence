@@ -37,8 +37,11 @@ ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'accounts',
     'two_factor_auth',
+    'live_chat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,45 +57,65 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'accounts.User'
 
 ##### For JWT
+# REST_FRAMEWORK = {
+#     # JWT authentication
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     ),  
+# }
+
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+#     # Every time a refresh token is used to generate a new access token, 
+#     # a new refresh token is also issued to the user.
+#     'ROTATE_REFRESH_TOKENS': True,
+#     # Old refresh tokens are blacklisted after they are replaced with new ones.
+#     'BLACKLIST_AFTER_ROTATION': True,
+#     'ALGORITHM': 'HS256', # default
+#     # SHOULD CHANGE the SECRET_KEY when submit to security reason
+#     'SIGNING_KEY': SECRET_KEY,
+#     # Public key used to verify JWT tokens, if I use HS256 algo, it's set to none
+#     'VERIFYING_KEY': None,
+#     'AUTH_HEADER_TYPES': ('Bearer',),
+#     'USER_ID_FIELD': 'id', # Default, Uses 'id' as the unique identifier in JWT payload
+#     'USER_ID_CLAIM': 'user_id',# Default, User ID will be stored under 'user_id' in the token
+#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',), # default
+#     'TOKEN_TYPE_CLAIM': 'token_type',
+#     'JTI_CLAIM': 'jti',
+# }
+
 REST_FRAMEWORK = {
-    # JWT authentication
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),  
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    # Every time a refresh token is used to generate a new access token, 
-    # a new refresh token is also issued to the user.
     'ROTATE_REFRESH_TOKENS': True,
-    # Old refresh tokens are blacklisted after they are replaced with new ones.
     'BLACKLIST_AFTER_ROTATION': True,
-    'ALGORITHM': 'HS256', # default
-    # SHOULD CHANGE the SECRET_KEY when submit to security reason
-    'SIGNING_KEY': SECRET_KEY,
-    # Public key used to verify JWT tokens, if I use HS256 algo, it's set to none
-    'VERIFYING_KEY': None,
+    'UPDATE_LAST_LOGIN': True,
+    
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id', # Default, Uses 'id' as the unique identifier in JWT payload
-    'USER_ID_CLAIM': 'user_id',# Default, User ID will be stored under 'user_id' in the token
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',), # default
-    'TOKEN_TYPE_CLAIM': 'token_type',
-    'JTI_CLAIM': 'jti',
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
 }
-##### For JWT
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',    
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -100,7 +123,11 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        #'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            BASE_DIR / 'live_chat' / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -114,7 +141,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
+ASGI_APPLICATION = 'myproject.asgi.application'
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -209,6 +245,9 @@ CORS_ALLOWED_ORIGINS = [
 
 
 # # # Setting to send a mail to gmail
+# CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_CREDENTIALS = True
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -260,3 +299,8 @@ CACHES = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+# Security Headers
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'

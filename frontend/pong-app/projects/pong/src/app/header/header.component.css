@@ -55,3 +55,17 @@ header .buttons {
 .btn-search:hover {
     background-color: rgb(181, 0, 0);
 }
+
+.btn-update-profile {
+    font-size: 16px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background-color: #ffa500;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-update-profile:hover {
+    background-color: #ff8c00;
+}

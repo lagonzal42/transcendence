@@ -2,6 +2,10 @@
 <div class="login-area container-fluid d-flex justify-content-center align-items-center">
   <h2 class="login-title text-center mb-4">Log in</h2>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div *ngIf="loginError" class="alert alert-danger">
+      {{ loginError }}
+    </div>
+
     <div class="formGroup">
       <label for="username">Username</label>
       <input id="username" formControlName="username">
