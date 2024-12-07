@@ -105,7 +105,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   startGame(): void {
     if (this.isGameInitialized && this.ctx) {
       window.addEventListener('keydown', this.keyHandler.bind(this));
-      window.addEventListener('keyup', this.keyHandler.bind(this));
+      //window.addEventListener('keyup', this.keyHandler.bind(this));
       requestAnimationFrame(this.draw.bind(this)); // Asegúrate de que se llama a draw
     }
   }  
@@ -200,9 +200,15 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
 
     // Score logic: when the ball passes the paddle on either side
     if (this.ball1!.checkGoal4p(this.pongCanvas.nativeElement.width))
+    {
       this.updateScoreDisplay(this.ball1!);
+      this.resetBall(1);
+    }
     if (this.ball2!.checkGoal4p(this.pongCanvas.nativeElement.width))
+    {
       this.updateScoreDisplay(this.ball2!);
+      this.resetBall(2);
+    }
 
     // Check if game has ended
     if (this.leftPlayerScore >= this.winningScore || this.rightPlayerScore >= this.winningScore
@@ -274,12 +280,12 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
       if (this.rightPlayerScore >= this.winningScore) {
         winningPlayers.push(this.rightPlayerName);
       }
-      if (this.upPlayerScore >= this.winningScore) {
-        winningPlayers.push(this.upPlayerName);
-      }
-      if (this.downPlayerScore >= this.winningScore) {
-        winningPlayers.push(this.downPlayerName);
-      }
+      // if (this.upPlayerScore >= this.winningScore) {
+      //   winningPlayers.push(this.upPlayerName);
+      // }
+      // if (this.downPlayerScore >= this.winningScore) {
+      //   winningPlayers.push(this.downPlayerName);
+      // }
 
       const winnerMessage = `${winningPlayers.join(" and ")} wins!`;
 

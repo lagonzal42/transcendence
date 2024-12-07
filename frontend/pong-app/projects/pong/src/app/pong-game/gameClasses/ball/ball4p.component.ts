@@ -55,12 +55,10 @@ export class BallComponent4p extends BallComponent
     }
 
     private calculateReboundAngleHorizontal(Paddle: Paddle, factor: number): void {
-        // For horizontal paddles, we use x-position for the intersection
         let relativeIntersectX = this.xPosition - (Paddle.getX() + Paddle.getHeight() / 2);
         let normalizedIntersection = relativeIntersectX / (Paddle.getHeight() / 2);
         let bounceAngle = normalizedIntersection * Math.PI / 4;
         
-        // Swap x and y components for horizontal paddles
         this.dx = Math.sin(bounceAngle);
         this.dy = Math.cos(bounceAngle) * factor;
     }
