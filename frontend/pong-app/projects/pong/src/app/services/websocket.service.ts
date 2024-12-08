@@ -40,9 +40,6 @@ export class WebSocketService {
     this.socket = new (window as any).WebSocket(`ws://localhost:8000/ws/status/?token=${token}`);
     
     this.socket.onopen = () => {
-      this.socket.send(JSON.stringify({
-        token: token
-      }));
       console.log('Status WebSocket connected');
     };
     
