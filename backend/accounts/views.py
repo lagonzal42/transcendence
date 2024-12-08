@@ -95,6 +95,7 @@ class RegisterView(APIView):
 
 class ActivateAccountView(APIView):
 
+    permission_classes = [AllowAny]
     def get(self, request):
         token = request.query_params.get('token')  # Token passed as query param
 
@@ -162,12 +163,15 @@ class LoginView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
+            # print(f"Login attempt for user: {serializer.validated_data['username']}")  # Debug print
             user = authenticate(
                 username=serializer.validated_data['username'],
                 password=serializer.validated_data['password']
             )
+            # print(f"Authentication result: {user}")  # Debug print
 
             if user is not None:
+                # print(f"User authenticated, is_active: {user.is_active}")  # Debug print
                 # Instead of making a new request, call the 2FA view directly
                 from two_factor_auth.views import Send2FACodeView
                 

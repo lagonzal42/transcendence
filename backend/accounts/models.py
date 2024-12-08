@@ -112,9 +112,10 @@ class AccountActivateTokensManager(models.Manager):
 
         # Activate the account if a token exists
         if user_activate_token:
-            user = user_activate_token.user
             user.is_active = True
+            user = user_activate_token.user
             user.save()
+            # print(f"User {user.username} activated successfully")  # Debug print
             return user
         else:
             raise self.model.DoesNotExist

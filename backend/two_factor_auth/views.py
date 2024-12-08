@@ -7,6 +7,7 @@ from django.conf import settings
 from rest_framework import status
 from accounts.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import AllowAny
 
 class Send2FACodeView(GenericAPIView):
     """Sends 2FA code to user's email"""
@@ -58,7 +59,9 @@ class Send2FACodeView(GenericAPIView):
 
 class Verify2FAView(GenericAPIView):
     """Verifies the 2FA code"""
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
+
         code = request.data.get('code')
         # # # DEBUG
         # print(f"Verify::Stored session: {request.session.items()}")
