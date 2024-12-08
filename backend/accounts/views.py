@@ -339,6 +339,7 @@ def get_user_data(user):
 #         print(friend_request.id)
 
 #         return Response({'message': 'Friend request sent successfully.'}, status=200)
+
     
 class AcceptFriendRequestView(APIView):
     permission_classes = [IsAuthenticated]
