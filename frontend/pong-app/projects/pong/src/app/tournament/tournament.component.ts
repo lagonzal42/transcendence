@@ -129,8 +129,8 @@ export class TournamentComponent implements OnInit {
         player1: this.currentMatch.player1,
         player2: this.currentMatch.player2,
         winner: winner,
-        score1: this.currentMatch.player1 === winner ? leftScore : rightScore,
-        score2: this.currentMatch.player2 === winner ? rightScore : leftScore
+        score1: leftScore,
+        score2: rightScore,
       });
     }
 
