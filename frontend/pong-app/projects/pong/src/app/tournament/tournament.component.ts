@@ -56,9 +56,11 @@ export class TournamentComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(() => {
-      if (history.state.winner) {
-        console.log("Winner from navigation: ", history.state.winner);
-        this.handleMatchComplete(history.state.winner);
+      if (isPlatformBrowser(this.platformId) && window.history.state.winner) {
+        console.log("Winner from navigation: ", window.history.state.winner);
+        console.log("left score: ", window.history.state.leftScore)
+        console.log("right score: ", window.history.state.rightScore)
+        this.handleMatchComplete(window.history.state.winner, window.history.state);
       }
     })
   }
@@ -117,18 +119,7 @@ export class TournamentComponent implements OnInit {
     }
   }
 
-  handleMatchComplete(winner: string) {
-    // Get the scores from the navigation state
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state) {
-      const winner = navigation.extras.state['winner'];
-      if (winner){
-        console.log("players who won match" + winner);
-        console.log("leftPlayerScore: " + navigation.extras.state['leftScore']);
-        console.log('rightScore: ' + navigation.extras.state['rightScore']);
-      }
-    }
-    const state = navigation?.extras.state as any;
+  handleMatchComplete(winner: string, state: any) {
     const leftScore = state?.leftScore || 0;
     const rightScore = state?.rightScore || 0;
     
@@ -150,7 +141,7 @@ export class TournamentComponent implements OnInit {
         // After first match, start second match
         setTimeout(() => {
           this.startMatch(this.group2[0], this.group2[1]);
-        }, 2000);
+        }, 8000);
       } else if (this.winners.length === 2) {
         // After second match, prepare for finals
         this.currentRound = 2;
