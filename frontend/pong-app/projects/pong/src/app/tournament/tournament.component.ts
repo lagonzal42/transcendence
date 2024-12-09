@@ -34,6 +34,7 @@ export class TournamentComponent implements OnInit {
     score1: number;
     score2: number;
   }[] = [];
+  countdownSeconds: number = 0;
 
   constructor(
     private fb: FormBuilder, 
@@ -130,7 +131,7 @@ export class TournamentComponent implements OnInit {
         player2: this.currentMatch.player2,
         winner: winner,
         score1: leftScore,
-        score2: rightScore,
+        score2: rightScore
       });
     }
 
@@ -138,7 +139,14 @@ export class TournamentComponent implements OnInit {
 
     if (this.currentRound === 1) {
       if (this.winners.length === 1) {
-        // After first match, start second match
+        this.countdownSeconds = 8; // Start countdown from 8
+        const countdownInterval = setInterval(() => {
+          this.countdownSeconds--;
+          if (this.countdownSeconds <= 0) {
+            clearInterval(countdownInterval);
+          }
+        }, 1000);
+        
         setTimeout(() => {
           this.startMatch(this.group2[0], this.group2[1]);
         }, 8000);
