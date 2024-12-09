@@ -434,3 +434,7 @@
 .list-item .online-status.online {
     background-color: #2ecc71;
 }
+
+.online {
+  color: green; /* or any other style to indicate online status */
+}

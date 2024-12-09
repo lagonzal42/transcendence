@@ -57,35 +57,6 @@ class FriendRequest(models.Model):
     def __str__(self):
 	    return "From {}, to {}".format(self.from_user.username, self.to_user.username)
 
-# class FriendshipRequest(models.Model):
-#     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_sender')
-#     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_receiver')
-#     sender_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     receiver_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#     is_active = models.BooleanField(default=True)
-
-#     class Meta:
-#         unique_together = ['sender', 'receiver'] 
-
-#     def __str__(self):
-#         return f'{self.sender} has sent a friend request to {self.receiver}'
-
-# class Friendship(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_creator')
-#     friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_receiver')
-#     user_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     friend_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     class Meta:
-#         unique_together = ['user', 'friend'] 
-
-#     def __str__(self):
-#         return f'{self.user} is friends with {self.friend}'
-
 def in_30_days():
     return timezone.now() + timedelta(days=30)
 
@@ -97,36 +68,3 @@ class OtpToken(models.Model):
 
     def __str__(self):
         return self.user.username
-
-# class AccessToken(models.Model):
-#     # tied user
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     # Access token (max_length is set to 40 because the token is set to a hashed string in sha1).
-#     token = models.CharField(max_length=40)
-#     # access date and time
-#     access_datetime = models.DateTimeField(default=in_30_days)
-
-#     def str(self):
-#         # Set the email address, access date and time and token to be visible.
-#         dt = timezone.localtime(self.access_datetime).strftime("%Y/%m/%d %H:%M:%S")
-#         return self.user.user_id + '(' + dt + ') - ' + self.token
-
-#     @staticmethod
-#     def create(user: User):
-#         # Retrieve the user's existing tokens.
-#         if AccessToken.objects.filter(user=user).exists():
-#             # Deleted if token already exists
-#             AccessToken.objects.get(user=user).delete()
-
-#         # Token creation (as UserID + Password + system date hash value)
-#         dt = timezone.now()
-#         str = user.user_id + user.password + dt.strftime('%Y%m%d%H%M%S%f')
-#         hash = hashlib.sha1(str.encode('utf-8')).hexdigest()
-
-#         # Add tokens to DB.
-#         token = AccessToken.objects.create(
-#             user=user,
-#             token=hash,
-#             access_datetime=dt)
-
-#         return token

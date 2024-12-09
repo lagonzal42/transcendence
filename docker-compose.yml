@@ -4,14 +4,16 @@ services:
     container_name: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    # environment:
+    #   - POSTGRES_DB=postgres
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=postgres
     ports:
       - '5432:5432'
     networks:
       - app-network
+    env_file:
+      - .env
 
   backend:
     container_name: backend
@@ -24,17 +26,19 @@ services:
       - "8000:8000" 
     # expose:
     #   - "8000"
-    environment:
-      - DB_NAME=postgres
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_HOST=db
-      - DB_PORT=5432
+    # environment:
+    #   - DB_NAME=postgres
+    #   - DB_USER=postgres
+    #   - DB_PASSWORD=postgres
+    #   - DB_HOST=db
+    #   - DB_PORT=5432
     depends_on:
       - db
       - redis
     networks:
       - app-network
+    env_file:
+      - .env
     
   redis:
     image: redis:latest
@@ -57,6 +61,8 @@ services:
       - backend
     networks:
       - app-network
+    env_file:
+      - .env
     
   # node-exporter:
   #   image: prom/node-exporter
