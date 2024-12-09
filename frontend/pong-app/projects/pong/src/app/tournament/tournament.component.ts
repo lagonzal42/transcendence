@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { uniquePlayerNamesValidator } from '../uniquePlayerName/uniquePlayerName.validator'; // Adjust the path as necessary
 import { platform } from 'os';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -38,6 +38,7 @@ export class TournamentComponent implements OnInit {
   constructor(
     private fb: FormBuilder, 
     private router: Router,
+    private route: ActivatedRoute,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.tournamentForm = this.fb.group({
@@ -54,13 +55,12 @@ export class TournamentComponent implements OnInit {
   }
 
   ngOnInit() {
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state) {
-      const winner = navigation.extras.state['winner'];
-      if (winner) {
-        this.handleMatchComplete(winner);
+    this.route.paramMap.subscribe(() => {
+      if (history.state.winner) {
+        console.log("Winner from navigation: ", history.state.winner);
+        this.handleMatchComplete(history.state.winner);
       }
-    }
+    })
   }
 
   private loadTournamentState() {
@@ -120,6 +120,14 @@ export class TournamentComponent implements OnInit {
   handleMatchComplete(winner: string) {
     // Get the scores from the navigation state
     const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      const winner = navigation.extras.state['winner'];
+      if (winner){
+        console.log("players who won match" + winner);
+        console.log("leftPlayerScore: " + navigation.extras.state['leftScore']);
+        console.log('rightScore: ' + navigation.extras.state['rightScore']);
+      }
+    }
     const state = navigation?.extras.state as any;
     const leftScore = state?.leftScore || 0;
     const rightScore = state?.rightScore || 0;
@@ -179,6 +187,8 @@ export class TournamentComponent implements OnInit {
 
   startMatch(player1: string, player2: string) {
     this.currentMatch = { player1, player2 };
+    this.saveTournamentState();
+
     const navigationExtras: NavigationExtras =  {
       state: {
         players: {

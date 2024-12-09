@@ -54,7 +54,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
         this.leftPlayerName = players.leftPlayerName;
         this.rightPlayerName = players.rightPlayerName;
         this.isTournamentMatch = players.isTournamentMatch || false;
-        this.onMatchComplete = players.onMatchComplete || null;
+        //this.onMatchComplete = players.onMatchComplete || null;
       }
     }
   }

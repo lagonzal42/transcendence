@@ -36,6 +36,9 @@
         <small class="text-danger">Player names must be unique.</small>
       </div>
     </form>
+    <div>
+      <button (click)="resetTournament()">Reset Tournament</button>
+    </div>
   </div>
 
   <!-- Tournament Progress View -->
@@ -58,6 +61,9 @@
           <p>Winner: {{matchResults[1].winner}}</p>
           <p class="score">Score: {{matchResults[1].score1}} - {{matchResults[1].score2}}</p>
         </div>
+      </div>
+      <div>
+        <button (click)="resetTournament()">Reset Tournament</button>
       </div>
     </div>
 
