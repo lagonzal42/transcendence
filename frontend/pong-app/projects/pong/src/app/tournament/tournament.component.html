@@ -1,4 +1,6 @@
 <div class="tournamentNameArea container-fluid d-flex justify-content-center align-items-center">
+  <!-- Initial Form View -->
+  <div *ngIf="!formSubmitted">
     <h2 class="tournamentFormTitle text-center mb-4">Name selection</h2>
     <form [formGroup]="tournamentForm" (ngSubmit)="onSubmit()">
       <div class="formGroup">
@@ -34,4 +36,53 @@
         <small class="text-danger">Player names must be unique.</small>
       </div>
     </form>
+  </div>
+
+  <!-- Tournament Progress View -->
+  <div class="tournament-progress" *ngIf="formSubmitted">
+    <h3>Tournament Progress</h3>
+    
+    <!-- First Round -->
+    <div class="round-1">
+      <h4>Semi-Finals</h4>
+      <div class="match">
+        <p>Match 1: {{group1[0]}} vs {{group1[1]}}</p>
+        <div *ngIf="matchResults[0]" class="match-result">
+          <p>Winner: {{matchResults[0].winner}}</p>
+          <p class="score">Score: {{matchResults[0].score1}} - {{matchResults[0].score2}}</p>
+        </div>
+      </div>
+      <div class="match">
+        <p>Match 2: {{group2[0]}} vs {{group2[1]}}</p>
+        <div *ngIf="matchResults[1]" class="match-result">
+          <p>Winner: {{matchResults[1].winner}}</p>
+          <p class="score">Score: {{matchResults[1].score1}} - {{matchResults[1].score2}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final Round -->
+    <div class="round-2" *ngIf="currentRound === 2">
+      <h4>Finals</h4>
+      <div class="match">
+        <p>{{winners[0]}} vs {{winners[1]}}</p>
+        <div *ngIf="matchResults[2]" class="match-result">
+          <p>Winner: {{matchResults[2].winner}}</p>
+          <p class="score">Score: {{matchResults[2].score1}} - {{matchResults[2].score2}}</p>
+        </div>
+        <button *ngIf="winners.length === 2 && !matchResults[2]" 
+                (click)="startFinalMatch()" 
+                class="submit-login-btn">
+          Start Final Match
+        </button>
+      </div>
+    </div>
+
+    <!-- Tournament Complete -->
+    <div *ngIf="tournamentComplete" class="tournament-complete">
+      <h3>Tournament Complete!</h3>
+      <p>Winner: {{winners[2]}}</p>
+      <button (click)="resetTournament()" class="submit-login-btn">Start New Tournament</button>
+    </div>
+  </div>
 </div>

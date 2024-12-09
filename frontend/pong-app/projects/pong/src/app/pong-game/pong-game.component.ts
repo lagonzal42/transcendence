@@ -42,13 +42,19 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   private rightPaddleUp: boolean = false;
   private rightPaddleDown: boolean = false;
 
+  isTournamentMatch: boolean = false;
+  onMatchComplete: ((winner: string) => void) | null = null;
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
       const players = navigation.extras.state['players'];
       if (players) {
+        console.log(players); 
         this.leftPlayerName = players.leftPlayerName;
         this.rightPlayerName = players.rightPlayerName;
+        this.isTournamentMatch = players.isTournamentMatch || false;
+        this.onMatchComplete = players.onMatchComplete || null;
       }
     }
   }
@@ -211,15 +217,28 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       this.ctx.clearRect(0, 0, this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
       this.ctx.font = '30px Arial';
       this.ctx.fillStyle = '#FFFFFF';
-
+  
       const winnerName = this.leftPlayerScore >= this.winningScore ? this.leftPlayerName : this.rightPlayerName;
       const winnerMessage = `${winnerName} wins!`;
-
+  
       const textWidth = this.ctx.measureText(winnerMessage).width;
       const xPosition = (this.pongCanvas.nativeElement.width - textWidth) / 2;
       const yPosition = this.pongCanvas.nativeElement.height / 2;
-
+  
       this.ctx.fillText(winnerMessage, xPosition, yPosition);
+
+      if (this.isTournamentMatch) {
+        setTimeout(() => {
+          const navigationExtras: NavigationExtras = {
+            state: {
+              winner: winnerName,
+              leftScore: this.leftPlayerScore,
+              rightScore: this.rightPlayerScore
+            }
+          };
+          this.router.navigate(['/tournament'], navigationExtras);
+        }, 2000);
+      }
     }
   }
 }
