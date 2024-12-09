@@ -122,8 +122,8 @@ export class TournamentComponent implements OnInit {
   handleMatchComplete(winner: string, state: any) {
     const leftScore = state?.leftScore || 0;
     const rightScore = state?.rightScore || 0;
-    
-    // Store match result
+    console.log("leftScore: ", leftScore);
+    console.log("rightScore: ", rightScore);
     if (this.currentMatch) {
       this.matchResults.push({
         player1: this.currentMatch.player1,
@@ -150,7 +150,7 @@ export class TournamentComponent implements OnInit {
     } else if (this.currentRound === 2 && this.winners.length === 3) {
       this.tournamentComplete = true;
       this.currentMatch = null;
-    }
+    } 
     this.saveTournamentState();
   }
 
