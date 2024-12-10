@@ -16,6 +16,7 @@ urlpatterns = [
     path('users/<str:username>/', views.UserDetailView.as_view(), name='user_detail'),
     path('users/<str:username>/update/', views.UpdateProfileView.as_view(), name='user_update'),
     path('users/<str:username>/close/', views.CloseAccountView.as_view(), name='user_close'),
+    path('users/<str:username>/matches/', views.UserMatchHistoryView.as_view(), name='user-match-history'),
     
     # Friend management
     path('users/<str:username>/friends/', views.ListFriendsView, name='friend_list'),

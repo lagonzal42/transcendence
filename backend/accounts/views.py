@@ -1,4 +1,5 @@
-from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer, FriendSerializer
+from django.db.models import Q
+from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer, FriendSerializer, MatchSerializer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView
@@ -18,7 +19,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, action, permission_classes
 from django.contrib.auth.decorators import login_required
 
-from .models import User, OtpToken, FriendRequest
+from .models import User, OtpToken, FriendRequest, Match
 from django.db import IntegrityError
 from django.shortcuts import render
 
@@ -106,6 +107,21 @@ class UserDetailView(APIView):
             }
         }
         return Response(response_data, status=200)
+
+class UserMatchHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            matches = Match.objects.filter(
+                Q(player1=user) | Q(player2=user)
+            ).select_related('player1', 'player2', 'winner')
+
+            serializer = MatchSerializer(matches, many=True)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
 
 class LoginView(GenericAPIView):
     """API login class"""
