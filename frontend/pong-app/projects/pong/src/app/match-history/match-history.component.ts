@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 interface Match {
   id: number;
@@ -16,7 +17,7 @@ interface Match {
 @Component({
   selector: 'app-match-history',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './match-history.component.html',
   styleUrl: './match-history.component.css'
 })

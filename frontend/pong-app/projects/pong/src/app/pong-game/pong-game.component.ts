@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-pong-game',
   standalone: true,
@@ -45,7 +46,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   isTournamentMatch: boolean = false;
   onMatchComplete: ((winner: string) => void) | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router, private http: HttpClient) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
       const players = navigation.extras.state['players'];
@@ -227,6 +228,20 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   
       this.ctx.fillText(winnerMessage, xPosition, yPosition);
 
+
+      // Save match result to backend
+      this.http.post('http://localhost:8000/accounts/matches/', {
+        player1_username: this.leftPlayerName,
+        player2_username: this.rightPlayerName,
+        player1_score: this.leftPlayerScore,
+        player2_score: this.rightPlayerScore,
+        winner_username: winnerName,
+        match_type: this.isTournamentMatch ? 'tournament' : 'local'
+      }).subscribe({
+        next: (response) => console.log('Match saved successfully'),
+        error: (error) => console.error('Error saving match:', error)
+      });
+
       if (this.isTournamentMatch) {
         setTimeout(() => {
           const navigationExtras: NavigationExtras = {
@@ -239,6 +254,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
           this.router.navigate(['/tournament'], navigationExtras);
         }, 2000);
       }
+
     }
   }
 } 

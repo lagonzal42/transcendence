@@ -123,6 +123,53 @@ class UserMatchHistoryView(APIView):
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
 
+class MatchCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            # Get the User objects for the players
+            player1 = User.objects.get(username=request.data['player1_username'])
+            player2 = User.objects.get(username=request.data['player2_username'])
+            winner = User.objects.get(username=request.data['winner_username'])
+
+            # Create match data
+            match_data = {
+                'player1': player1.id,
+                'player2': player2.id,
+                'player1_score': request.data['player1_score'],
+                'player2_score': request.data['player2_score'],
+                'winner': winner.id,
+                'match_type': request.data['match_type']
+            }
+
+            # Use the serializer to validate and save
+            serializer = MatchSerializer(data=match_data)
+            if serializer.is_valid():
+                serializer.save()
+                
+                # Update player stats
+                player1.games_played += 1
+                player2.games_played += 1
+                
+                if winner == player1:
+                    player1.games_won += 1
+                    player2.games_lost += 1
+                else:
+                    player2.games_won += 1
+                    player1.games_lost += 1
+                
+                player1.save()
+                player2.save()
+                
+                return Response(serializer.data, status=201)
+            return Response(serializer.errors, status=400)
+            
+        except User.DoesNotExist:
+            return Response({'error': 'One or more users not found'}, status=404)
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
+
 class LoginView(GenericAPIView):
     """API login class"""
     permission_classes = [AllowAny]

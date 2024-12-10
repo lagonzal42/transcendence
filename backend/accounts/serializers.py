@@ -83,11 +83,17 @@ class FriendSerializer(serializers.ModelSerializer):
         fields = ['from_user', 'to_user']
 
 class MatchSerializer(serializers.ModelSerializer):
+    # Fields for reading (GET requests) - converts User objects to usernames
     player1_username = serializers.CharField(source='player1.username', read_only=True)
     player2_username = serializers.CharField(source='player2.username', read_only=True)
     winner_username = serializers.CharField(source='winner.username', read_only=True)
 
+    # Fields for writing (POST requests) - converts IDs to User objects
+    player1 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+    player2 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+    winner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+
     class Meta:
         model = Match
         fields = ['id', 'player1_username', 'player2_username', 'player1_score', 
-                 'player2_score', 'winner_username', 'match_date', 'match_type']
+                 'player2_score', 'winner_username', 'match_date', 'match_type', 'winner', 'player1', 'player2']

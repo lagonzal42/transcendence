@@ -41,6 +41,14 @@
             </div>
         </section>
 
+        <!-- <section class="match-history-section content-card">
+            <app-match-history></app-match-history>
+        </section> -->
+        <div>
+            <button (click)="GoToMatchHistory()" class="match-history-button">Match History</button>  
+        </div>
+        
+
         <div class="content-sections">
             <section *ngIf="isOwnProfile" class="search-section content-card">
                 <h3 class="section-title">Find Friends</h3>

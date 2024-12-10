@@ -7,6 +7,7 @@ import { AuthService } from '../auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { WebSocketService } from '../services/websocket.service';
 import { Subscription } from 'rxjs';
+import { MatchHistoryComponent } from '../match-history/match-history.component';
 
 interface User {
   id: number;
@@ -49,7 +50,7 @@ interface UserResponse {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatchHistoryComponent    ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -303,5 +304,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   isUserOnline_f(userId: number): boolean {
     return this.webSocketService.isUserOnline(userId);
+  }
+
+  GoToMatchHistory() {
+    this.router.navigate(['/match-history', this.currentUsername]);
   }
 }
