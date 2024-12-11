@@ -100,7 +100,7 @@ export class AuthService {
     return null;
   }
 
-  validateCredentails(username: string, password: string): Observable<boolean> {
+  validateCredentials(username: string, password: string): Observable<boolean> {
     return this.httpClient.post<any>('http://localhost:8000/accounts/validate-credentials/', {
       username: username,
       password: password

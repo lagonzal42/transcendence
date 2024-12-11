@@ -62,9 +62,9 @@ export class LocalPlayComponent implements OnInit {
     }
   }
 
-  authenticatePlayer2(type: string) {
+  authenticatePlayer2() {
     if (this.player2AuthForm.valid) {
-      this.authService.validateCredentails(
+      this.authService.validateCredentials(
         this.player2AuthForm.get('username')?.value,
         this.player2AuthForm.get('password')?.value
       ).subscribe({
@@ -74,7 +74,7 @@ export class LocalPlayComponent implements OnInit {
           }
         },
         error: (error) => {
-          console.error('Authentication error: ', error);
+          console.error('Authentication error:', error);
         }
       });
     }
