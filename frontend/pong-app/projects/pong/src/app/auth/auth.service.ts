@@ -100,4 +100,19 @@ export class AuthService {
     return null;
   }
 
+  validateCredentails(username: string, password: string): Observable<boolean> {
+    return this.httpClient.post<any>('http://localhost:8000/accounts/validate-credentials/', {
+      username: username,
+      password: password
+    }).pipe(
+      map(response => {
+        return response.valid === true;
+      }),
+      catchError(error => {
+        console.error('Credential validation error: ', error);
+        return of(false);
+      })
+    )
+  }
+
 } 

@@ -121,7 +121,7 @@ class UserMatchHistoryView(APIView):
             serializer = MatchSerializer(matches, many=True)
             return Response(serializer.data)
         except User.DoesNotExist:
-            return Response({'error': 'User not found'}, status=404)    
+            return Response({'error': 'User not found'}, status=404)
 
 class MatchCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -508,3 +508,15 @@ class BlockedUsersListView(APIView):
                 {'error': 'An error occurred while fetching blocked users'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+@api_view(['POST'])
+def validate_credentials(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        return Response({'valid': True})
+    else:
+        return Response({'valid': False}, status=400)

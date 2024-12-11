@@ -8,15 +8,43 @@
           <small class="text-danger">Invalid name</small>
         </div>
       </div>
+
       <div class="formGroup">
-        <label for="player2">Player 2</label>
+        <label>Player 2 Type</label>
+        <div class="player2-options">
+          <label>
+            <input type="radio" formControlName="player2Type" value="guest" (change)="onPlayer2TypeChange('guest')">
+            Play as Guest
+          </label>
+          <label>
+            <input type="radio" formControlName="player2Type" value="registered" (change)="onPlayer2TypeChange('registered')">
+            Play as Registered User
+          </label>
+        </div>
+      </div>
+
+      <div class="formGroup" *ngIf="!showPlayer2Auth">
+        <label for="player2">Player 2 Name</label>
         <input id="player2" formControlName="player2">
         <div *ngIf="localPlayForm.get('player2')?.touched && localPlayForm.get('player2')?.invalid">
           <small class="text-danger">Invalid name</small>
         </div>
       </div>
+
+      <div *ngIf="showPlayer2Auth" class="auth-form" [formGroup]="player2AuthForm">
+        <div class="formGroup">
+          <label for="username">Username</label>
+          <input id="username" formControlName="username">
+        </div>
+        <div class="formGroup">
+          <label for="password">Password</label>
+          <input id="password" type="password" formControlName="password">
+        </div>
+        <button type="button" (click)="authenticatePlayer2()">Verify Player 2</button>
+      </div>
+
       <button class="submit-login-btn" type="submit">Ready</button>
-      <div *ngIf="localPlayForm.errors?.['nonUniquePlayers'] && localPlayForm.get('player2')?.touched && localPlayForm.get('player1')?.touched">
+      <div *ngIf="localPlayForm.errors?.['nonUniquePlayers']">
         <small class="text-danger">Player names must be unique.</small>
       </div>
     </form>
