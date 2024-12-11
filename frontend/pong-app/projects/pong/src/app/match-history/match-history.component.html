@@ -1,6 +1,9 @@
 <div class="match-history">
     <h3>Match History</h3>
     <div class="matches-list">
+        <div *ngIf="matches.length === 0" class="empty-message">
+            No matches played yet
+        </div>
         <div *ngFor="let match of matches" class="match-item">
             <div class="match-header">
                 <span class="match-date">{{match.match_date | date:'medium'}}</span>

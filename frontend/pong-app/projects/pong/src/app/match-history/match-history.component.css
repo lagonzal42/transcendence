@@ -17,6 +17,7 @@
     justify-content: space-between;
     color: #666;
     font-size: 0.9em;
+    gap: 20px;
   }
   .match-details {
     display: flex;
