@@ -23,6 +23,7 @@ interface Match {
 })
 export class MatchHistoryComponent {
   matches: Match[] = [];
+  currentUsername: string = '';
 
   constructor(
     private http: HttpClient,
@@ -32,6 +33,7 @@ export class MatchHistoryComponent {
   ngOnInit() {
     this.route.params.subscribe(params => {
       const username = params['username'];
+      this.currentUsername = username;
       if (username) {
         this.loadMatchHistory(username);
       }

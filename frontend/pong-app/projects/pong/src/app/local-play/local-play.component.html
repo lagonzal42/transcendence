@@ -41,6 +41,12 @@
           <input id="password" type="password" formControlName="password">
         </div>
         <button type="button" (click)="authenticatePlayer2()">Verify Player 2</button>
+        <div *ngIf="player2AuthStatus !== 'none'"
+              [ngClass]="{'auth-success': player2AuthStatus === 'success',
+                        'auth-error': player2AuthStatus === 'error'}"  
+              class="auth-message">
+            {{ player2AuthMessage }}
+          </div>
       </div>
 
       <button class="submit-login-btn" type="submit">Ready</button>

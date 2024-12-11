@@ -21,6 +21,9 @@ export class LocalPlayComponent implements OnInit {
   currentUser: string = '';
   showPlayer2Auth: boolean = false;
   player2AuthForm: FormGroup;
+
+  player2AuthStatus: 'none' | 'success' | 'error' = 'none';
+  player2AuthMessage: string = '';
   // group1: string[] = [];
   // group2: string[] = [];
   //formSubmitted: boolean = false;
@@ -70,10 +73,17 @@ export class LocalPlayComponent implements OnInit {
       ).subscribe({
         next: (isValid) => {
           if (isValid) {
+            this.player2AuthStatus = 'success';
+            this.player2AuthMessage = 'Player 2 verified successfully!';
             this.localPlayForm.get('player2')?.setValue(this.player2AuthForm.get('username')?.value);
+          } else {
+            this.player2AuthStatus = 'error';
+            this.player2AuthMessage = 'Invalid credentials. Please try again.';
           }
         },
         error: (error) => {
+          this.player2AuthStatus = 'error';
+          this.player2AuthMessage = 'Authentication failed. Please try again.';
           console.error('Authentication error:', error);
         }
       });
