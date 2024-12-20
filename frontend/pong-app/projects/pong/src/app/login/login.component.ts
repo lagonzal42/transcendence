@@ -42,7 +42,7 @@ export class LoginComponent {
 			this.authService.login(credentials).subscribe({
 				next: (response) => {
 					console.log('Login backend response:', response);
-					this.router.navigate(['']);
+					this.router.navigate(['two-factor']);
 				},
 				error: (err) => {
 					console.error('Server error:', err.error);

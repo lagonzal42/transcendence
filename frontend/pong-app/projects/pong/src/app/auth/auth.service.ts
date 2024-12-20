@@ -32,22 +32,38 @@ export class AuthService {
     return this.isAuthenticatedSubject.asObservable();
   }
 
+  // {
+  //   tokens:
+  //   {
+  //     access:
+  //     refresh:
+  //   }
+  //   username:
+  // }
+
   login(userCredentials: UserInterface) : Observable<number>
   {
     return (this.httpClient.post('http://localhost:8000/accounts/login/', userCredentials).pipe(
       map((response: any) => {
         if (isPlatformBrowser(this.platformId))
         {
-          localStorage.setItem('access_token', response.tokens.access);
-          localStorage.setItem('refresh_token', response.tokens.refresh);
-          localStorage.setItem('username', response.user.username);
-          console.log(response);
+          console.log('response: ' + response.message);
+          /*
+            AQUI LLEGA SOLO UNA RESPUESTA DE QUE SE HA MANDADO EL 2FA CODE:
+            {
+              message: 2FA code sent to your email
+            }
+          */
+          // localStorage.setItem('access_token', response.tokens.access);
+          // localStorage.setItem('refresh_token', response.tokens.refresh);
+          localStorage.setItem('username', userCredentials.username);
           this.isAuthenticatedSubject.next(true);
         }
         this.router.navigate(['']);
         return (0);
       }),
       catchError((error: any) => {
+        console.log("Falla aqui" + error);
         return throwError(() => error);
       })
     ));
