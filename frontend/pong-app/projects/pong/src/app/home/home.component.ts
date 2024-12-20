@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -11,9 +12,22 @@ import { CommonModule } from '@angular/common';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  constructor(protected authService: AuthService) {}
+  currentUsername: string = '';
+  isLoggedIn: boolean = false;
+  private authSubscription?: Subscription;
+
+  constructor(
+    private authService: AuthService,
+
+  ) {}
 
   onLogout() : void {
     this.authService.logout();
+  }
+
+  ngOnInit() {
+    this.authSubscription = this.authService.isAuthenticated().subscribe( isAuthenticated => {
+      this.isLoggedIn = isAuthenticated;
+    });
   }
 }
