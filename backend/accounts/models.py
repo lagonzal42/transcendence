@@ -1,5 +1,4 @@
 from django.db import models
-from django.db import models
 import hashlib
 from datetime import timedelta
 from django.utils import timezone
@@ -14,7 +13,7 @@ import secrets
 import random    
 
 class User(AbstractUser):
-    avatar = models.ImageField(default="noob.png")
+    avatar = models.ImageField(upload_to='avatars/', default="noob.png")
     username = models.CharField(max_length=100, unique=True, null=True)
     email = models.EmailField(unique=True, null=True)
     password = models.CharField(max_length=100)
@@ -26,6 +25,7 @@ class User(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(default=timezone.now)
     friends = models.ManyToManyField('self', blank=True, symmetrical=True)
+    blocked_users = models.ManyToManyField('self', symmetrical=False, related_name='blocked_by', blank=True)
 
 
     #USERNAME_FIELD = 'email'
@@ -41,40 +41,20 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
 class FriendRequest(models.Model):
-    from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
-    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
+    from_user = models.ForeignKey(User, related_name='friend_requests_sent', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='friend_requests_received', on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('declined', 'Declined')
+    ], default='pending')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('from_user', 'to_user')
 
     def __str__(self):
 	    return "From {}, to {}".format(self.from_user.username, self.to_user.username)
-
-# class FriendshipRequest(models.Model):
-#     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_sender')
-#     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_receiver')
-#     sender_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     receiver_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#     is_active = models.BooleanField(default=True)
-
-#     class Meta:
-#         unique_together = ['sender', 'receiver'] 
-
-#     def __str__(self):
-#         return f'{self.sender} has sent a friend request to {self.receiver}'
-
-# class Friendship(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_creator')
-#     friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_receiver')
-#     user_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     friend_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     class Meta:
-#         unique_together = ['user', 'friend'] 
-
-#     def __str__(self):
-#         return f'{self.user} is friends with {self.friend}'
 
 def in_30_days():
     return timezone.now() + timedelta(days=30)
@@ -88,35 +68,20 @@ class OtpToken(models.Model):
     def __str__(self):
         return self.user.username
 
-# class AccessToken(models.Model):
-#     # tied user
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     # Access token (max_length is set to 40 because the token is set to a hashed string in sha1).
-#     token = models.CharField(max_length=40)
-#     # access date and time
-#     access_datetime = models.DateTimeField(default=in_30_days)
+class Match(models.Model):
+    player1 = models.ForeignKey(User, related_name='matches_as_player1', on_delete=models.CASCADE)
+    player2 = models.ForeignKey(User, related_name='matches_as_player2', on_delete=models.CASCADE)
+    player1_score = models.IntegerField()
+    player2_score = models.IntegerField()
+    winner = models.ForeignKey(User, related_name='matches_won', on_delete=models.CASCADE)
+    match_date = models.DateTimeField(auto_now_add=True)
+    match_type = models.CharField(max_length=20, choices=[
+        ('tournament', 'Tournament'),
+        ('local', 'Local')
+    ])
 
-#     def str(self):
-#         # Set the email address, access date and time and token to be visible.
-#         dt = timezone.localtime(self.access_datetime).strftime("%Y/%m/%d %H:%M:%S")
-#         return self.user.user_id + '(' + dt + ') - ' + self.token
+    class Meta:
+        ordering = ['-match_date']
 
-#     @staticmethod
-#     def create(user: User):
-#         # Retrieve the user's existing tokens.
-#         if AccessToken.objects.filter(user=user).exists():
-#             # Deleted if token already exists
-#             AccessToken.objects.get(user=user).delete()
-
-#         # Token creation (as UserID + Password + system date hash value)
-#         dt = timezone.now()
-#         str = user.user_id + user.password + dt.strftime('%Y%m%d%H%M%S%f')
-#         hash = hashlib.sha1(str.encode('utf-8')).hexdigest()
-
-#         # Add tokens to DB.
-#         token = AccessToken.objects.create(
-#             user=user,
-#             token=hash,
-#             access_datetime=dt)
-
-#         return token
+    def __str__(self):
+        return f"{self.player1.username} vs {self.player2.username} - {self.match_date.strftime('%Y-%m-%d')}"

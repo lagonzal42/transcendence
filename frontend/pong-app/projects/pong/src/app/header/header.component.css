@@ -22,3 +22,17 @@ header .header-button
 	border: none;
 	padding: 20px;
 }
+
+.btn-update-profile {
+    font-size: 16px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background-color: #ffa500;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-update-profile:hover {
+    background-color: #ff8c00;
+}

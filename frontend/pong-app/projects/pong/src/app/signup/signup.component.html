@@ -1,4 +1,4 @@
-<h2 class="singin-title text-center mb-4">Sing up</h2>
+<h2 class="singin-title text-center mb-4">Sign up</h2>
 
 <div class="singin-area container-fluid d-flex justify-content-center align-items-center">
   <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
@@ -8,21 +8,33 @@
       <div *ngIf="signupForm.get('username')?.touched && signupForm.get('username')?.invalid">
         <small class="text-danger">Invalid username</small>
       </div>
+      <div *ngIf="usernameError">
+        <small class="text-danger">{{ usernameError }}</small>
+      </div>
     </div>
+
     <div class="formGroup">
-      <label for="email">email</label>
+      <label for="email">Email</label>
       <input id="email" formControlName="email">
       <div *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">
         <small class="text-danger">Invalid email</small>
       </div>
+      <div *ngIf="emailError">
+        <small class="text-danger">{{ emailError }}</small>
+      </div>
     </div>
+
     <div class="formGroup">
       <label for="password">Password</label>
       <input id="password" type="password" formControlName="password">
       <div *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid">
         <small class="text-danger">Invalid password</small>
       </div>
+      <div *ngIf="passwordError">
+        <small class="text-danger">{{ passwordError }}</small>
+      </div>
     </div>
+
     <div class="formGroup">
       <label for="password2">Repeat password</label>
       <input id="password2" type="password" formControlName="password2">
@@ -30,6 +42,7 @@
         <small class="text-danger">Invalid password</small>
       </div>
     </div>
-    <button class="submit-singin-btn" type="submit">sing up</button>
+
+    <button class="submit-singin-btn" type="submit">Sign up</button>
   </form>
 </div>

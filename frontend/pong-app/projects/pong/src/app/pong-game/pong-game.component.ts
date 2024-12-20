@@ -3,7 +3,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { PaddleComponent as Paddle } from "./gameClasses/paddle/paddle.component"
 import { BallComponent as Ball } from './gameClasses/ball/ball.component';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-pong-game',
   standalone: true,
@@ -49,19 +49,23 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   private rightPaddleUp: boolean = false;
   private rightPaddleDown: boolean = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {
+  isTournamentMatch: boolean = false;
+  onMatchComplete: ((winner: string) => void) | null = null;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router, private http: HttpClient) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
       const players = navigation.extras.state['players'];
       if (players) {
+        console.log(players); 
         this.leftPlayerName = players.leftPlayerName;
         this.rightPlayerName = players.rightPlayerName;
-        
+        this.isTournamentMatch = players.isTournamentMatch || false;
+        //this.onMatchComplete = players.onMatchComplete || null;
       }
 
     }
   }
-
   ngOnInit(): void {
     console.log("PongGameComponent initialized with players:", this.leftPlayerName, this.rightPlayerName);
   }
@@ -104,8 +108,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       window.addEventListener('keyup', this.keyHandler.bind(this));
       requestAnimationFrame(this.draw.bind(this)); // Asegúrate de que se llama a draw
     }
-  }  
-
+  }
   keyHandler(event: KeyboardEvent): void {
     const isKeyDown = event.type === 'keydown';  // Detect if the event is keydown or keyup
     switch (event.key) {
@@ -125,7 +128,6 @@ export class PongGameComponent implements OnInit, AfterViewInit {
         break;
     }
   }
-
   draw(): void {
     if (!this.ctx || !this.pongCanvas || this.gameEnded) {
       return;
@@ -209,10 +211,8 @@ export class PongGameComponent implements OnInit, AfterViewInit {
     if (this.rightPaddleDown && this.rightPaddle!.getY() < this.pongCanvas.nativeElement.height - this.rightPaddle!.getHeight()) {
       this.rightPaddle?.moveDown();
     }
-
     requestAnimationFrame(this.draw.bind(this));
   }
-
   resetBall(): void {
     this.ball = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
   }
@@ -234,15 +234,43 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       this.ctx.clearRect(0, 0, this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
       this.ctx.font = '30px Arial';
       this.ctx.fillStyle = '#FFFFFF';
-
+  
       const winnerName = this.leftPlayerScore >= this.winningScore ? this.leftPlayerName : this.rightPlayerName;
       const winnerMessage = `${winnerName} wins!`;
-
+  
       const textWidth = this.ctx.measureText(winnerMessage).width;
       const xPosition = (this.pongCanvas.nativeElement.width - textWidth) / 2;
       const yPosition = this.pongCanvas.nativeElement.height / 2;
-
+  
       this.ctx.fillText(winnerMessage, xPosition, yPosition);
+
+
+      // Save match result to backend
+      this.http.post('http://localhost:8000/accounts/matches/', {
+        player1_username: this.leftPlayerName,
+        player2_username: this.rightPlayerName,
+        player1_score: this.leftPlayerScore,
+        player2_score: this.rightPlayerScore,
+        winner_username: winnerName,
+        match_type: this.isTournamentMatch ? 'tournament' : 'local'
+      }).subscribe({
+        next: (response) => console.log('Match saved successfully'),
+        error: (error) => console.error('Error saving match:', error)
+      });
+
+      if (this.isTournamentMatch) {
+        setTimeout(() => {
+          const navigationExtras: NavigationExtras = {
+            state: {
+              winner: winnerName,
+              leftScore: this.leftPlayerScore,
+              rightScore: this.rightPlayerScore
+            }
+          };
+          this.router.navigate(['/tournament'], navigationExtras);
+        }, 2000);
+      }
+
     }
   }
-}
+} 
