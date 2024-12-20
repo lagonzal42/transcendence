@@ -74,7 +74,7 @@ export class WebSocketService {
       console.log('Status WebSocket closed');
       if (this.authService.getAccessToken()) {
         console.log('Attempting to reconnect...');
-        setTimeout(() => this.connectWebSocket(), 5000);
+        setTimeout(() => this.connectWebSocket(), 100);
       }
     };
 

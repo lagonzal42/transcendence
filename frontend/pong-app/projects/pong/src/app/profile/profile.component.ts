@@ -104,6 +104,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
 
     // Subscribe to user status updates
+    this.subscriptionStatus();
+  }
+
+  ngOnDestroy() {
+    if (this.userStatusSubscription) {
+      this.userStatusSubscription.unsubscribe();
+    }
+  }
+
+
+  subscriptionStatus():void
+  {
     this.userStatusSubscription = this.webSocketService.userStatus$.subscribe(status => {
       if (status.status === 'online') {
         this.onlineUsers.add(status.user_id);
@@ -113,13 +125,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.friends = [...this.friends];
     });
   }
-
-  ngOnDestroy() {
-    if (this.userStatusSubscription) {
-      this.userStatusSubscription.unsubscribe();
-    }
-  }
-
   loadUserProfile(username: string) {
     this.isLoading = true;
     this.error = null;
@@ -158,6 +163,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     });
+    setTimeout(() => this.subscriptionStatus(), 2000);
   }
 
   showUpdateProfile() {
