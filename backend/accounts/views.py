@@ -1,4 +1,5 @@
-from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer, FriendSerializer
+from django.db.models import Q
+from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer, FriendSerializer, MatchSerializer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView
@@ -18,7 +19,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, action, permission_classes
 from django.contrib.auth.decorators import login_required
 
-from .models import User, OtpToken, FriendRequest
+from .models import User, OtpToken, FriendRequest, Match
 from django.db import IntegrityError
 from django.shortcuts import render
 
@@ -150,12 +151,73 @@ class UserDetailView(APIView):
                 "avatar": avatar_url,
                 "last_login": user.last_login,
                 "date_joined": user.date_joined,
-                "is_online": user.is_online,#Se
+                "is_online": user.is_online,
             }
         }
         return Response(response_data, status=200)
 
-# # # # --- LoginView separated 2fa version --- # # # # # 
+class UserMatchHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            matches = Match.objects.filter(
+                Q(player1=user) | Q(player2=user)
+            ).select_related('player1', 'player2', 'winner')
+
+            serializer = MatchSerializer(matches, many=True)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+
+class MatchCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            # Get the User objects for the players
+            player1 = User.objects.get(username=request.data['player1_username'])
+            player2 = User.objects.get(username=request.data['player2_username'])
+            winner = User.objects.get(username=request.data['winner_username'])
+
+            # Create match data
+            match_data = {
+                'player1': player1.id,
+                'player2': player2.id,
+                'player1_score': request.data['player1_score'],
+                'player2_score': request.data['player2_score'],
+                'winner': winner.id,
+                'match_type': request.data['match_type']
+            }
+
+            # Use the serializer to validate and save
+            serializer = MatchSerializer(data=match_data)
+            if serializer.is_valid():
+                serializer.save()
+                
+                # Update player stats
+                player1.games_played += 1
+                player2.games_played += 1
+                
+                if winner == player1:
+                    player1.games_won += 1
+                    player2.games_lost += 1
+                else:
+                    player2.games_won += 1
+                    player1.games_lost += 1
+                
+                player1.save()
+                player2.save()
+                
+                return Response(serializer.data, status=201)
+            return Response(serializer.errors, status=400)
+            
+        except User.DoesNotExist:
+            return Response({'error': 'One or more users not found'}, status=404)
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
+
 class LoginView(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
@@ -283,30 +345,6 @@ def ListFriendsView(request, username):
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-# class ListFriendsView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, username=None):
-#         friends_json = {}
-#         try:
-#             user = User.objects.get(username=username)
-#         except User.DoesNotExist:
-#             return JsonResponse({"error": "User not found."}, status=404)
-
-#         friends = user.friends.all()
-
-#         if username is None:
-#             for friend in friends:
-#                 friends_json[friend.username] = get_user_data(friend)
-#         else:
-#             try:
-#                 friend = User.objects.get(username=username)
-#                 friends_json[friend.username] = get_user_data(friend)
-#             except User.DoesNotExist:
-#                 return JsonResponse({"error": "Friend not found."}, status=404)
-
-#         return JsonResponse(friends_json)
-
 def get_user_data(user):
     return  {
                 'username': user.username,
@@ -314,36 +352,6 @@ def get_user_data(user):
                 'tournament_name': user.tournament_name,
                 'friends': list(user.friends.values_list('username', flat=True)),
             }
-
-# class AddFriendView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def post(self, request, username):
-#         user = User.objects.get(username=username)
-#         friend_username = request.data.get('friend_username')
-
-#         if friend_username is None:
-#             return Response({'error': "No friend username provided."}, status=400)
-
-#         try:
-#             friend = User.objects.get(username=friend_username)
-#         except User.DoesNotExist:
-#             return Response({'error': 'User not found'}, status=404)
-
-#         if friend.username == user.username:
-#             return Response({'error': "Users cannot send friend requests to themselves."}, status=400)
-
-#         # Check if friend request already exists
-#         if FriendRequest.objects.filter(from_user=user, to_user=friend).exists():
-#             return Response({'error': 'Friend request already sent.'}, status=400)
-
-#         # Create a friend request
-#         friend_request = FriendRequest.objects.create(from_user=user, to_user=friend)
-#         print("printting request iddd")
-#         print(friend_request.id)
-
-#         return Response({'message': 'Friend request sent successfully.'}, status=200)
-
     
 class AcceptFriendRequestView(APIView):
     permission_classes = [IsAuthenticated]
@@ -574,3 +582,15 @@ class BlockedUsersListView(APIView):
                 {'error': 'An error occurred while fetching blocked users'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+@api_view(['POST'])
+def validate_credentials(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        return Response({'valid': True})
+    else:
+        return Response({'valid': False}, status=400)

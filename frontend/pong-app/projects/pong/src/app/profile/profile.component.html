@@ -41,6 +41,14 @@
             </div>
         </section>
 
+        <!-- <section class="match-history-section content-card">
+            <app-match-history></app-match-history>
+        </section> -->
+        <div>
+            <button (click)="GoToMatchHistory()" class="match-history-button">Match History</button>  
+        </div>
+        
+
         <div class="content-sections">
             <section *ngIf="isOwnProfile" class="search-section content-card">
                 <h3 class="section-title">Find Friends</h3>
@@ -84,7 +92,7 @@
                     <li *ngFor="let friend of friends" class="list-item">
                         <div class="friend-info">
                             <span class="friend-name">{{ friend.username }}</span>
-                            <span class="online-status" [class.online]="friend.is_online"></span>
+                            <span class="online-status" [class.online]="isUserOnline_f(friend.id)"></span>
                         </div>
                         <div class="action-buttons" *ngIf="isOwnProfile">
                             <button (click)="startChat(friend.username)" class="action-button chat">Chat</button>

@@ -14,6 +14,8 @@ urlpatterns = [
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('me/', views.CurrentUser.as_view(), name='current_user'),
     path('activation/', views.ActivateAccountView.as_view(), name='activate_account'),   
+    path('matches/', views.MatchCreateView.as_view(), name='match-create'),
+    path('validate-credentials/', views.validate_credentials, name='validate-credentials'),
     
     # User profile
     path('users/', views.AccountList.as_view(), name='user_list'),
@@ -21,6 +23,7 @@ urlpatterns = [
     path('users/<str:username>/', views.UserDetailView.as_view(), name='user_detail'),
     path('users/<str:username>/update/', views.UpdateProfileView.as_view(), name='user_update'),
     path('users/<str:username>/close/', views.CloseAccountView.as_view(), name='user_close'),
+    path('users/<str:username>/matches/', views.UserMatchHistoryView.as_view(), name='user-match-history'),
     
     # Friend management
     path('users/<str:username>/friends/', views.ListFriendsView, name='friend_list'),

@@ -434,3 +434,19 @@
 .list-item .online-status.online {
     background-color: #2ecc71;
 }
+
+.online {
+  color: green; /* or any other style to indicate online status */
+}
+
+.match-history-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

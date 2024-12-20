@@ -57,35 +57,6 @@ class FriendRequest(models.Model):
     def __str__(self):
 	    return "From {}, to {}".format(self.from_user.username, self.to_user.username)
 
-# class FriendshipRequest(models.Model):
-#     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_sender')
-#     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_request_receiver')
-#     sender_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     receiver_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#     is_active = models.BooleanField(default=True)
-
-#     class Meta:
-#         unique_together = ['sender', 'receiver'] 
-
-#     def __str__(self):
-#         return f'{self.sender} has sent a friend request to {self.receiver}'
-
-# class Friendship(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_creator')
-#     friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_receiver')
-#     user_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     friend_uuid = models.CharField(max_length=255, null=True, blank=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     class Meta:
-#         unique_together = ['user', 'friend'] 
-
-#     def __str__(self):
-#         return f'{self.user} is friends with {self.friend}'
-
 def in_30_days():
     return timezone.now() + timedelta(days=30)
 
@@ -98,6 +69,23 @@ class OtpToken(models.Model):
     def __str__(self):
         return self.user.username
 
+class Match(models.Model):
+    player1 = models.ForeignKey(User, related_name='matches_as_player1', on_delete=models.CASCADE)
+    player2 = models.ForeignKey(User, related_name='matches_as_player2', on_delete=models.CASCADE)
+    player1_score = models.IntegerField()
+    player2_score = models.IntegerField()
+    winner = models.ForeignKey(User, related_name='matches_won', on_delete=models.CASCADE)
+    match_date = models.DateTimeField(auto_now_add=True)
+    match_type = models.CharField(max_length=20, choices=[
+        ('tournament', 'Tournament'),
+        ('local', 'Local')
+    ])
+
+    class Meta:
+        ordering = ['-match_date']
+
+    def __str__(self):
+        return f"{self.player1.username} vs {self.player2.username} - {self.match_date.strftime('%Y-%m-%d')}"
 
 
 # For further activation and token creation

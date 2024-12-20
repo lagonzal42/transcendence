@@ -1,10 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChatService } from '../services/chat.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
 import { FormsModule } from '@angular/forms';
+import { WebSocketService } from '../services/websocket.service';
+import { Subscription } from 'rxjs';
+import { MatchHistoryComponent } from '../match-history/match-history.component';
 
 interface User {
   id: number;
@@ -47,11 +50,11 @@ interface UserResponse {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatchHistoryComponent    ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   currentUsername: string = '';
   isLoading: boolean = false;
   error: string | null = null;
@@ -70,13 +73,16 @@ export class ProfileComponent implements OnInit {
     games_lost: 0
   };
   isOwnProfile: boolean = false;
+  private userStatusSubscription!  : Subscription;
+  onlineUsers: Set<number> = new Set();
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private webSocketService: WebSocketService
   ) {}
 
   ngOnInit() {
@@ -96,26 +102,41 @@ export class ProfileComponent implements OnInit {
         this.loadFriendRequests();
       }
     });
+
+    // Subscribe to user status updates
+    this.subscriptionStatus();
   }
 
+  ngOnDestroy() {
+    if (this.userStatusSubscription) {
+      this.userStatusSubscription.unsubscribe();
+    }
+  }
+
+
+  subscriptionStatus():void
+  {
+    this.userStatusSubscription = this.webSocketService.userStatus$.subscribe(status => {
+      if (status.status === 'online') {
+        this.onlineUsers.add(status.user_id);
+      } else {
+        this.onlineUsers.delete(status.user_id);
+      }
+      this.friends = [...this.friends];
+    });
+  }
   loadUserProfile(username: string) {
     this.isLoading = true;
     this.error = null;
 
     this.authService.getCurrentUser().subscribe({
       next: (currentUser) => {
-        //console.log('currentUser.username: ', currentUser.username);
-        //console.log('username: ', username);
         this.isOwnProfile = currentUser.username === username;
-        //console.log(this.isOwnProfile);
-        //console.log('================================================');
         this.http.get<UserResponse>(`http://localhost:8000/accounts/users/${username}/`).subscribe({
           next: (response) => {
-            console.log('Profile response:', response);
             if (response.user && response.user.username) {
               this.currentUsername = response.user.username;
               if (response.user.avatar) {
-                console.log("loooook ", response.user.avatar);
                 this.userAvatar = `http://localhost:8000${response.user.avatar}`;
               } else {
                 this.userAvatar = 'assets/default-avatar.png';
@@ -142,6 +163,7 @@ export class ProfileComponent implements OnInit {
         this.isLoading = false;
       }
     });
+    setTimeout(() => this.subscriptionStatus(), 2000);
   }
 
   showUpdateProfile() {
@@ -284,5 +306,13 @@ export class ProfileComponent implements OnInit {
         this.error = 'Failed to unblock user';
       }
     });
+  }
+
+  isUserOnline_f(userId: number): boolean {
+    return this.webSocketService.isUserOnline(userId);
+  }
+
+  GoToMatchHistory() {
+    this.router.navigate(['/match-history', this.currentUsername]);
   }
 }

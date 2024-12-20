@@ -1,59 +1,26 @@
-header {
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* Centra los elementos verticalmente */
-    background-color: #10a834;
-    color: white;
-    box-shadow: 0 2px 4px rgb(0, 0, 1);
-    padding: 10px 20px; /* Añade espacio en los lados */
-    width: 100%; /* Asegura que ocupe el ancho completo */
+header
+{
+	top: 0;
+	left: 0;
+	display: flex;
+	justify-content: space-between;
+	background-color:rgb(16, 168, 52);
+	color: white;
+	box-shadow: 0 2px 4px rgb(0, 0, 1);
+	padding: 0px;
 }
 
-header .logo {
-    flex: 0; /* Esto asegura que la sección del logo no ocupe más espacio del necesario */
-    text-align: left; /* Asegura que el logo esté alineado a la izquierda */
+header .home-button
+{
+	background-color: rgb(16, 168, 52);
+	border: none;
 }
 
-header .home-button {
-    background-color: rgb(16, 168, 52);
-    border: none;
-    padding: 0; /* Evita que el botón ocupe más espacio del necesario */
-}
-
-header .buttons {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 10px; /* Espacio entre los botones */
-    flex: 1; /* Ocupa el espacio restante, permitiendo que los botones se alineen a la derecha */
-}
-
-.btn-search, .btn-profile {
-    font-size: 16px; /* Tamaño de fuente más pequeño */
-    border-radius: 8px; /* Bordes redondeados */
-    padding: 8px 12px; /* Tamaño ajustado de botones */
-    background-color: transparent; /* Fondo transparente */
-    border: none; /* Elimina bordes */
-    color: white; /* Color de texto blanco */
-    cursor: pointer; /* Cambia el cursor al pasar sobre los botones */
-}
-
-.btn-profile {
-    background-color: rgb(0, 171, 228);
-}
-
-.btn-profile:hover {
-    background-color: rgb(0, 139, 186);
-}
-
-.btn-search {
-    background-color: rgb(220, 0, 0);
-}
-
-.btn-search:hover {
-    background-color: rgb(181, 0, 0);
+header .header-button
+{
+	background-color: rgb(16, 168, 52);
+	border: none;
+	padding: 20px;
 }
 
 .btn-update-profile {
