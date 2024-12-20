@@ -36,12 +36,14 @@ class Send2FACodeView(GenericAPIView):
         # print("Session data after setting 2FA code:", dict(request.session))
         request.session.save()
 
+
         # logger.debug(f"Stored session in Send2FACodeView: {request.session.items()}")
        
-        # # # DEBUG
-        # print(f"Generate::Stored session: {request.session.items()}")
-        # print(f"Generate::Session keys: {list(request.session.keys())}")
-
+        # # DEBUG
+        print("============================================================")
+        print(f"Generate::Stored session: {request.session.items()}")
+        print(f"Generate::Session keys: {list(request.session.keys())}")
+        print("============================================================")
         # Send the 2FA code via email
         send_mail(
             'Your 2FA Code',
@@ -63,19 +65,19 @@ class Verify2FAView(GenericAPIView):
     def post(self, request, *args, **kwargs):
 
         code = request.data.get('code')
-        # # # DEBUG
-        # print(f"Verify::Stored session: {request.session.items()}")
-        # print(f"Verify::Session keys: {list(request.session.keys())}")
+        # # DEBUG
+        print(f"Verify::Stored session: {request.session.items()}")
+        print(f"Verify::Session keys: {list(request.session.keys())}")
 
         # Get stored code and expiry from session
         stored_code = request.session.get('2fa_code')
         expiry_time_str = request.session.get('2fa_code_expiry')
         user_id = request.session.get('user_id')  # Get user_id from session
 
-        # # # DEBUG
-        # print(f"Stored 2FA code: {stored_code}")
-        # print(f"Received 2FA code: {code}")
-        # print(f"Expiry time string from session: {expiry_time_str}")
+        # # DEBUG
+        print(f"Stored 2FA code: {stored_code}")
+        print(f"Received 2FA code: {code}")
+        print(f"Expiry time string from session: {expiry_time_str}")
 
         # Verify 2FA code and expiry
         if not expiry_time_str or timezone.now() > timezone.datetime.fromisoformat(expiry_time_str):

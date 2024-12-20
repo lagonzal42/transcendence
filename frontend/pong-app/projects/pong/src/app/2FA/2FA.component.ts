@@ -51,7 +51,7 @@ export class TwoFactorComponent {
 					code: this.twoForm.value.twoFactor
 				}
 				
-				this.httpClient.post('http://localhost:8000/two_factor_auth/verify/', verifyInfo).pipe(
+				this.httpClient.post('http://localhost:8000/two_factor_auth/verify/', verifyInfo, {withCredentials :true}).pipe(
 					map((response: any) => 
 					{
 						if (isPlatformBrowser(this.platformId))
@@ -67,7 +67,7 @@ export class TwoFactorComponent {
 					catchError((error: any) => {
 						console.log("Falla aqui" + error);
 						return throwError(() => error);
-					}));
+					})).subscribe();
 			console.log('fffffff')
 		} 
 		else 
