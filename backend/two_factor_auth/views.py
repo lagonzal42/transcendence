@@ -12,9 +12,7 @@ from django.contrib.sessions.models import Session
 from django.contrib.sessions.backends.db import SessionStore
 
 class Send2FACodeView(GenericAPIView):
-    """Sends 2FA code to user's email"""
-    print("**************************Send2FACodeView")
-    
+    """Sends 2FA code to user's email""" 
     def post(self, request, user_id):
         # Get user
         try:
@@ -29,7 +27,7 @@ class Send2FACodeView(GenericAPIView):
 
         # Store the code and expiry in session
         request.session['2fa_code'] = code
-        expiry_time = timezone.now() + timezone.timedelta(minutes=500)
+        expiry_time = timezone.now() + timezone.timedelta(minutes=1)
         request.session['2fa_code_expiry'] = expiry_time.isoformat()
         # request.session['user_id'] = user_id
         request.session.modified = True
@@ -39,25 +37,13 @@ class Send2FACodeView(GenericAPIView):
         # print("Session data after setting 2FA code:", dict(request.session))
         request.session.save()
 
-
         # logger.debug(f"Stored session in Send2FACodeView: {request.session.items()}")
-
-        # # Convert to datetime object
-        # dt = datetime.fromisoformat(expiry_time)
-
-        # # Convert to Unix timestamp
-        # unix_timestamp = int(dt.timestamp())
-        # print(unix_timestamp)
-
 
         # # DEBUG
         print("============================================================")
         print(f"Generate::Stored session: {request.session.items()}")
         print(f"Generate::Session keys: {list(request.session.keys())}")
-        # print(f"Session id: {request.sessionid}")
-        # print(f"Session id: {request.session.id}")
         print(f"Session id: {request.session._session_key}")
-        # print(f"expiry time: {str(timezone.datetime.fromisoformat(expiry_time))}")
         print("============================================================")
         # Send the 2FA code via email
         send_mail(
@@ -73,22 +59,14 @@ class Send2FACodeView(GenericAPIView):
         return Response({
             'message': '2FA code sent to your email.',
             'sessionid': str(request.session._session_key)
-            # 'expiry time': str(timezone.datetime.fromisoformat(expiry_time.isoformat()))
         }, status=status.HTTP_200_OK)
 
 class Verify2FAView(GenericAPIView):
     """Verifies the 2FA code"""
-    print("**************************Verify2FAView")
-
     permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
 
         code = request.data.get('code')
-        # # DEBUG
-        print("============================================================")
-        print(f"Verify::Stored session: {request.session.items()}")
-        print(f"Verify::Session keys: {list(request.session.keys())}")
-        print("============================================================")
 
         # Get stored code and expiry from session
         sessionid = request.data.get('sessionid')
@@ -98,11 +76,18 @@ class Verify2FAView(GenericAPIView):
         stored_code = session_data.get('2fa_code')
         expiry_time_str = session_data.get('2fa_code_expiry')
         user_id = session_data.get('user_id')  # Get user_id from session
+        # # DEBUG
+        # print("============================================================")
+        # print(f"Verify::Stored code: {stored_code}")
+        # print(f"Verify::Code: {code}")
+        # print(f"Verify::Expire time: {expiry_time_str}")
+        # print(f"Verify::Session keys: {sessionid}")
+        # print("============================================================")
 
         # # DEBUG
-        print(f"Stored 2FA code: {stored_code}")
-        print(f"Received 2FA code: {code}")
-        print(f"Expiry time string from session: {expiry_time_str}")
+        # print(f"Stored 2FA code: {stored_code}")
+        # print(f"Received 2FA code: {code}")
+        # print(f"Expiry time string from session: {expiry_time_str}")
 
         # Verify 2FA code and expiry
         if not expiry_time_str or timezone.now() > timezone.datetime.fromisoformat(expiry_time_str):
@@ -130,6 +115,4 @@ class Verify2FAView(GenericAPIView):
                 return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response({'error': 'Invalid 2FA code'}, status=status.HTTP_400_BAD_REQUEST)
-
-
 

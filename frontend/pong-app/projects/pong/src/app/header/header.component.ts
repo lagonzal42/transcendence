@@ -41,23 +41,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   loadCurrentUser() {
-    this.authService.getCurrentUser().subscribe({
-      next: (user) => {
-        this.currentUsername = user.username;
-      },
-      error: (error) => {
-        console.error('Error loading current user:', error);
-      }
-    });
+    if (this.authService.checkAuthStatus())
+    {  
+      this.authService.getCurrentUser().subscribe({
+        next: (user) => {
+          this.currentUsername = user.username;
+        },
+        error: (error) => {
+          console.error('Error loading current user:', error);
+        }
+      });
+    }
   }
 
   navigateToProfile() {
+    this.currentUsername = localStorage.getItem('username')!;
     if (this.currentUsername) {
       this.router.navigate(['/profile', this.currentUsername]);
     }
   }
 
   navigateToUpdateProfile() {
+    this.currentUsername = localStorage.getItem('username')!
     if (this.currentUsername) {
       this.router.navigate(['/profile', this.currentUsername, 'update']);
     }

@@ -20,10 +20,32 @@ export class AuthService {
 
   jwtHelper = new JwtHelperService();
 
-  private checkAuthStatus(): boolean {
+  public checkAuthStatus(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('access_token');
-      return token ? !this.jwtHelper.isTokenExpired(token) : false;
+      if (token)
+      {
+        let retVal : number;
+        if (!this.jwtHelper.isTokenExpired(token))
+          return (true);
+        else
+        {
+          if (this.refreshToken().subscribe(
+            (returned : number) => {
+              retVal = returned;
+            }
+          )) //token refreshed
+          console.log('retval ' + retVal!);
+          if (retVal! == 0)
+            return (true);
+          else
+          {
+            this.logout();
+            return false;
+          }
+          
+        }
+      }
     }
     return false;
   }
@@ -31,15 +53,6 @@ export class AuthService {
   isAuthenticated(): Observable<boolean> {
     return this.isAuthenticatedSubject.asObservable();
   }
-
-  // {
-  //   tokens:
-  //   {
-  //     access:
-  //     refresh:
-  //   }
-  //   username:
-  // }
 
   login(userCredentials: UserInterface) : Observable<number>
   {
@@ -86,15 +99,21 @@ export class AuthService {
   {
     if (!isPlatformBrowser(this.platformId))
       return (of(401));
-    const refresh = localStorage.getItem('refresh_token');
+    const tokens = 
+    { 
+      refresh:  localStorage.getItem('refresh_token'), 
+      access:   localStorage.getItem('access_token')
+    }
 
-    if (!refresh)
+    if (!tokens.refresh || !tokens.access)
       return (of(401));
-    return (this.httpClient.post('http://localhost:8000/accounts/account_refresh/', {refresh: refresh}).pipe(
+    console.log('refresh');
+    return (this.httpClient.post('http://localhost:8000/api-auth/jwt/refresh', tokens).pipe(
       map((response: any) => {
+        console.log(response);
         localStorage.setItem('access_token', response.access);
         localStorage.setItem('refresh_token', response.refresh);
-        return (0);
+        return (of(0));
       }),
       catchError((error: any) => {
         return of(error.status);

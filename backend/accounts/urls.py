@@ -16,6 +16,7 @@ urlpatterns = [
     path('activation/', views.ActivateAccountView.as_view(), name='activate_account'),   
     path('matches/', views.MatchCreateView.as_view(), name='match-create'),
     path('validate-credentials/', views.validate_credentials, name='validate-credentials'),
+    # path('account-refresh/', views.AccountRefresh.as_view(), name='accout-refresh'),
     
     # User profile
     path('users/', views.AccountList.as_view(), name='user_list'),
