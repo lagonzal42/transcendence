@@ -42,6 +42,16 @@
 	width: 100%;
 }
 
+.btn-signout
+{
+	background-color: rgb(220, 0, 0);
+	color: white;
+	font-size: 20px;
+	border-radius: 12px;
+	transition: background-color 0.3s ease;
+	width: 100%;
+}
+
 .btn-custom:hover
 {
 	background-color: #198c32; /* Verde más oscuro al pasar el cursor */

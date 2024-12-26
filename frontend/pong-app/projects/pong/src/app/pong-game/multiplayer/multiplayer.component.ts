@@ -105,7 +105,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   startGame(): void {
     if (this.isGameInitialized && this.ctx) {
       window.addEventListener('keydown', this.keyHandler.bind(this));
-      //window.addEventListener('keyup', this.keyHandler.bind(this));
+      window.addEventListener('keyup', this.keyHandler.bind(this));
       requestAnimationFrame(this.draw.bind(this)); // Asegúrate de que se llama a draw
     }
   }  

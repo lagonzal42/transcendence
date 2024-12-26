@@ -19,7 +19,7 @@
                 <div class="col-12 col-md-6 mb-3" *ngIf="!isLoggedIn">
                     <button routerLink="/signup" class="btn btn-singin" id="btn-singin">SIGN UP</button>
                 </div>
-                <div class="col-12 mb-3" *ngIf="isLoggedIn">
+                <div class="col-12 col-md-6 mb-3" *ngIf="isLoggedIn">
                     <button class="btn btn-signout" id="btn-signout" (click)="onLogout()">SIGN OUT</button>
                 </div>
             </div>

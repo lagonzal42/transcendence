@@ -22,7 +22,7 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'home', component: HomeComponent },
+      { path: 'Home', component: HomeComponent },
       { path: 'login', component: LoginComponent },
       { path: 'signup', component: SignupComponent },
       { path: 'profile', component: ProfileComponent , canActivate: [AuthenticationGuard]},
