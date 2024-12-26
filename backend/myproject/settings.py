@@ -261,7 +261,7 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Gmail address (in .env file)
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Gmail app password (in .env file)
 # # # Setting to send a mail to gmail
 
-LOGIN_URL = 'two_factor_auth:login' # # # not implemented yet
+LOGIN_URL = 'two_factor_auth' # # # not implemented yet
 
 ACTIVATE_URL = 'http://localhost:8000/accounts'
 
@@ -270,7 +270,7 @@ ACTIVATE_URL = 'http://localhost:8000/accounts'
 # SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 # SESSION_CACHE_ALIAS = "default"
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_COOKIE_SECURE = False  # Set to True for HTTPS

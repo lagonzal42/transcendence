@@ -57,6 +57,7 @@ export class AuthService {
           // localStorage.setItem('access_token', response.tokens.access);
           // localStorage.setItem('refresh_token', response.tokens.refresh);
           localStorage.setItem('username', userCredentials.username);
+          localStorage.setItem('sessionid', response.sessionid);
           this.isAuthenticatedSubject.next(true);
         }
         this.router.navigate(['']);

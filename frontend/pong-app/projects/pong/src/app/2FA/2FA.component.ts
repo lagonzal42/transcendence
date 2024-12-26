@@ -48,20 +48,21 @@ export class TwoFactorComponent {
 				
 				const verifyInfo =
 				{
-					code: this.twoForm.value.twoFactor
+					code: this.twoForm.value.twoFactor,
+					sessionid: localStorage.getItem('sessionid')
 				}
 				
-				this.httpClient.post('http://localhost:8000/two_factor_auth/verify/', verifyInfo, {withCredentials :true}).pipe(
+				this.httpClient.post('http://localhost:8000/two_factor_auth/verify/', verifyInfo).pipe(
 					map((response: any) => 
 					{
 						if (isPlatformBrowser(this.platformId))
 						{
 							console.log('kfjdsaoipfjdapso');
-							localStorage.setItem('access_token', response.tokens.access);
-							localStorage.setItem('refresh_token', response.tokens.refresh);
-							localStorage.setItem('username', response.user.username);
+							localStorage.setItem('access_token', response.access);
+							localStorage.setItem('refresh_token', response.refresh);
+							//localStorage.setItem('username', response.user.username);
 							//this.isAuthenticatedSubject.next(true);
-							
+							this.router.navigate(['']);
 						}
 					}),
 					catchError((error: any) => {

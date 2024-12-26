@@ -243,10 +243,12 @@ class LoginView(GenericAPIView):
                 
                 # Use the same session for 2FA
                 two_factor_view = Send2FACodeView()
+                print(f"**************************sent code")
                 two_factor_response = two_factor_view.post(request, user_id=user.id)
-                
                 return two_factor_response
             else:
+                print(f"**************************en else, invalid")
+
                 return Response({'error': 'Invalid credentials'}, 
                               status=status.HTTP_401_UNAUTHORIZED)
 

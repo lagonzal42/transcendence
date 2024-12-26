@@ -8,9 +8,12 @@ from rest_framework import status
 from accounts.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
+from django.contrib.sessions.models import Session
+from django.contrib.sessions.backends.db import SessionStore
 
 class Send2FACodeView(GenericAPIView):
     """Sends 2FA code to user's email"""
+    print("**************************Send2FACodeView")
     
     def post(self, request, user_id):
         # Get user
@@ -28,7 +31,7 @@ class Send2FACodeView(GenericAPIView):
         request.session['2fa_code'] = code
         expiry_time = timezone.now() + timezone.timedelta(minutes=500)
         request.session['2fa_code_expiry'] = expiry_time.isoformat()
-        request.session['user_id'] = user_id
+        # request.session['user_id'] = user_id
         request.session.modified = True
 
         # # # DEBUG
@@ -38,11 +41,23 @@ class Send2FACodeView(GenericAPIView):
 
 
         # logger.debug(f"Stored session in Send2FACodeView: {request.session.items()}")
-       
+
+        # # Convert to datetime object
+        # dt = datetime.fromisoformat(expiry_time)
+
+        # # Convert to Unix timestamp
+        # unix_timestamp = int(dt.timestamp())
+        # print(unix_timestamp)
+
+
         # # DEBUG
         print("============================================================")
         print(f"Generate::Stored session: {request.session.items()}")
         print(f"Generate::Session keys: {list(request.session.keys())}")
+        # print(f"Session id: {request.sessionid}")
+        # print(f"Session id: {request.session.id}")
+        print(f"Session id: {request.session._session_key}")
+        # print(f"expiry time: {str(timezone.datetime.fromisoformat(expiry_time))}")
         print("============================================================")
         # Send the 2FA code via email
         send_mail(
@@ -56,23 +71,33 @@ class Send2FACodeView(GenericAPIView):
         # logger.info(f"2FA code sent to {user.email}. Code: {code}")
 
         return Response({
-            'message': '2FA code sent to your email.'
+            'message': '2FA code sent to your email.',
+            'sessionid': str(request.session._session_key)
+            # 'expiry time': str(timezone.datetime.fromisoformat(expiry_time.isoformat()))
         }, status=status.HTTP_200_OK)
 
 class Verify2FAView(GenericAPIView):
     """Verifies the 2FA code"""
+    print("**************************Verify2FAView")
+
     permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
 
         code = request.data.get('code')
         # # DEBUG
+        print("============================================================")
         print(f"Verify::Stored session: {request.session.items()}")
         print(f"Verify::Session keys: {list(request.session.keys())}")
+        print("============================================================")
 
         # Get stored code and expiry from session
-        stored_code = request.session.get('2fa_code')
-        expiry_time_str = request.session.get('2fa_code_expiry')
-        user_id = request.session.get('user_id')  # Get user_id from session
+        sessionid = request.data.get('sessionid')
+        sessions = Session.objects.get(session_key=sessionid)
+        session_data = sessions.get_decoded()
+        
+        stored_code = session_data.get('2fa_code')
+        expiry_time_str = session_data.get('2fa_code_expiry')
+        user_id = session_data.get('user_id')  # Get user_id from session
 
         # # DEBUG
         print(f"Stored 2FA code: {stored_code}")
