@@ -15,6 +15,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   @ViewChild('pongCanvas', { static: false }) pongCanvas!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D | null;
   public isGameInitialized: boolean = false;
+  private players: any;
 
   // Nombres de los jugadores
   public leftPlayerName: string = '';
@@ -52,9 +53,8 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       if (players) {
         this.leftPlayerName = players.leftPlayerName;
         this.rightPlayerName = players.rightPlayerName;
-        
+        this.players = players;
       }
-
     }
   }
 
@@ -204,43 +204,50 @@ export class PongGameComponent implements OnInit, AfterViewInit {
 
   displayWinner(): void {
     if (this.ctx) {
-      this.ctx.clearRect(0, 0, this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
-      this.ctx.font = '30px Arial';
-      this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.clearRect(0, 0, this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
+        this.ctx.font = '30px Arial';
+        this.ctx.fillStyle = '#FFFFFF';
 
-      const winnerName = this.leftPlayerScore >= this.winningScore ? this.leftPlayerName : this.rightPlayerName;
-      const winnerMessage = `${winnerName} wins!`;
+        const winnerName = this.leftPlayerScore >= this.winningScore ? this.leftPlayerName : this.rightPlayerName;
+        const winnerMessage = `${winnerName} wins!`;
 
-      const textWidth = this.ctx.measureText(winnerMessage).width;
-      const xPosition = (this.pongCanvas.nativeElement.width - textWidth) / 2;
-      const yPosition = this.pongCanvas.nativeElement.height / 2;
+        const textWidth = this.ctx.measureText(winnerMessage).width;
+        const xPosition = (this.pongCanvas.nativeElement.width - textWidth) / 2;
+        const yPosition = this.pongCanvas.nativeElement.height / 2;
 
-      this.ctx.fillText(winnerMessage, xPosition, yPosition);
+        this.ctx.fillText(winnerMessage, xPosition, yPosition);
 
-      this.http.post('http://localhost:8000/accounts/matches/', {
-        player1_username: this.leftPlayerName,
-        player2_username: this.rightPlayerName,
-        player1_score: this.leftPlayerScore,
-        player2_score: this.rightPlayerScore,
-        winner_username: winnerName,
-        match_type: this.isTournamentMatch ? 'tournament' : 'local'
-      }).subscribe({
-        next: (response) => console.log('Match saved successfully'),
-        error: (error) => console.error('Error saving match:', error)
-      });
+        // Get authentication status from the players object passed through navigation
+        const isAuthenticated = this.players?.isAuthenticated || {
+            player1: false,
+            player2: false
+        };
 
-      if (this.isTournamentMatch) {
-        setTimeout(() => {
-          const navigationExtras: NavigationExtras = {
-            state: {
-              winner: winnerName,
-              leftScore: this.leftPlayerScore,
-              rightScore: this.rightPlayerScore
-            }
-          };
-          this.router.navigate(['/tournament'], navigationExtras);
-        }, 2000);
-      }
+        this.http.post('http://localhost:8000/accounts/matches/', {
+            player1_username: this.leftPlayerName,
+            player2_username: this.rightPlayerName,
+            player1_score: this.leftPlayerScore,
+            player2_score: this.rightPlayerScore,
+            winner_username: winnerName,
+            match_type: this.isTournamentMatch ? 'tournament' : 'local',
+            isAuthenticated: isAuthenticated
+        }).subscribe({
+            next: (response) => console.log('Match processed successfully:', response),
+            error: (error) => console.error('Error processing match:', error)
+        });
+
+        if (this.isTournamentMatch) {
+            setTimeout(() => {
+                const navigationExtras: NavigationExtras = {
+                    state: {
+                        winner: winnerName,
+                        leftScore: this.leftPlayerScore,
+                        rightScore: this.rightPlayerScore
+                    }
+                };
+                this.router.navigate(['/tournament'], navigationExtras);
+            }, 2000);
+        }
     }
   }
 }

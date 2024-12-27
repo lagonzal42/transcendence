@@ -121,19 +121,53 @@ class UserMatchHistoryView(APIView):
             return Response({'error': 'User not found'}, status=404)
 
 class MatchCreateView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         try:
-            # Get the User objects for the players
-            player1 = User.objects.get(username=request.data['player1_username'])
-            player2 = User.objects.get(username=request.data['player2_username'])
-            winner = User.objects.get(username=request.data['winner_username'])
+            # Get authentication status for both players from request
+            player1_auth = request.data.get('isAuthenticated', {}).get('player1', False)
+            player2_auth = request.data.get('isAuthenticated', {}).get('player2', False)
 
-            # Create match data
+            # If neither player is authenticated, don't save the match
+            if not player1_auth and not player2_auth:
+                return Response({'message': 'Match not saved - no authenticated players'}, status=200)
+
+            # Get the usernames
+            player1_username = request.data['player1_username']
+            player2_username = request.data['player2_username']
+            winner_username = request.data['winner_username']
+
+            # Initialize player objects
+            player1 = None
+            player2 = None
+            winner = None
+
+            # Get player1 if authenticated
+            if player1_auth:
+                player1 = User.objects.get(username=player1_username)
+            
+            # Get player2 if authenticated
+            if player2_auth:
+                player2 = User.objects.get(username=player2_username)
+
+            # If neither player was found in database, don't save
+            if not player1 and not player2:
+                return Response({'message': 'Match not saved - no valid users found'}, status=200)
+
+            # Determine winner
+            if winner_username == player1_username and player1:
+                winner = player1
+            elif winner_username == player2_username and player2:
+                winner = player2
+            else:
+                # If winner is not an authenticated user, don't save the match
+                return Response({'message': 'Match not saved - winner not authenticated'}, status=200)
+
+            # Create match data only for authenticated players
             match_data = {
-                'player1': player1.id,
-                'player2': player2.id,
+                'player1': player1.id if player1 else None,
+                'player2': player2.id if player2 else None,
                 'player1_score': request.data['player1_score'],
                 'player2_score': request.data['player2_score'],
                 'winner': winner.id,
@@ -143,27 +177,30 @@ class MatchCreateView(APIView):
             # Use the serializer to validate and save
             serializer = MatchSerializer(data=match_data)
             if serializer.is_valid():
-                serializer.save()
+                match = serializer.save()
                 
-                # Update player stats
-                player1.games_played += 1
-                player2.games_played += 1
+                # Update stats only for authenticated players
+                if player1:
+                    player1.games_played += 1
+                    if winner == player1:
+                        player1.games_won += 1
+                    else:
+                        player1.games_lost += 1
+                    player1.save()
                 
-                if winner == player1:
-                    player1.games_won += 1
-                    player2.games_lost += 1
-                else:
-                    player2.games_won += 1
-                    player1.games_lost += 1
-                
-                player1.save()
-                player2.save()
+                if player2:
+                    player2.games_played += 1
+                    if winner == player2:
+                        player2.games_won += 1
+                    else:
+                        player2.games_lost += 1
+                    player2.save()
                 
                 return Response(serializer.data, status=201)
             return Response(serializer.errors, status=400)
             
         except User.DoesNotExist:
-            return Response({'error': 'One or more users not found'}, status=404)
+            return Response({'error': 'One or more authenticated users not found'}, status=404)
         except Exception as e:
             return Response({'error': str(e)}, status=400)
 
