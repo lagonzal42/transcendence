@@ -3,6 +3,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { PaddleComponent as Paddle } from "../gameClasses/paddle/paddle.component"
 import { BallComponent as Ball } from '../gameClasses/ball/ball.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-pong-game',
@@ -40,7 +41,11 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   private rightPaddleUp: boolean = false;
   private rightPaddleDown: boolean = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {
+
+  isTournamentMatch: boolean = false;
+  onMatchComplete: ((winner: string) => void) | null = null;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router, private http: HttpClient) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
       const players = navigation.extras.state['players'];
@@ -211,6 +216,31 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       const yPosition = this.pongCanvas.nativeElement.height / 2;
 
       this.ctx.fillText(winnerMessage, xPosition, yPosition);
+
+      this.http.post('http://localhost:8000/accounts/matches/', {
+        player1_username: this.leftPlayerName,
+        player2_username: this.rightPlayerName,
+        player1_score: this.leftPlayerScore,
+        player2_score: this.rightPlayerScore,
+        winner_username: winnerName,
+        match_type: this.isTournamentMatch ? 'tournament' : 'local'
+      }).subscribe({
+        next: (response) => console.log('Match saved successfully'),
+        error: (error) => console.error('Error saving match:', error)
+      });
+
+      if (this.isTournamentMatch) {
+        setTimeout(() => {
+          const navigationExtras: NavigationExtras = {
+            state: {
+              winner: winnerName,
+              leftScore: this.leftPlayerScore,
+              rightScore: this.rightPlayerScore
+            }
+          };
+          this.router.navigate(['/tournament'], navigationExtras);
+        }, 2000);
+      }
     }
   }
 }
