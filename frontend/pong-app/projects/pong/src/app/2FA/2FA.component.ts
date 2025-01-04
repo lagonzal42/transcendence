@@ -63,6 +63,7 @@ export class TwoFactorComponent {
 							//localStorage.setItem('username', response.user.username);
 							//this.isAuthenticatedSubject.next(true);
 							this.router.navigate(['']);
+							this.authService.startAuthCheckInterval();
 						}
 					}),
 					catchError((error: any) => {

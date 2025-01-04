@@ -581,6 +581,47 @@ class BlockedUsersListView(APIView):
                 {'error': 'An error occurred while fetching blocked users'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class AccountRefresh(APIView):
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+
+        try:
+            # Decode and verify refresh token
+            refresh_payload = jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=['HS256'])
+
+            # Check if the refresh token is created by this project
+            if refresh_payload['iss'] != settings.SIMPLE_JWT['ISSUER']:
+                return Response({'error': 'Invalid token issuer'}, status=401)
+
+            # Get the user ID from the refresh token payload
+            user_id = refresh_payload['user_id']
+
+            # Fetch the user from the database
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            user = User.objects.get(id=user_id)
+
+            # Generate new tokens
+            refresh = RefreshToken.for_user(user)
+            new_access_token = str(refresh.access_token)
+            new_refresh_token = str(refresh)
+
+            return Response({
+                'access': new_access_token,
+                'refresh': new_refresh_token
+            }, status=200)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Refresh token has expired'}, status=401)
+        except jwt.InvalidTokenError:
+            return Response({'error': 'Invalid refresh token'}, status=401)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
         
 @api_view(['POST'])
 def validate_credentials(request):

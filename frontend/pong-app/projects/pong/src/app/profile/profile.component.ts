@@ -129,6 +129,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.error = null;
 
+    
     this.authService.getCurrentUser().subscribe({
       next: (currentUser) => {
         this.isOwnProfile = currentUser.username === username;

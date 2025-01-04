@@ -6,22 +6,25 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class AuthenticationGuard implements CanActivate {
-
-  constructor(private authService: AuthService, private router: Router) {}
+  private authResult : number;
+  constructor(private authService: AuthService, private router: Router) {
+    this.authResult = 0;
+  }
 
   canActivate(): boolean {
     console.log('auth guard')
-    if (this.authService.checkAuthStatus())
+    this.authService.isAuthDone()
+    if (this.authService.isAuthenticated())
       {
-        console.log('auth true')
+        console.log('auth true');
         return (true);
         
       }
     else
     {
-      console.log('auth false')
+      console.log('auth false');
       this.router.navigate(['/login']);
-      return (false);
+      return (false);;
     }
   }
 }
