@@ -14,14 +14,20 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         password2 = attrs.get('password2', '')
         username = attrs.get('username', '')
         email = attrs.get('email', '')
+        
+        errors = {}
+        
         if password != password2:
-            raise serializers.ValidationError('passwords do not match')
+            errors['password'] = ['Passwords do not match']
         
         if User.objects.filter(username=username).exists():
-            raise serializers.ValidationError('This username is already taken')
+            errors['username'] = ['This username is already taken']
         
         if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError('This email is already taken')
+            errors['email'] = ['This email is already taken']
+            
+        if errors:
+            raise serializers.ValidationError(errors)
 
         return attrs
 

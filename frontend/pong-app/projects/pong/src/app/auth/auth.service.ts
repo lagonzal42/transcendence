@@ -34,29 +34,28 @@ export class AuthService {
     return this.authDone;
   }
 
-  public isAuthDone(): void
-  {
+  public isAuthDone(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.authDone = false;
+      return;
+    }
+
     let token: string = localStorage.getItem('access_token') || '';
     
-    if (token.length > 0) //token exists
-    {
+    if (token.length > 0) { //token exists
       console.log('length is > 0 ' + token)
-      if (!this.jwtHelper.isTokenExpired(token)) // token is not expired
-      {
+      if (!this.jwtHelper.isTokenExpired(token)) { // token is not expired
         this.authDone = true;
         console.log('token not expired');
       }
-      else // token is expired
-      {
+      else { // token is expired
         this.refreshToken();
         token = localStorage.getItem('access_token') || '';
-        if (token.length > 0)
-          {
-            this.authDone = true;
-            console.log('token refreshed');
-          }
-        else
-        {
+        if (token.length > 0) {
+          this.authDone = true;
+          console.log('token refreshed');
+        }
+        else {
           this.authDone = false;
           console.log('refresh failed');
         }

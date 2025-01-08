@@ -150,6 +150,7 @@ volumes:
   #     o: bind
   #     type: none
   postgres-data:
+    name: postgres_data
     driver: local
   grafana-storage: {}
   prometheus_data: {}

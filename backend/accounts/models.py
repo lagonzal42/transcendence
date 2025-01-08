@@ -111,6 +111,8 @@ class AccountActivateToken(models.Model):
         self.expired_at = timezone.now() + timedelta(minutes=10)
         self.save()
         return self.expired_at
+
+
 class Match(models.Model):
     player1 = models.ForeignKey(User, related_name='matches_as_player1', on_delete=models.CASCADE)
     player2 = models.ForeignKey(User, related_name='matches_as_player2', on_delete=models.CASCADE)

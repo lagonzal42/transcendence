@@ -35,17 +35,16 @@ urlpatterns = [
     path('api-auth/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # reobtain JWT token
     path('api-auth/jwt/refresh', TokenRefreshView.as_view(), name='token_refresh'),
-    path('two_factor_auth/', include('two_factor_auth.urls', namespace='two_factor_auth')),
     # path('chat/', include('live_chat.urls')),
 
     # API Endpoints
-    path('api/', include([
-        # Auth endpoints
-        path('auth/', include([
-            path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-            path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-            path('', include('rest_framework.urls')),
-        ])),
-    ])),
+    # path('api/', include([
+    #     # Auth endpoints
+    #     path('auth/', include([
+    #         path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    #         path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    #         path('', include('rest_framework.urls')),
+    #     ])),
+    # ])),
     path('two_factor_auth/', include('two_factor_auth.urls', namespace='two_factor_auth')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
