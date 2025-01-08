@@ -31,4 +31,6 @@ urlpatterns = [
     path('block/<int:user_id>/', views.BlockUserView.as_view(), name='block_user'),
     path('unblock/<int:user_id>/', views.UnblockUserView.as_view(), name='unblock_user'),
     path('blocked-users/', views.BlockedUsersListView.as_view(), name='blocked_users_list'),
+    path('activation/', views.ActivateAccountView.as_view(), name='activate_account'),
+
 ]

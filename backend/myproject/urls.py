@@ -37,4 +37,5 @@ urlpatterns = [
             path('', include('rest_framework.urls')),
         ])),
     ])),
+    path('two_factor_auth/', include('two_factor_auth.urls', namespace='two_factor_auth')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

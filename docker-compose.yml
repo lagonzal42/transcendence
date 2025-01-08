@@ -8,8 +8,6 @@ services:
     #   - POSTGRES_DB=postgres
     #   - POSTGRES_USER=postgres
     #   - POSTGRES_PASSWORD=postgres
-    ports:
-      - '5432:5432'
     networks:
       - app-network
     env_file:
@@ -45,6 +43,7 @@ services:
     container_name: redis
     ports:
       - "6380:6379"
+      - redis
     networks:
       - app-network
 

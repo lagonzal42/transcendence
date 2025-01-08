@@ -18,6 +18,7 @@ from django.core.management.utils import get_random_secret_key
 
 
 load_dotenv()
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'daphne',
     'channels',
     'accounts',
+    'two_factor_auth',
     'live_chat',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -242,7 +244,49 @@ EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='user@gmail.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='user')
+# # # Setting to send a mail to gmail
+
+LOGIN_URL = 'two_factor_auth:login' # # # not implemented yet
+
+ACTIVATE_URL = 'http://localhost:8000/accounts'
+
+
+# # # Session engine to use redis
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_NAME = 'sessionid'
+SESSION_COOKIE_SECURE = False  # Set to True for HTTPS
+SESSION_SAVE_EVERY_REQUEST = True  # Ensure session is saved on every request
+SESSION_COOKIE_AGE = 3600
+
+
+# Cache configuration to point to Redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",  # Redis URL (matches the Redis service name in Docker Compose)
+    # "LOCATION": f"redis://{os.environ.get('REDIS_HOST', 'redis')}:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+
+# Set the session engine to use the database
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+# settings.py
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"
+# SESSION_COOKIE_AGE = 300  # Session lasts for 5 minutes, adjust as needed
+# SESSION_SAVE_EVERY_REQUEST = True  # Optional: Save session data on each request
+
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
