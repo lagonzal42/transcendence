@@ -36,7 +36,7 @@ from .models import AccountActivateToken
 from django.shortcuts import redirect
 from django.urls import reverse
 import requests
-
+from two_factor_auth.views import Send2FACodeView
 
 class AccountList(ListAPIView):
     queryset = User.objects.all()
@@ -74,10 +74,29 @@ class RegisterView(APIView):
             send_activation_email(user_intra, from_email="noreply@essencecatch.com")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+        # if serializer.is_valid():
+        #     user = serializer.save()
+        #     refresh = RefreshToken.for_user(user)
+
+        #     return Response({
+        #         'user': {
+        #             'id': user.id,
+        #             'username': user.username,
+        #             'email': user.email,
+        #         },
+        #         'tokens': {
+        #             'refresh': str(refresh),
+        #             'access': str(refresh.access_token),
+        #         }
+        #     }, status=status.HTTP_201_CREATED)
+        # print(f"Validation errors for register: {serializer.errors}")
+        # return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ActivateAccountView(APIView):
 
+    permission_classes = [AllowAny]
     def get(self, request):
         token = request.query_params.get('token')  # Token passed as query param
 
@@ -223,39 +242,61 @@ class MatchCreateView(APIView):
             return Response({'error': str(e)}, status=400)
 
 class LoginView(GenericAPIView):
-    """API login class"""
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
-    # print("Entered LoginView")
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
+            # print(f"Login attempt for user: {serializer.validated_data['username']}")  # Debug print
             user = authenticate(
                 username=serializer.validated_data['username'],
                 password=serializer.validated_data['password']
             )
+            # print(f"Authentication result: {user}")  # Debug print
 
             if user is not None:
-                # Store user info for 2FA verification
+                # print(f"User authenticated, is_active: {user.is_active}")  # Debug print
+                # Instead of making a new request, call the 2FA view directly
+                from two_factor_auth.views import Send2FACodeView
+                
+                # Store user_id in session
                 request.session['user_id'] = user.id
-
-                # Prepare to call the send_2fa_code endpoint in the two_factor_auth app
-                url = reverse('two_factor_auth:send_2fa_code', kwargs={'user_id': user.id})
-                response = requests.post(request.build_absolute_uri(url))
-
-                # Check if the response is valid
-                try:
-                    response_data = response.json()  # Attempt to decode the JSON response
-                    return Response(response_data, status=response.status_code)
-                except ValueError as e:
-                    # logger.error(f"JSON decode error: {e} - Response text: {response.text}")
-                    return Response({'error': 'Invalid response format from 2FA service'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                request.session.save()
+                
+                # Use the same session for 2FA
+                two_factor_view = Send2FACodeView()
+                two_factor_response = two_factor_view.post(request, user_id=user.id)
+                return two_factor_response
             else:
-                print("entering here")
-                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'error': 'Invalid credentials'}, 
+                              status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        #     username = serializer.validated_data['username']
+        #     password = serializer.validated_data['password']
+        #     # print(username)
+        #     # print(password)
+        #     user = authenticate(username=username, password=password)
+
+        #     if user:
+        #         refresh = RefreshToken.for_user(user)
+        #         return Response({
+        #             'user': {
+        #                 'id': user.id,
+        #                 'username': user.username,
+        #                 'email': user.email,    
+        #             },
+        #             'tokens': {
+        #                 'refresh': str(refresh),
+        #                 'access': str(refresh.access_token),
+        #             }       
+        #         }, status=status.HTTP_200_OK)
+        #     else:
+        #         print("entering here")
+        #         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -275,37 +316,6 @@ class LogoutView(APIView):
             return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
         except Exception:
             return Response({"error": "Invalid token or token has been blacklisted"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class LoginView(GenericAPIView):
-#     """API login class"""
-#     permission_classes = [AllowAny]
-#     serializer_class = LoginSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data) 
-#         if serializer.is_valid(raise_exception=True):
-#             user = authenticate(
-#                 username=serializer.validated_data['username'],
-#                 password=serializer.validated_data['password']
-#             )
-#             if user is not None:
-#                 # Create JWT token
-#                 refresh = RefreshToken.for_user(user)
-
-#                 return Response({
-#                     'user_id': user.id,
-#                     'username': user.username,
-#                     'email': user.email,
-#                     'first_name': user.first_name,
-#                     'last_name': user.last_name,
-#                     # "refresh" and "access" are JWT tokens
-#                     'refresh': str(refresh),
-#                     'access': str(refresh.access_token),
-#                 }, status=200)
-#             else:
-#                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UpdateProfileView(UpdateAPIView):
     queryset = User.objects.all()
@@ -604,6 +614,47 @@ class BlockedUsersListView(APIView):
                 {'error': 'An error occurred while fetching blocked users'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class AccountRefresh(APIView):
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+
+        try:
+            # Decode and verify refresh token
+            refresh_payload = jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=['HS256'])
+
+            # Check if the refresh token is created by this project
+            if refresh_payload['iss'] != settings.SIMPLE_JWT['ISSUER']:
+                return Response({'error': 'Invalid token issuer'}, status=401)
+
+            # Get the user ID from the refresh token payload
+            user_id = refresh_payload['user_id']
+
+            # Fetch the user from the database
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            user = User.objects.get(id=user_id)
+
+            # Generate new tokens
+            refresh = RefreshToken.for_user(user)
+            new_access_token = str(refresh.access_token)
+            new_refresh_token = str(refresh)
+
+            return Response({
+                'access': new_access_token,
+                'refresh': new_refresh_token
+            }, status=200)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Refresh token has expired'}, status=401)
+        except jwt.InvalidTokenError:
+            return Response({'error': 'Invalid refresh token'}, status=401)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
         
 @api_view(['POST'])
 def validate_credentials(request):

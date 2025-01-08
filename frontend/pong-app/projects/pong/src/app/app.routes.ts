@@ -14,6 +14,7 @@ import { MultiplayerComponent } from './pong-game/multiplayer/multiplayer.compon
 import { ChatComponent } from './chat/chat.component';
 import { UpdateProfileComponent } from './update-profile-component/update-profile-component.component';
 import { MatchHistoryComponent } from './match-history/match-history.component';
+import { TwoFactorComponent} from './2FA/2FA.component'
 
 
 export const routes: Routes = [
@@ -26,14 +27,15 @@ export const routes: Routes = [
       { path: 'login', component: LoginComponent },
       { path: 'signup', component: SignupComponent },
       { path: 'profile', component: ProfileComponent , canActivate: [AuthenticationGuard]},
-      { path: 'profile/:username', component: ProfileComponent },
+      { path: 'profile/:username', component: ProfileComponent, canActivate: [AuthenticationGuard]},
       //{ path: 'search', component: SearchComponent, canActivate: [AuthenticationGuard] },
       { path: 'tournament', component: TournamentComponent },
       { path: 'local-play', component: LocalPlayComponent },
       { path: 'pong-game', component: PongGameComponent },
       { path: 'multiplayer', component: MultiplayerComponent },
-      { path: 'profile/:username/update', component: UpdateProfileComponent },
+      { path: 'profile/:username/update', component: UpdateProfileComponent , canActivate: [AuthenticationGuard]},
       { path: 'match-history/:username', component: MatchHistoryComponent},
+      { path: 'two-factor', component: TwoFactorComponent},
     ]
   },
   {

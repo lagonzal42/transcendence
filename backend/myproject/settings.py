@@ -19,6 +19,7 @@ from decouple import config
 
 
 load_dotenv()
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -99,12 +100,11 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,
-    
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
@@ -235,8 +235,20 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
 
+########## Commented 20241101
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'otxoboy64@gmail.com'
+# EMAIL_HOST_PASSWORD = 'qkhw doyy kojf exss' 
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
+########## Commented 20241101
+
+
+# # # Setting to send a mail to gmail
 # CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
@@ -244,11 +256,11 @@ EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='user@gmail.com')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='user')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Gmail address (in .env file)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Gmail app password (in .env file)
 # # # Setting to send a mail to gmail
 
-LOGIN_URL = 'two_factor_auth:login' # # # not implemented yet
+LOGIN_URL = 'two_factor_auth' # # # not implemented yet
 
 ACTIVATE_URL = 'http://localhost:8000/accounts'
 
@@ -257,7 +269,7 @@ ACTIVATE_URL = 'http://localhost:8000/accounts'
 # SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 # SESSION_CACHE_ALIAS = "default"
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_COOKIE_SECURE = False  # Set to True for HTTPS

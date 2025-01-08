@@ -1,5 +1,9 @@
 from django.urls import path
 from . import views
+from django.urls import path, include
+from accounts.views import UpdateProfileView
+from rest_framework.routers import DefaultRouter
+from .views import ListFriendsView, AcceptFriendRequestView, ActivateAccountView#, AddFriendView, 
 
 app_name = 'accounts'
 
@@ -9,8 +13,10 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('me/', views.CurrentUser.as_view(), name='current_user'),
+    path('activation/', views.ActivateAccountView.as_view(), name='activate_account'),   
     path('matches/', views.MatchCreateView.as_view(), name='match-create'),
     path('validate-credentials/', views.validate_credentials, name='validate-credentials'),
+    path('account-refresh/', views.AccountRefresh.as_view(), name='accout-refresh'),
     
     # User profile
     path('users/', views.AccountList.as_view(), name='user_list'),

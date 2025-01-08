@@ -86,6 +86,7 @@ class AccountActivateTokensManager(models.Manager):
             user = user_activate_token.user
             user.is_active = True
             user.save()
+            print(f"User {user.username} activated successfully")  # Debug print
             return user
         else:
             raise self.model.DoesNotExist

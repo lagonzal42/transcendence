@@ -1,0 +1,18 @@
+
+<div class="login-area container-fluid d-flex justify-content-center align-items-center">
+  <h2 class="login-title text-center mb-4">TWO FACTOR AUTH</h2>
+  <form [formGroup]="twoForm" (ngSubmit)="onSubmit()">
+    <div *ngIf="loginError" class="alert alert-danger">
+      {{ loginError }}
+    </div>
+
+    <div class="formGroup">
+      <label for="twoFactor">2FA CODE</label>
+      <input id="twoFactor" formControlName="twoFactor">
+      <!-- <div *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
+        <small class="text-danger">Invalid username</small>
+      </div> -->
+    </div>
+    <button class="submit-btn" type="submit">VERIFY</button>
+  </form>
+</div>

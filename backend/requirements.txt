@@ -8,10 +8,10 @@ Pillow
 djangorestframework-simplejwt
 importlib_metadata==8.4.0
 gunicorn
+python-decouple
+requests
+django-redis
 daphne
 channels
 channels-redis==4.1.0
 python-dotenv
-python-decouple
-requests
-django-redis
