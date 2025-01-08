@@ -248,12 +248,19 @@ class LoginView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            # print(f"Login attempt for user: {serializer.validated_data['username']}")  # Debug print
+            print(f"Logint attempt for: {serializer.validated_data['username']}")
+
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            user_exists = User.objects.filter(username=serializer.validated_data['username']).exists()
+            print(f"User exists in DB: {user_exists}")
+
+
             user = authenticate(
                 username=serializer.validated_data['username'],
                 password=serializer.validated_data['password']
             )
-            # print(f"Authentication result: {user}")  # Debug print
+            print(f"Authentication result: {user}")  # Debug print
 
             if user is not None:
                 # print(f"User authenticated, is_active: {user.is_active}")  # Debug print

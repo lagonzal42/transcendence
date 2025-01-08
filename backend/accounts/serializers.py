@@ -38,7 +38,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username = validated_data.get('username'),
             email = validated_data.get('email'),
-            is_active=False  # User is deactivated by default
+            #is_active=False  # User is deactivated by default
         )
         user.set_password(password)
         user.save()
