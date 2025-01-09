@@ -38,19 +38,13 @@ export class TwoFactorComponent {
 	onSubmit() {
 		this.loginError = '';
 		if (this.twoForm.valid) 
-		{
-			// const credentials: UserInterface = {
-				// 	username: this.twoForm.value.username,
-				// 	password: this.twoForm.value.password
-				// };
-				
-				//LA ESTRUCTURA A MANDAR
-				
+		{		
 				const verifyInfo =
 				{
 					code: this.twoForm.value.twoFactor,
 					sessionid: localStorage.getItem('sessionid')
 				}
+				console.log('Sending verification info:', verifyInfo);
 				
 				this.httpClient.post('http://localhost:8000/two_factor_auth/verify/', verifyInfo).pipe(
 					map((response: any) => 

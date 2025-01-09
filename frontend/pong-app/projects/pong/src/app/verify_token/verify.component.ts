@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+//import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+//import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
-import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
-import { Injectable, Inject , PLATFORM_ID} from '@angular/core';
-import { error } from 'console';
+// import { map, catchError } from 'rxjs/operators';
+// import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
+// import { Injectable, Inject , PLATFORM_ID} from '@angular/core';
+// import { error } from 'console';
 
 @Component({
 	selector: 'verify',
@@ -41,7 +41,6 @@ export class VerifyComponent implements OnInit {
 		});
 	}
 	
-
 	activateAccount(token: string): void {
 		this.http.get(`http://localhost:8000/accounts/activation/?token=${token}`).subscribe({
 		  next: (response: any) => {

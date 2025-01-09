@@ -8,6 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 # For JWT
 from rest_framework_simplejwt.tokens import RefreshToken
+import jwt
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated

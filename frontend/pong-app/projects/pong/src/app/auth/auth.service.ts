@@ -42,24 +42,27 @@ export class AuthService {
 
     let token: string = localStorage.getItem('access_token') || '';
     
-    if (token.length > 0) { //token exists
-      console.log('length is > 0 ' + token)
-      if (!this.jwtHelper.isTokenExpired(token)) { // token is not expired
+    if (token.length > 0) {
+      if (!this.jwtHelper.isTokenExpired(token)) {
         this.authDone = true;
-        console.log('token not expired');
+      } else {
+        console.log("Token expired, attempting refresh");
+        this.refreshToken().subscribe({
+          next: (status) => {
+            if (status === 0) {
+              this.authDone = true;
+            } else {
+              this.authDone = false;
+            }
+          },
+          error: () => {
+            this.authDone = false;
+            this.logout();
+          }
+        });
       }
-      else { // token is expired
-        this.refreshToken();
-        token = localStorage.getItem('access_token') || '';
-        if (token.length > 0) {
-          this.authDone = true;
-          console.log('token refreshed');
-        }
-        else {
-          this.authDone = false;
-          console.log('refresh failed');
-        }
-      }
+    } else {
+      this.authDone = false;
     }
   }
 
@@ -105,30 +108,36 @@ export class AuthService {
   {
     if (!isPlatformBrowser(this.platformId))
       return (of(401));
-    const tokens = 
-    { 
-      refresh:  localStorage.getItem('refresh_token'), 
-      access:   localStorage.getItem('access_token')
+    
+    const tokens = { 
+      refresh: localStorage.getItem('refresh_token'), 
+      access: localStorage.getItem('access_token')
     }
+
+    console.log('Attempting refresh with tokens:', {
+      refresh: tokens.refresh ? 'present' : 'missing',
+      access: tokens.access ? 'present' : 'missing'
+    });
 
     if (!tokens.refresh || !tokens.access)
       return (of(401));
-    console.log('refresh');
-    return (this.httpClient.post('http://localhost:8000/accounts/account-refresh/', tokens).pipe(
+
+    return this.httpClient.post('http://localhost:8000/accounts/account-refresh/', tokens).pipe(
       map((response: any) => {
-        console.log(response);
+        console.log('Refresh successful:', response);
         localStorage.setItem('access_token', response.access);
         localStorage.setItem('refresh_token', response.refresh);
         this.authDone = true;
-        return (of(0));
+        return 0;
       }),
       catchError((error: any) => {
+        console.error('Refresh failed:', error);
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         this.authDone = false;
         return of(error.status);
       })
-    ));
+    );
   }
 
   getCurrentUser(): Observable<UserInterface> {
