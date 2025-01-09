@@ -59,8 +59,6 @@ def send_code_to_user(email):
         to = [user.email]
     ).send()
 
-
-#   @user_not_authenticated
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     serializer_class = UserRegisterSerializer
@@ -69,30 +67,11 @@ class RegisterView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user_intra = serializer.save()
-            user = serializer.data
+            #user = serializer.data
             # send_code_to_user(user['email'])
             send_activation_email(user_intra, from_email="noreply@essencecatch.com")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-        # if serializer.is_valid():
-        #     user = serializer.save()
-        #     refresh = RefreshToken.for_user(user)
-
-        #     return Response({
-        #         'user': {
-        #             'id': user.id,
-        #             'username': user.username,
-        #             'email': user.email,
-        #         },
-        #         'tokens': {
-        #             'refresh': str(refresh),
-        #             'access': str(refresh.access_token),
-        #         }
-        #     }, status=status.HTTP_201_CREATED)
-        # print(f"Validation errors for register: {serializer.errors}")
-        # return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ActivateAccountView(APIView):
 
@@ -106,7 +85,6 @@ class ActivateAccountView(APIView):
 
             # If the user is successfully activated
             if user:
-                # logger.info('Account has been activated.')  # Account activated
 
                 # Delete the activation token after successful activation
                 AccountActivateToken.objects.filter(user=user).delete()
