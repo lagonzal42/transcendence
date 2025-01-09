@@ -38,6 +38,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 import requests
 from two_factor_auth.views import Send2FACodeView
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.exceptions import TokenError
 
 class AccountList(ListAPIView):
     queryset = User.objects.all()
@@ -602,44 +604,42 @@ class BlockedUsersListView(APIView):
             )
 
 class AccountRefresh(APIView):
+    permission_classes = [AllowAny]
 
     def post(self, request):
         refresh_token = request.data.get('refresh')
+        
+        print(f"Received refresh request with token: {refresh_token[:20] if refresh_token else None}...")
+        
+        if not refresh_token:
+            return Response({'error': 'Refresh token is required'}, status=400)
 
         try:
-            # Decode and verify refresh token
-            refresh_payload = jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=['HS256'])
-
-            # Check if the refresh token is created by this project
-            if refresh_payload['iss'] != settings.SIMPLE_JWT['ISSUER']:
-                return Response({'error': 'Invalid token issuer'}, status=401)
-
-            # Get the user ID from the refresh token payload
-            user_id = refresh_payload['user_id']
-
-            # Fetch the user from the database
-            from django.contrib.auth import get_user_model
-            User = get_user_model()
-            user = User.objects.get(id=user_id)
-
-            # Generate new tokens
-            refresh = RefreshToken.for_user(user)
-            new_access_token = str(refresh.access_token)
+            # Verify the token is properly formatted
+            refresh = RefreshToken(refresh_token)
+            
+            # Get new tokens
+            access_token = str(refresh.access_token)
             new_refresh_token = str(refresh)
 
+            print("Token refresh successful")
             return Response({
-                'access': new_access_token,
+                'access': access_token,
                 'refresh': new_refresh_token
-            }, status=200)
+            })
 
-        except jwt.ExpiredSignatureError:
-            return Response({'error': 'Refresh token has expired'}, status=401)
-        except jwt.InvalidTokenError:
-            return Response({'error': 'Invalid refresh token'}, status=401)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found'}, status=404)
+        except TokenError as e:
+            print(f"Token refresh error: {str(e)}")
+            return Response({
+                'error': 'Invalid or expired refresh token',
+                'detail': str(e)
+            }, status=401)
         except Exception as e:
-            return Response({'error': str(e)}, status=500)
+            print(f"Unexpected error during refresh: {str(e)}")
+            return Response({
+                'error': 'Server error during token refresh',
+                'detail': str(e)
+            }, status=500)
 
         
 @api_view(['POST'])
