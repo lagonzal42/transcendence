@@ -6,6 +6,7 @@ import { uniquePlayerNamesValidator } from '../uniquePlayerName/uniquePlayerName
 import { platform } from 'os';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslationService } from '../services/translation.service';
 
 @Component({
   selector: 'app-tournament',
@@ -40,7 +41,8 @@ export class TournamentComponent implements OnInit {
     private fb: FormBuilder, 
     private router: Router,
     private route: ActivatedRoute,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private translationService: TranslationService
   ) {
     this.tournamentForm = this.fb.group({
       player1: ['', Validators.required],
@@ -205,5 +207,9 @@ export class TournamentComponent implements OnInit {
   {
     const shuffled = array.sort(() => Math.random() - 0.5);
     return shuffled;
+  }
+
+  translate(key: string): string {
+    return this.translationService.translate(key);
   }
 }

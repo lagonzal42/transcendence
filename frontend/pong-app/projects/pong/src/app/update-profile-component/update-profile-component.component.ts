@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { TranslationService } from '../services/translation.service';
 
 @Component({
   selector: 'app-update-profile',
@@ -86,7 +88,9 @@ export class UpdateProfileComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private http: HttpClient,
+    private translationService: TranslationService
   ) {
     this.updateForm = this.fb.group({
       tournament_name: [''],
@@ -160,5 +164,9 @@ export class UpdateProfileComponent implements OnInit {
         error: (error) => console.error('Error updating profile:', error)
       });
     }
+  }
+
+  translate(key: string): string {
+    return this.translationService.translate(key);
   }
 }

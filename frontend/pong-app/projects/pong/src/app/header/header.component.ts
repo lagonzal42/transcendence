@@ -3,11 +3,13 @@ import { AuthService } from '../auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { TranslationService } from '../services/translation.service';
+import { LanguageSelectorComponent } from '../language-selector/language-selector.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, LanguageSelectorComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
@@ -18,7 +20,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit() {
@@ -71,5 +74,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logout() {
     this.authService.logout();
     this.router.navigate(['']);
+  }
+
+  translate(key: string): string {
+    return this.translationService.translate(key);
   }
 }

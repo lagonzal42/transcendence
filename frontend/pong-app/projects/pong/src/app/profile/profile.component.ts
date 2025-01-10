@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { WebSocketService } from '../services/websocket.service';
 import { Subscription } from 'rxjs';
 import { MatchHistoryComponent } from '../match-history/match-history.component';
+import { TranslationService } from '../services/translation.service';
 
 interface User {
   id: number;
@@ -93,7 +94,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private chatService: ChatService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit() {
@@ -329,5 +331,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   GoToMatchHistory() {
     this.router.navigate(['/match-history', this.currentUsername]);
+  }
+
+  translate(key: string): string {
+    return this.translationService.translate(key);
   }
 }

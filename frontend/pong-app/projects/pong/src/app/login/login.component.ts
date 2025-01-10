@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { userInfo } from 'os';
 import { UserInterface } from '../auth/login/interfaces/user.interface';
+import { TranslationService } from '../services/translation.service';
 
 @Component({
 	selector: 'app-login',
@@ -22,6 +23,7 @@ export class LoginComponent {
 		private fb: FormBuilder,
 		private authService: AuthService,
 		private router: Router,
+		private translationService: TranslationService
 	) {
 		this.loginForm = this.fb.group({
 			username: ['', Validators.required],
@@ -56,5 +58,9 @@ export class LoginComponent {
 		} else {
 			this.loginForm.markAllAsTouched();
 		}
+	}
+
+	translate(key: string): string {
+		return this.translationService.translate(key);
 	}
 }

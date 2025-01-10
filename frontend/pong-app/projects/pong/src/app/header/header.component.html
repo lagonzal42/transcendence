@@ -5,32 +5,30 @@
         </button>
     </div>
     <div class="buttons">
-        <!-- <button routerLink="/search" class="btn-search" id="search-button">
-            Search
-        </button> -->
+        <app-language-selector></app-language-selector>
         <button *ngIf="isLoggedIn" 
                 (click)="navigateToProfile()" 
                 class="btn-profile" 
                 id="profile-button">
-            Profile
+            {{ translate('PROFILE') }}
         </button>
         <button *ngIf="isLoggedIn"
                 (click)="navigateToUpdateProfile()"
                 class="btn-update-profile"
                 id="update-profile-button">
-            Update Profile
+            {{ translate('UPDATE_PROFILE') }}
         </button>
         <button *ngIf="isLoggedIn"
                 (click)="logout()"
                 class="btn-logout"
                 id="logout-button">
-            Logout
+            {{ translate('LOGOUT') }}
         </button>
         <button *ngIf="!isLoggedIn" 
                 routerLink="/login" 
                 class="btn-login" 
                 id="login-button">
-            Login
+            {{ translate('LOGIN') }}
         </button>
     </div>
 </header>

@@ -5,31 +5,47 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
+import { TranslationService } from '../services/translation.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterModule, CommonModule, HeaderComponent, FooterComponent],
+  imports: [
+    RouterModule, 
+    CommonModule, 
+    HeaderComponent, 
+    FooterComponent
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
   currentUsername: string = '';
   isLoggedIn: boolean = false;
   private authSubscription?: Subscription;
 
   constructor(
     private authService: AuthService,
-
+    private translationService: TranslationService
   ) {}
 
-  onLogout() : void {
+  translate(key: string): string {
+    return this.translationService.translate(key);
+  }
+
+  onLogout(): void {
     this.authService.logout();
   }
 
   ngOnInit() {
-    this.authSubscription = this.authService.isAuthenticated().subscribe( isAuthenticated => {
+    this.authSubscription = this.authService.isAuthenticated().subscribe(isAuthenticated => {
       this.isLoggedIn = isAuthenticated;
     });
+  }
+
+  ngOnDestroy() {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 }

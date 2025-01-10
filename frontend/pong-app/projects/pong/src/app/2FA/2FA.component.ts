@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
 import { Injectable, Inject , PLATFORM_ID} from '@angular/core';
+import { TranslationService } from '../services/translation.service';
 
 
 
@@ -28,7 +29,8 @@ export class TwoFactorComponent {
 		private authService: AuthService,
 		private router: Router,
 		private httpClient: HttpClient,
-		@Inject(PLATFORM_ID) private platformId: Object
+		@Inject(PLATFORM_ID) private platformId: Object,
+		private translationService: TranslationService
 	) {
 		this.twoForm = this.fb.group({
 			twoFactor: ['', Validators.required],
@@ -70,5 +72,9 @@ export class TwoFactorComponent {
 		{
 			this.twoForm.markAllAsTouched();
 		}
+	}
+
+	translate(key: string): string {
+		return this.translationService.translate(key);
 	}
 }

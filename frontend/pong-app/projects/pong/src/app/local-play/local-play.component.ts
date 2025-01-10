@@ -6,6 +6,7 @@ import { uniquePlayerNamesValidator } from '../uniquePlayerName/uniquePlayerName
 import { Router } from '@angular/router';
 import { platform } from 'os';
 import { AuthService } from '../auth/auth.service'
+import { TranslationService } from '../services/translation.service'
 
 @Component({
   selector: 'app-local-play',
@@ -28,7 +29,12 @@ export class LocalPlayComponent implements OnInit {
   // group2: string[] = [];
   //formSubmitted: boolean = false;
 
-  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder, 
+    private router: Router, 
+    private authService: AuthService,
+    private translationService: TranslationService
+  ) {
     this.localPlayForm = this.fb.group({
       player1: ['', Validators.required],
       player2: ['', Validators.required],
@@ -107,6 +113,10 @@ export class LocalPlayComponent implements OnInit {
     else {
       this.localPlayForm.markAllAsTouched();
     } 
+  }
+
+  translate(key: string): string {
+    return this.translationService.translate(key);
   }
 
 //  shuffleArray(array: Array<any>): Array<any> 

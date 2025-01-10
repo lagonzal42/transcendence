@@ -2,25 +2,39 @@
         <div class="button-area" id="button-area">
             <div class="row">
                 <div class="col-12 mb-3" >
-                    <button routerLink="/local-play" class="btn btn-custom" id="play-local-2">2 JUGADORES</button>
+                    <button routerLink="/local-play" class="btn btn-custom" id="play-local-2">
+                        {{ translate('PLAY_2_PLAYERS') }}
+                    </button>
                 </div>
                 <div class="col-12 mb-3">
-                    <button routerLink="/multiplayer" class="btn btn-custom" id="play-local-4">4 JUGADORES</button>
+                    <button routerLink="/multiplayer" class="btn btn-custom" id="play-local-4">
+                        {{ translate('PLAY_4_PLAYERS') }}
+                    </button>
                 </div>
                 <div class="col-12 mb-3">
-                    <button routerLink="/tournament"class="btn btn-custom" id="play-tournament">TORNEO</button>
+                    <button routerLink="/tournament" class="btn btn-custom" id="play-tournament">
+                        {{ translate('TOURNAMENT') }}
+                    </button>
                 </div>
                 <div class="col-12 mb-3">
-                    <button class="btn btn-custom" id="play-tutorial">TUTORIAL</button>
+                    <button class="btn btn-custom" id="play-tutorial">
+                        {{ translate('TUTORIAL') }}
+                    </button>
                 </div>
                 <div class="col-12 col-md-6 mb-3" *ngIf="!isLoggedIn">
-                    <button routerLink="/login" class="btn btn-login" id="btn-login">LOG IN</button>
+                    <button routerLink="/login" class="btn btn-login" id="btn-login">
+                        {{ translate('LOGIN') }}
+                    </button>
                 </div>
                 <div class="col-12 col-md-6 mb-3" *ngIf="!isLoggedIn">
-                    <button routerLink="/signup" class="btn btn-singin" id="btn-singin">SIGN UP</button>
+                    <button routerLink="/signup" class="btn btn-singin" id="btn-singin">
+                        {{ translate('SIGN_UP') }}
+                    </button>
                 </div>
                 <div class="col-12 col-md-6 mb-3" *ngIf="isLoggedIn">
-                    <button class="btn btn-signout" id="btn-signout" (click)="onLogout()">SIGN OUT</button>
+                    <button class="btn btn-signout" id="btn-signout" (click)="onLogout()">
+                        {{ translate('SIGN_OUT') }}
+                    </button>
                 </div>
             </div>
         </div>
