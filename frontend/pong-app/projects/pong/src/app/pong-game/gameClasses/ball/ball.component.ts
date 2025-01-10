@@ -15,10 +15,11 @@ export class BallComponent {
       this.xPosition = xPos;
       this.yPosition = yPos;
       this.ballRadius = 10;
-      this.dx = this.getRandomNumber(-0.5, 0.5);
-      this.dy = this.getRandomNumber(-0.5, 0.5);
+      let ranNum = this.getRandomNumber(0, 2);
+      this.dx = Math.sin(ranNum);
+      this.dy = Math.cos(ranNum);
       this.touches = 0;
-      this.speed = 100;
+      this.speed = 7;
     }
 
     getRandomNumber(min: number, max: number)
@@ -128,5 +129,10 @@ export class BallComponent {
     getRadius(): number
     {
       return(this.ballRadius);
+    }
+
+    setSpeed(speed: number): void
+    {
+      this.speed = speed;
     }
 }

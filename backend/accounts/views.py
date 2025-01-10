@@ -603,13 +603,15 @@ class BlockedUsersListView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-class AccountRefresh(APIView):
-    permission_classes = [AllowAny]
-    permission_classes = [AllowAny]
+class AccountRefresh(TokenRefreshView):
 
     def post(self, request):
+        print('hola')
         refresh_token = request.data.get('refresh')
         access_token = request.data.get('access')
+        
+        username = request.data.get('username')
+        user = User.objects.get(username=username)
         
         if not refresh_token or not access_token:
             return Response({'error': 'Both refresh and access tokens are required'}, status=400)
@@ -621,7 +623,6 @@ class AccountRefresh(APIView):
                 AccessToken(access_token)
             except TokenError:
                 #token validation failed
-                user = request.user
                 new_refresh = RefreshToken.for_user(user)
                 
                 return Response({

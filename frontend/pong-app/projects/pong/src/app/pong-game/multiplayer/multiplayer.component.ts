@@ -97,6 +97,8 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
     this.downPaddle = new Paddle(this.pongCanvas.nativeElement.width / 2 - this.paddleHeight / 2, this.pongCanvas.nativeElement.height - 10 - this.paddleWidth);
     this.ball1 = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
     this.ball2 = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
+    this.ball1.setSpeed(5);
+    this.ball2.setSpeed(5);
 
   
     this.isGameInitialized = true; // Marcar el juego como inicializado
@@ -242,9 +244,11 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
     switch (ballNum) {
       case 1:
         this.ball1 = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
+        this.ball1.setSpeed(5);
         break;
       case 2:
         this.ball2 = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
+        this.ball2.setSpeed(5);
         break;
     }
   }

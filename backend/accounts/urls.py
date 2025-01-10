@@ -5,6 +5,7 @@ from accounts.views import UpdateProfileView
 from rest_framework.routers import DefaultRouter
 from .views import ListFriendsView, AcceptFriendRequestView, ActivateAccountView#, AddFriendView, 
 
+
 app_name = 'accounts'
 
 urlpatterns = [
