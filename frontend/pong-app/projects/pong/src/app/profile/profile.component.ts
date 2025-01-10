@@ -17,9 +17,9 @@ interface User {
   last_name: string;
   avatar?: string;
   is_online?: boolean;
-  games_played?: number;
-  games_won?: number;
-  games_lost?: number;
+  games_played: number;
+  games_won: number;
+  games_lost: number;
 }
 
 interface FriendRequest {
@@ -44,7 +44,18 @@ interface Friend {
 
 interface UserResponse {
   message: string;
-  user: User;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    avatar?: string;
+    is_online?: boolean;
+    games_played: number;
+    games_won: number;
+    games_lost: number;
+  };
 }
 
 @Component({
@@ -143,11 +154,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 this.userAvatar = 'assets/default-avatar.png';
               }
               this.isUserOnline = response.user.is_online ?? false;
+              
+              // Update the stats with actual values from the backend
               this.userStats = {
-                games_played: response.user.games_played ?? 0,
-                games_won: response.user.games_won ?? 0,
-                games_lost: response.user.games_lost ?? 0
+                games_played: response.user.games_played || 0,
+                games_won: response.user.games_won || 0,
+                games_lost: response.user.games_lost || 0
               };
+              
               this.loadFriends(response.user.username);
               this.isLoading = false;
             }

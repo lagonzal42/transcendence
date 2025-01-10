@@ -10,7 +10,8 @@ def send_activation_email(user, from_email):
     activate_token = account_activate_token.activate_token
     
     # Create the activation URL
-    url = f'{settings.ACTIVATE_URL}/activation/?token={activate_token}'
+    #url = f'{settings.ACTIVATE_URL}/activation/?token={activate_token}'
+    url = f'http://localhost:4200/verify?token={activate_token}'
 
     subject = 'Essence Catch : Account Activation'
     message = f'''

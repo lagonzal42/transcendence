@@ -69,23 +69,6 @@ class OtpToken(models.Model):
     def __str__(self):
         return self.user.username
 
-class Match(models.Model):
-    player1 = models.ForeignKey(User, related_name='matches_as_player1', on_delete=models.CASCADE)
-    player2 = models.ForeignKey(User, related_name='matches_as_player2', on_delete=models.CASCADE)
-    player1_score = models.IntegerField()
-    player2_score = models.IntegerField()
-    winner = models.ForeignKey(User, related_name='matches_won', on_delete=models.CASCADE)
-    match_date = models.DateTimeField(auto_now_add=True)
-    match_type = models.CharField(max_length=20, choices=[
-        ('tournament', 'Tournament'),
-        ('local', 'Local')
-    ])
-
-    class Meta:
-        ordering = ['-match_date']
-
-    def __str__(self):
-        return f"{self.player1.username} vs {self.player2.username} - {self.match_date.strftime('%Y-%m-%d')}"
 
 
 # For further activation and token creation
@@ -103,7 +86,6 @@ class AccountActivateTokensManager(models.Manager):
             user = user_activate_token.user
             user.is_active = True
             user.save()
-            print(f"User {user.username} activated successfully")  # Debug print
             return user
         else:
             raise self.model.DoesNotExist
@@ -128,3 +110,22 @@ class AccountActivateToken(models.Model):
         self.expired_at = timezone.now() + timedelta(minutes=10)
         self.save()
         return self.expired_at
+
+
+class Match(models.Model):
+    player1 = models.ForeignKey(User, related_name='matches_as_player1', on_delete=models.CASCADE)
+    player2 = models.ForeignKey(User, related_name='matches_as_player2', on_delete=models.CASCADE)
+    player1_score = models.IntegerField()
+    player2_score = models.IntegerField()
+    winner = models.ForeignKey(User, related_name='matches_won', on_delete=models.CASCADE)
+    match_date = models.DateTimeField(auto_now_add=True)
+    match_type = models.CharField(max_length=20, choices=[
+        ('tournament', 'Tournament'),
+        ('local', 'Local')
+    ])
+
+    class Meta:
+        ordering = ['-match_date']
+
+    def __str__(self):
+        return f"{self.player1.username} vs {self.player2.username} - {self.match_date.strftime('%Y-%m-%d')}"

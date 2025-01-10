@@ -1,8 +1,11 @@
 /* Contenedor del perfil */
 .profile-container {
-    max-width: 1000px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     padding: 1.5rem;
+    height: calc(100vh - 120px);
+    margin-top: 60px;
+    margin-bottom: 60px;
 }
 
 /* Marco alrededor de la imagen de perfil */
@@ -111,25 +114,31 @@
 }
 
 .search-section {
-    width: 100%;
-    margin-bottom: 30px;
-    padding: 20px;
+    width: 300px;
+    margin-left: 0;
+    margin-bottom: 3rem;
+    padding: 1.25rem;
     background-color: white;
     border-radius: 12px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 .search-box {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+    width: 100%;
 }
 
 .search-box input {
     flex: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    min-width: 0;
 }
 
 .search-results ul {
@@ -147,7 +156,7 @@
 
 .friend-requests {
     width: 100%;
-    margin-bottom: 30px;
+    margin-bottom: 2rem;
     padding: 20px;
     background-color: white;
     border-radius: 12px;
@@ -354,11 +363,16 @@
 }
 
 .content-sections {
-    display: grid;
-    gap: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 2rem;
+    width: 100%;
+    padding: 0 2rem;
+    gap: 4rem;
 }
 
 .content-card {
+    height: fit-content;
     background: white;
     padding: 1.5rem;
     border-radius: 10px;
@@ -449,4 +463,38 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Add max-width to the sections to maintain readability */
+.friends-section,
+.blocked-section {
+    max-width: 100%;
+}
+
+.friends-section {
+    width: 500px;
+    margin-bottom: 3rem;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.blocked-section {
+    width: 300px;
+    margin-bottom: 3rem;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-button {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
 }

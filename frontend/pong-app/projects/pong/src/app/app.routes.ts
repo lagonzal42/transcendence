@@ -14,7 +14,8 @@ import { MultiplayerComponent } from './pong-game/multiplayer/multiplayer.compon
 import { ChatComponent } from './chat/chat.component';
 import { UpdateProfileComponent } from './update-profile-component/update-profile-component.component';
 import { MatchHistoryComponent } from './match-history/match-history.component';
-import { TwoFactorComponent} from './2FA/2FA.component'
+import { TwoFactorComponent} from './2FA/2FA.component';
+import { VerifyComponent } from './verify_token/verify.component';
 
 
 export const routes: Routes = [
@@ -23,7 +24,7 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'home', component: HomeComponent },
+      { path: 'Home', component: HomeComponent },
       { path: 'login', component: LoginComponent },
       { path: 'signup', component: SignupComponent },
       { path: 'profile', component: ProfileComponent , canActivate: [AuthenticationGuard]},
@@ -36,10 +37,15 @@ export const routes: Routes = [
       { path: 'profile/:username/update', component: UpdateProfileComponent , canActivate: [AuthenticationGuard]},
       { path: 'match-history/:username', component: MatchHistoryComponent},
       { path: 'two-factor', component: TwoFactorComponent},
+      { path: 'verify', component: VerifyComponent},  
     ]
   },
   {
     path: 'chat/:roomId',
     component: ChatComponent
+  },
+  {
+    path: 'verify/:token',
+    component: VerifyComponent
   }
 ];

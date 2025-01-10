@@ -13,54 +13,68 @@ import { isPlatformBrowser } from '@angular/common';
 export class AuthService {
   public readonly API_URL = 'http://localhost:8000';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  private isAuthenticatedAparte = new BehaviorSubject<boolean>(false);
   private authDone : boolean;
+  private authCheckInterval: any;
+  private isRefreshing = false;
 
   constructor(private httpClient: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {
-    this.isAuthenticatedSubject.next(this.checkAuthStatus());
+    this.isAuthenticatedAparte.next(this.checkAuthStatus());
     this.authDone = false;
   }
 
   private jwtHelper = new JwtHelperService();
 
   public startAuthCheckInterval(): void {
-    setInterval(() => {
-      this.isAuthDone();
-      this.isAuthenticatedSubject.next(this.authDone);
-    }, 1000); // 10000 milliseconds = 10 seconds
+    if (this.authCheckInterval) {
+      clearInterval(this.authCheckInterval);
+    }
+    
+    this.authCheckInterval = setInterval(() => {
+      if (!this.isRefreshing) {
+        this.isAuthDone();
+        this.isAuthenticatedSubject.next(this.authDone);
+      }
+    }, 10000); // 5 minutes
   }
 
-  public checkAuthStatus(): boolean {
-    this.isAuthDone();
-    return this.authDone;
+  checkAuthStatus(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('access_token');
+      return token ? !this.jwtHelper.isTokenExpired(token) : false;
+    }
+    return false;
   }
 
-  public isAuthDone(): void
-  {
+  public isAuthDone(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.authDone = false;
+      return;
+    }
+
     let token: string = localStorage.getItem('access_token') || '';
     
-    if (token.length > 0) //token exists
-    {
-      console.log('length is > 0 ' + token)
-      if (!this.jwtHelper.isTokenExpired(token)) // token is not expired
-      {
+    if (token.length > 0) {
+      if (!this.jwtHelper.isTokenExpired(token)) {
         this.authDone = true;
-        console.log('token not expired');
-      }
-      else // token is expired
-      {
-        this.refreshToken();
-        token = localStorage.getItem('access_token') || '';
-        if (token.length > 0)
-          {
-            this.authDone = true;
-            console.log('token refreshed');
+      } else {
+        console.log("Token expired, attempting refresh");
+        this.refreshToken().subscribe({
+          next: (status) => {
+            if (status === 0) {
+              this.authDone = true;
+            } else {
+              this.authDone = false;
+            }
+          },
+          error: () => {
+            this.authDone = false;
+            this.logout();
           }
-        else
-        {
-          this.authDone = false;
-          console.log('refresh failed');
-        }
+        });
       }
+    } else {
+      this.authDone = false;
     }
   }
 
@@ -91,6 +105,9 @@ export class AuthService {
 
   logout() : void
   {
+    if (this.authCheckInterval) {
+      clearInterval(this.authCheckInterval);
+    }
     if (isPlatformBrowser(this.platformId))
     {
       localStorage.removeItem('access_token');
@@ -102,34 +119,52 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  refreshToken() : Observable<number>
-  {
-    if (!isPlatformBrowser(this.platformId))
-      return (of(401));
-    const tokens = 
-    { 
-      refresh:  localStorage.getItem('refresh_token'), 
-      access:   localStorage.getItem('access_token')
+  refreshToken(): Observable<number> {
+    console.log('Starting token refresh...');
+    
+    if (this.isRefreshing) {
+        return of(0);
     }
 
-    if (!tokens.refresh || !tokens.access)
-      return (of(401));
-    console.log('refresh');
-    return (this.httpClient.post('http://localhost:8000/accounts/account-refresh/', tokens).pipe(
-      map((response: any) => {
-        console.log(response);
-        localStorage.setItem('access_token', response.access);
-        localStorage.setItem('refresh_token', response.refresh);
-        this.authDone = true;
-        return (of(0));
-      }),
-      catchError((error: any) => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        this.authDone = false;
-        return of(error.status);
-      })
-    ));
+    this.isRefreshing = true;
+
+    if (!isPlatformBrowser(this.platformId)) {
+        return of(401);
+    }
+    
+    const refresh_token = localStorage.getItem('refresh_token');
+    console.log('Refresh token present:', !!refresh_token);
+    
+    if (!refresh_token) {
+        this.isRefreshing = false;
+        return of(401);
+    }
+
+    return this.httpClient.post<any>('http://localhost:8000/accounts/account-refresh/', {
+        refresh: refresh_token
+    }).pipe(
+        map((response: any) => {
+            if (response.access && response.refresh) {
+                localStorage.setItem('access_token', response.access);
+                localStorage.setItem('refresh_token', response.refresh);
+                this.authDone = true;
+                this.isRefreshing = false;
+                return 0;
+            } else {
+                throw new Error('Invalid token response');
+            }
+        }),
+        catchError((error: any) => {
+            console.error('Refresh failed:', error);
+            // If refresh fails, clear tokens and force re-login
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            this.authDone = false;
+            this.isRefreshing = false;
+            this.router.navigate(['/login']);
+            return of(error.status);
+        })
+    );
   }
 
   getCurrentUser(): Observable<UserInterface> {

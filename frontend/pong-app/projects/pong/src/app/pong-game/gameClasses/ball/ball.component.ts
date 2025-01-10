@@ -18,7 +18,7 @@ export class BallComponent {
       this.dx = this.getRandomNumber(-0.5, 0.5);
       this.dy = this.getRandomNumber(-0.5, 0.5);
       this.touches = 0;
-      this.speed = 2;
+      this.speed = 100;
     }
 
     getRandomNumber(min: number, max: number)

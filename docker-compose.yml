@@ -4,12 +4,10 @@ services:
     container_name: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - '5432:5432'
+    # environment:
+    #   - POSTGRES_DB=postgres
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=postgres
     networks:
       - app-network
     env_file:
@@ -148,18 +146,11 @@ volumes:
   # frontend-app:
   #   name: frontend-app
   #   driver_opts:
-  #     device: '${PWD}/frontend/pong-app'
-  #     o: bind
-  #     type: none
-  # postgres-data:
-  #     driver: local
-  # frontend-app:
-  #   name: frontend-app
-  #   driver_opts:
   #     device: './frontend'
   #     o: bind
   #     type: none
   postgres-data:
+    name: postgres_data
     driver: local
   grafana-storage: {}
   prometheus_data: {}
