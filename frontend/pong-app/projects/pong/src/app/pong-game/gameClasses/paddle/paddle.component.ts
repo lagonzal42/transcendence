@@ -7,37 +7,40 @@ export class PaddleComponent {
 	private paddleSpeed:  number;
 
 	
-	constructor(xPos: number, yPos: number)
+	constructor(xPos: number, yPos: number, paddleWidth : number, paddleHeight : number)
 	{
 		this.xPosition = xPos;
 		this.yPosition = yPos;
-		this.paddleHeight = 75;
-		this.paddleWidth = 10;
+		this.paddleHeight = paddleHeight;
+		this.paddleWidth = paddleWidth;
 		this.paddleSpeed = 7;
+	}
+
+	rotatePaddle(): void
+	{
+		let swap = this.paddleHeight;
+		this.paddleHeight = this.paddleWidth;
+		this.paddleWidth = swap;
 	}
 
 	moveUp()
 	{
-		if (this.yPosition > 0)
 		this.yPosition -= this.paddleSpeed;
 	}
 
 	moveDown()
 	{
-		if (this.yPosition < 500 - this.paddleHeight)
 			this.yPosition += this.paddleSpeed;
 	}
 
 	moveLeft()
 	{
-		if (this.xPosition > 0)
 			this.xPosition -= this.paddleSpeed;
 	}
 
 	moveRight()
 	{
-		if (this.xPosition < 500 - this.paddleWidth)
-			this.xPosition += this.paddleSpeed;
+		this.xPosition += this.paddleSpeed;
 	}
 
 	refreshPosition(xPos: number, yPos: number)

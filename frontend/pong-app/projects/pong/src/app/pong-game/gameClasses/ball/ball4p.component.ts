@@ -4,36 +4,38 @@ import { BallComponent } from './ball.component';
 
 export class BallComponent4p extends BallComponent
 {
-    private lastTouch: number = 0;
 
     calculateCollisions4p(PaddleLeft: Paddle, PaddleRight: Paddle, PaddleUp: Paddle, PaddleDown: Paddle): void
     {
         
-        let touch = this.calculatePaddleCollisions(PaddleLeft, PaddleRight);
+        this.calculatePaddleCollisions(PaddleLeft, PaddleRight);
 
-        if (this.yPosition <= PaddleUp.getY() + PaddleUp.getWidth())
+        if (this.yPosition <= PaddleUp.getY() + PaddleUp.getHeight() + 10)
         {
-            if (this.xPosition >= PaddleUp.getX() && this.xPosition <= PaddleUp.getX() + PaddleUp.getHeight())
+            if (this.xPosition >= PaddleUp.getX() && this.xPosition <= PaddleUp.getX() + PaddleUp.getWidth())
             {
                 if (this.dy < 0)
                 {
                     this.calculateReboundAngleHorizontal(PaddleUp, 1);
                     this.touches += 1;
-                    touch = 3;
+                    console.log('last Touch to 3');
+                    this.lastTouch = 3;
+                    console.log(this.lastTouch)
                 }
             }
         }
-        if (this.yPosition >=  PaddleDown.getY() - PaddleDown.getWidth())
+        if (this.yPosition >=  PaddleDown.getY() - PaddleDown.getHeight())
         {
             
-            if (this.xPosition >= PaddleDown.getX() && this.xPosition <= PaddleDown.getX() + PaddleDown.getHeight())
+            if (this.xPosition >= PaddleDown.getX() && this.xPosition <= PaddleDown.getX() + PaddleDown.getWidth())
             {
-                console.log("coollision with low paddle")
                 if (this.dy > 0)
                 {
                     this.calculateReboundAngleHorizontal(PaddleDown, -1);
                     this.touches += 1;
-                    touch = 4;
+                    console.log('last Touch to 4');
+                    this.lastTouch = 4;
+                    console.log(this.lastTouch)
                 }
             }
         }
@@ -42,7 +44,6 @@ export class BallComponent4p extends BallComponent
             this.speed += 1;
             this.touches = 0;
         }
-        this.lastTouch = touch;
     }
 
     checkGoal4p(canvasWidth: number): boolean
@@ -55,8 +56,8 @@ export class BallComponent4p extends BallComponent
     }
 
     private calculateReboundAngleHorizontal(Paddle: Paddle, factor: number): void {
-        let relativeIntersectX = this.xPosition - (Paddle.getX() + Paddle.getHeight() / 2);
-        let normalizedIntersection = relativeIntersectX / (Paddle.getHeight() / 2);
+        let relativeIntersectX = this.xPosition - (Paddle.getX() + Paddle.getWidth() / 2);
+        let normalizedIntersection = relativeIntersectX / (Paddle.getWidth() / 2);
         let bounceAngle = normalizedIntersection * Math.PI / 4;
         
         this.dx = Math.sin(bounceAngle);

@@ -78,8 +78,8 @@ export class PongGameComponent implements OnInit, AfterViewInit {
 
   initializeGame(): void {
     this.gameEnded = false; // Resetea el estado del juego
-    this.leftPaddle = new Paddle(10, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2);;
-    this.rightPaddle = new Paddle(this.pongCanvas.nativeElement.width - 10  - this.paddleWidth, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2);
+    this.leftPaddle = new Paddle(10, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2, this.paddleWidth, this.paddleHeight);;
+    this.rightPaddle = new Paddle(this.pongCanvas.nativeElement.width - 10  - this.paddleWidth, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2, this.paddleWidth, this.paddleHeight);
     this.ball = new Ball(this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
   
     this.isGameInitialized = true; // Marcar el juego como inicializado

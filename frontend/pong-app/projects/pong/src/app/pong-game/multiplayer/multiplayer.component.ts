@@ -15,14 +15,15 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   @ViewChild('pongCanvas', { static: false }) pongCanvas!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D | null;
   public isGameInitialized: boolean = false;
-  canvasSize: number = 400;
+  canvasSize: number = 600;
+
 
   // Nombres de los jugadores
   public leftPlayerName: string = '';
   public rightPlayerName: string = '';
 
   // Paddle settings
-  private paddleHeight: number = 75;
+  private paddleHeight: number = 120;
   private paddleWidth: number = 10;
   private leftPaddle?: Paddle;
   private rightPaddle?: Paddle;
@@ -38,7 +39,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   public rightPlayerScore: number = 0;
   public upPlayerScore: number = 0;
   public downPlayerScore: number = 0;
-  private winningScore: number = 3;
+  private winningScore: number = 10;
   private gameEnded: boolean = false;
 
   // Paddle movement flags
@@ -91,14 +92,18 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
 
   initializeGame(): void {
     this.gameEnded = false; // Resetea el estado del juego
-    this.leftPaddle = new Paddle(10, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2);;
-    this.rightPaddle = new Paddle(this.pongCanvas.nativeElement.width - 10  - this.paddleWidth, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2);
-    this.upPaddle = new Paddle(this.pongCanvas.nativeElement.width / 2 - this.paddleWidth / 2, 10);
-    this.downPaddle = new Paddle(this.pongCanvas.nativeElement.width / 2 - this.paddleHeight / 2, this.pongCanvas.nativeElement.height - 10 - this.paddleWidth);
+    this.leftPaddle = new Paddle(10, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2, this.paddleWidth, this.paddleHeight);
+    this.rightPaddle = new Paddle(this.pongCanvas.nativeElement.width - 10  - this.paddleWidth, this.pongCanvas.nativeElement.height / 2 - this.paddleHeight / 2, this.paddleWidth, this.paddleHeight);
+    this.upPaddle = new Paddle(this.pongCanvas.nativeElement.width / 2 - this.paddleWidth / 2, 10, this.paddleWidth, this.paddleHeight);
+    this.upPaddle.rotatePaddle();
+    this.downPaddle = new Paddle(this.pongCanvas.nativeElement.width / 2 - this.paddleHeight / 2, this.pongCanvas.nativeElement.height - 10 - this.paddleWidth, this.paddleWidth, this.paddleHeight);
+    this.downPaddle.rotatePaddle();
     this.ball1 = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
     this.ball2 = new Ball(this.pongCanvas.nativeElement.width / 2, this.pongCanvas.nativeElement.height / 2);
     this.ball1.setSpeed(5);
     this.ball2.setSpeed(5);
+
+    console.log('canvasHeight ' + this.pongCanvas.nativeElement.height + ' canvasWidth: ' + this.pongCanvas.nativeElement.width)
 
   
     this.isGameInitialized = true; // Marcar el juego como inicializado
@@ -167,28 +172,28 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
 
     // Draw the left paddle
     this.ctx.beginPath();
-    this.ctx.rect(this.leftPaddle!.getX(), this.leftPaddle!.getY(), this.paddleWidth, this.paddleHeight);
+    this.ctx.rect(this.leftPaddle!.getX(), this.leftPaddle!.getY(), this.leftPaddle!.getWidth(), this.leftPaddle!.getHeight());
     this.ctx.fillStyle = '#FFFFFF'; // Color de la pala izquierda
     this.ctx.fill();
     this.ctx.closePath();
 
     // // Draw the right paddle
      this.ctx.beginPath();
-    this.ctx.rect(this.rightPaddle!.getX(), this.rightPaddle!.getY(), this.paddleWidth, this.paddleHeight);
+    this.ctx.rect(this.rightPaddle!.getX(), this.rightPaddle!.getY(),  this.rightPaddle!.getWidth(), this.rightPaddle!.getHeight());
     this.ctx.fillStyle = '#FFFFFF'; // Color de la pala derecha
     this.ctx.fill();
     this.ctx.closePath();
 
     // // Draw the upper paddle
     this.ctx.beginPath();
-    this.ctx.rect(this.upPaddle!.getX(), this.upPaddle!.getY(), this.paddleHeight, this.paddleWidth);
+    this.ctx.rect(this.upPaddle!.getX(), this.upPaddle!.getY(),  this.upPaddle!.getWidth(), this.upPaddle!.getHeight());
     this.ctx.fillStyle = '#FFFFFF'; // Color de la pala izquierda
     this.ctx.fill();
     this.ctx.closePath();
 
     // // Draw the bottom paddle
     this.ctx.beginPath();
-    this.ctx.rect(this.downPaddle!.getX(), this.downPaddle!.getY(), this.paddleHeight, this.paddleWidth);
+    this.ctx.rect(this.downPaddle!.getX(), this.downPaddle!.getY(), this.downPaddle!.getWidth(), this.downPaddle!.getHeight());
     this.ctx.fillStyle = '#FFFFFF'; // Color de la pala derecha
     this.ctx.fill();
     this.ctx.closePath();
@@ -221,21 +226,21 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
       return; // Stop drawing further
     }
 
-    if (this.leftPaddleUp && this.leftPaddle!.getY() > 0 + 10 + this.paddleWidth)
+    if (this.leftPaddleUp && this.leftPaddle!.getY() > 20)
       this.leftPaddle!.moveUp();
-    if (this.leftPaddleDown && this.leftPaddle!.getY() < this.pongCanvas.nativeElement.height - this.leftPaddle!.getHeight())
+    if (this.leftPaddleDown && this.leftPaddle!.getY() < (this.pongCanvas.nativeElement.height - this.paddleHeight - 20))
       this.leftPaddle?.moveDown();
-    if (this.rightPaddleUp && this.rightPaddle!.getY() > 0)
+    if (this.rightPaddleUp && this.rightPaddle!.getY() > 20)
       this.rightPaddle?.moveUp();
-    if (this.rightPaddleDown && this.rightPaddle!.getY() < this.pongCanvas.nativeElement.height - this.rightPaddle!.getHeight())
+    if (this.rightPaddleDown && this.rightPaddle!.getY() < this.pongCanvas.nativeElement.height - this.paddleHeight - 20)
       this.rightPaddle?.moveDown();
     if (this.upPaddleLeft && this.upPaddle!.getX() > 0 + 10 + this.paddleWidth)
       this.upPaddle?.moveLeft();
-    if (this.upPaddleRight && this.upPaddle!.getX() < this.pongCanvas.nativeElement.width - this.paddleHeight)
+    if (this.upPaddleRight && this.upPaddle!.getX() < this.pongCanvas.nativeElement.width - this.paddleHeight - 20)
       this.upPaddle?.moveRight();
     if (this.downPaddleLeft && this.downPaddle!.getX() > 0)
       this.downPaddle?.moveLeft();
-    if (this.downPaddleRight && this.downPaddle!.getX() < this.pongCanvas.nativeElement.width - this.paddleHeight)
+    if (this.downPaddleRight && this.downPaddle!.getX() < this.pongCanvas.nativeElement.width - this.paddleHeight - 20)
       this.downPaddle?.moveRight();
     requestAnimationFrame(this.draw.bind(this));
   }
@@ -254,6 +259,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   }
 
   updateScoreDisplay(ball: Ball): void {
+    console.log(ball.getLastTouch() + ' is the last touch');
     switch (ball.getLastTouch())
     {
       case 1:

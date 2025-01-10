@@ -9,6 +9,8 @@ export class BallComponent {
     protected dy: number;
     protected touches: number;
     protected speed: number;
+    protected lastTouch: number;
+
     
     constructor(xPos: number, yPos: number)
     {
@@ -20,6 +22,7 @@ export class BallComponent {
       this.dy = Math.cos(ranNum);
       this.touches = 0;
       this.speed = 7;
+      this.lastTouch = 0;
     }
 
     getRandomNumber(min: number, max: number)
@@ -49,9 +52,9 @@ export class BallComponent {
       this.calculatePaddleCollisions(Paddle1, Paddle2);
     }
 
-    calculatePaddleCollisions(Paddle1: Paddle, Paddle2: Paddle) : number
+    calculatePaddleCollisions(Paddle1: Paddle, Paddle2: Paddle) : void
     {
-      let retVal: number = 0;
+      let last: number = 0;
       if (this.xPosition <= Paddle1.getWidth() + Paddle1.getX() + this.ballRadius)
       {
         if (this.yPosition >= Paddle1.getY() && this.yPosition <= Paddle1.getY() + Paddle1.getHeight())
@@ -60,7 +63,7 @@ export class BallComponent {
           {
             this.calculateReboundAngle(Paddle1, -1);
             this.touches += 1;
-            retVal = 1;
+            this.lastTouch = 1;
           }
         }
       }
@@ -72,7 +75,7 @@ export class BallComponent {
           {
             this.calculateReboundAngle(Paddle2, 1);
             this.touches += 1;
-            retVal = 2;
+            this.lastTouch = 2;
           }
         }
       }
@@ -81,7 +84,7 @@ export class BallComponent {
         this.speed += 1;
         this.touches = 0;
       }
-      return retVal;
+  
     }
 
     calculateReboundAngle(Paddle: Paddle, factor: number)
