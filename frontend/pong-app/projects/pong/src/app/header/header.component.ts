@@ -3,6 +3,7 @@ import { AuthService } from '../auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +15,7 @@ import { Subscription } from 'rxjs';
 export class HeaderComponent implements OnInit, OnDestroy {
   currentUsername: string = '';
   isLoggedIn: boolean = false;
+  isReady: boolean = false;
   private authSubscription?: Subscription;
 
   constructor(
@@ -22,16 +24,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.authSubscription = this.authService.isAuthenticated().subscribe( isAuthenticated => {
-      
+    // First wait for auth to be ready
+    this.authService.isAuthReady().pipe(
+      filter(ready => ready),
+      switchMap(() => this.authService.isAuthenticated())
+    ).subscribe(isAuthenticated => {
       this.isLoggedIn = isAuthenticated;
-        if (isAuthenticated) {
-          this.loadCurrentUser();
-        } else {
-          this.currentUsername = '';
-        }
+      this.isReady = true;
+      if (isAuthenticated) {
+        this.loadCurrentUser();
+      } else {
+        this.currentUsername = '';
       }
-    );
+    });
   }
 
   ngOnDestroy() {

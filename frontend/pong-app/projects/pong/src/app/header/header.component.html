@@ -4,10 +4,7 @@
             <img src="../../assets/PongLogo.png" alt="Pong page logo">
         </button>
     </div>
-    <div class="buttons">
-        <!-- <button routerLink="/search" class="btn-search" id="search-button">
-            Search
-        </button> -->
+    <div class="buttons" *ngIf="isReady">
         <button *ngIf="isLoggedIn" 
                 (click)="navigateToProfile()" 
                 class="btn-profile" 

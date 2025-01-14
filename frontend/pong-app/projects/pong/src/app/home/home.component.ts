@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
+import { filter, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -13,9 +14,9 @@ import { FooterComponent } from '../footer/footer.component';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
-  currentUsername: string = '';
+export class HomeComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
+  isReady: boolean = false;
   private authSubscription?: Subscription;
 
   constructor(
@@ -28,8 +29,18 @@ export class HomeComponent {
   }
 
   ngOnInit() {
-    this.authSubscription = this.authService.isAuthenticated().subscribe( isAuthenticated => {
+    this.authSubscription = this.authService.isAuthReady().pipe(
+      filter(ready => ready),
+      switchMap(() => this.authService.isAuthenticated())
+    ).subscribe(isAuthenticated => {
       this.isLoggedIn = isAuthenticated;
+      this.isReady = true;
     });
+  }
+
+  ngOnDestroy() {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 }

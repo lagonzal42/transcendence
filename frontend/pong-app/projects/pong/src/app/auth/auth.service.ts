@@ -14,13 +14,29 @@ export class AuthService {
   public readonly API_URL = 'http://localhost:8000';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private isAuthenticatedAparte = new BehaviorSubject<boolean>(false);
-  private authDone : boolean;
+  private isAuthReadySubject = new BehaviorSubject<boolean>(false);
+  private authDone : boolean = false;
   private authCheckInterval: any;
   private isRefreshing = false;
 
   constructor(private httpClient: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {
-    this.isAuthenticatedAparte.next(this.checkAuthStatus());
-    this.authDone = false;
+    this.initializeAuth();
+  }
+
+  private async initializeAuth() {
+    if (isPlatformBrowser(this.platformId)) {
+        const initialAuthStatus = this.checkAuthStatus();
+        this.isAuthenticatedSubject.next(initialAuthStatus);
+        this.authDone = initialAuthStatus;
+        if (initialAuthStatus) {
+            this.startAuthCheckInterval();
+        }
+        setTimeout(() => {
+            this.isAuthReadySubject.next(true);
+        }, 0);
+    } else {
+        this.isAuthReadySubject.next(true);
+    }
   }
 
   private jwtHelper = new JwtHelperService();
@@ -80,6 +96,10 @@ export class AuthService {
 
   isAuthenticated(): Observable<boolean> {
     return this.isAuthenticatedSubject.asObservable();
+  }
+
+  isAuthReady(): Observable<boolean> {
+    return this.isAuthReadySubject.asObservable();
   }
 
   login(userCredentials: UserInterface) : Observable<number>
@@ -151,6 +171,8 @@ export class AuthService {
                 localStorage.setItem('access_token', response.access);
                 localStorage.setItem('refresh_token', response.refresh);
                 this.authDone = true;
+                this.isAuthenticatedSubject.next(true);
+                this.startAuthCheckInterval();
                 this.isRefreshing = false;
                 return 0;
             } else {
