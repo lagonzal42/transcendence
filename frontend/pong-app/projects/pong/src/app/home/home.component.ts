@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
   isReady: boolean = false;
   private authSubscription?: Subscription;
+  isTutorialVisible = false;
 
   constructor(
     private authService: AuthService,

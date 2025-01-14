@@ -25,17 +25,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // First wait for auth to be ready
-    this.authService.isAuthReady().pipe(
+    this.authSubscription = this.authService.isAuthReady().pipe(
       filter(ready => ready),
       switchMap(() => this.authService.isAuthenticated())
     ).subscribe(isAuthenticated => {
       this.isLoggedIn = isAuthenticated;
-      this.isReady = true;
       if (isAuthenticated) {
         this.loadCurrentUser();
       } else {
         this.currentUsername = '';
       }
+      this.isReady = true;
     });
   }
 
@@ -75,6 +75,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['']);
+    this.isLoggedIn = false;
+    this.currentUsername = '';
+    this.router.navigate(['/login']);
   }
 }

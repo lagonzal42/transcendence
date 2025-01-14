@@ -606,7 +606,6 @@ class BlockedUsersListView(APIView):
 class AccountRefresh(TokenRefreshView):
 
     def post(self, request):
-        print('hola')
         refresh_token = request.data.get('refresh')
         access_token = request.data.get('access')
         
@@ -650,4 +649,4 @@ def validate_credentials(request):
     if user is not None:
         return Response({'valid': True})
     else:
-        return Response({'valid': False}, status=400)
+        return Response({'valid': False})

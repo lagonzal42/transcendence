@@ -216,8 +216,9 @@ export class AuthService {
       map(response => {
         return response.valid === true;
       }),
-      catchError(error => {
-        console.error('Credential validation error: ', error);
+      catchError(response => {
+        //console.error('Credential validation error: ', error);
+        console.log("If user exists came back: ", response);
         return of(false);
       })
     )

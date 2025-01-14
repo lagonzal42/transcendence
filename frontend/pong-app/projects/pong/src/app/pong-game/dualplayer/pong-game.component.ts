@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { PaddleComponent as Paddle } from "../gameClasses/paddle/paddle.component"
 import { BallComponent as Ball } from '../gameClasses/ball/ball.component';
@@ -8,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-pong-game',
   standalone: true,
+  imports: [RouterModule, CommonModule],
   templateUrl: './pong-game.component.html',
   styleUrls: ['./pong-game.component.css']
 })
@@ -34,7 +36,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   public leftPlayerScore: number = -1;
   public rightPlayerScore: number = 0;
   private winningScore: number = 3;
-  private gameEnded: boolean = false;
+  public gameEnded: boolean = false;
 
   // Paddle movement flags
   private leftPaddleUp: boolean = false;

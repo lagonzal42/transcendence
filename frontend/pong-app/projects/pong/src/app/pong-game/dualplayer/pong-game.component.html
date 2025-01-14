@@ -1,6 +1,13 @@
-<div style="position: relative;">
-  <canvas #pongCanvas width="700" height="500"></canvas>
-  <div id="leftScore" class="score left-score">0</div>
-  <div id="rightScore" class="score right-score">0</div>
+<div class="game-container">
+  <div style="position: relative;">
+    <canvas #pongCanvas width="700" height="500"></canvas>
+    <div id="leftScore" class="score left-score">0</div>
+    <div id="rightScore" class="score right-score">0</div>
+  </div>
+  <div class="winner-message"></div>
+  @if (gameEnded) {
+    <div class="home-button-container">
+      <button class="back-home-btn" routerLink="/">Back to Home</button>
+    </div>
+  }
 </div>
-<div class="winner-message"></div>
