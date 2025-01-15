@@ -35,7 +35,7 @@ urlpatterns = [
     path('api-auth/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # reobtain JWT token
     path('api-auth/jwt/refresh', TokenRefreshView.as_view(), name='token_refresh'),
-    # path('chat/', include('live_chat.urls')),
+    path('chat/', include('live_chat.urls')),
 
     # API Endpoints
     # path('api/', include([

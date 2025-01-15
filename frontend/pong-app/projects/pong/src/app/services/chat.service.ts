@@ -110,4 +110,4 @@ export class ChatService {
   getUserProfile(username: string): Observable<any> {
     return this.http.get(`${this.API_URL}/accounts/users/${username}/`);
   }
-} 
+}  
