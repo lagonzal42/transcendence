@@ -51,7 +51,7 @@ export class AuthService {
         this.isAuthDone();
         this.isAuthenticatedSubject.next(this.authDone);
       }
-    }, 10000); // 5 minutes
+    }, 300000); // 5 minutes
   }
 
   checkAuthStatus(): boolean {
