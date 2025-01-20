@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -19,9 +19,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   isReady: boolean = false;
   private authSubscription?: Subscription;
   isTutorialVisible = false;
+  activation_link: boolean = false;
 
   constructor(
     private authService: AuthService,
+    private route: ActivatedRoute
 
   ) {}
 
@@ -30,6 +32,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.route.params.subscribe(params => {
+      const activated = params['activate-link'];
+      this.activation_link = activated;
+    })
+
     this.authSubscription = this.authService.isAuthReady().pipe(
       filter(ready => ready),
       switchMap(() => this.authService.isAuthenticated())

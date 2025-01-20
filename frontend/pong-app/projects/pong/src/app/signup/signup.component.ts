@@ -25,6 +25,7 @@ export class SignupComponent {
   usernameError: string = '';
   emailError: string = '';
   passwordError: string = '';
+  activate_account: boolean = true;
 
   constructor(private fb: FormBuilder, private httpClient:HttpClient, private router: Router) {
     this.signupForm = this.fb.group({
@@ -44,7 +45,7 @@ export class SignupComponent {
       const formData = this.signupForm.value;
       this.httpClient.post('http://localhost:8000/accounts/register/', formData).subscribe({
         next: (response: any) => {
-          this.router.navigate(['']);
+          this.router.navigate(['/home', this.activate_account]);
           console.log("Server response: ", response);
         },
         error: (err: ErrorResponse) => {
