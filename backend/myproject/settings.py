@@ -36,7 +36,7 @@ SECRET_KEY = get_random_secret_key()
 DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
-
+#SECURE_SSL_REDIRECT = True
 
 # Application definition
 

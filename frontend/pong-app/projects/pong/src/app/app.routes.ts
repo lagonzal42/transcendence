@@ -24,7 +24,7 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'Home', component: HomeComponent },
+      { path: 'home/:activate-link', component: HomeComponent },
       { path: 'login', component: LoginComponent },
       { path: 'signup', component: SignupComponent },
       { path: 'profile', component: ProfileComponent , canActivate: [AuthenticationGuard]},
