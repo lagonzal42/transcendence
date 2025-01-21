@@ -26,8 +26,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "localize": false,
-            "i18nMissingTranslation": "error",
+            "localize": [
+              "es-PR",
+              "fr-FR"
+            ],
             "outputPath": "dist/pong",
             "index": "projects/pong/src/index.html",
             "browser": "projects/pong/src/main.ts",
