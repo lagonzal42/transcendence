@@ -26,10 +26,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "localize": [
-              "es-PR",
-              "fr-FR"
-            ],
+            "localize": false,
+            "i18nMissingTranslation": "error",
             "outputPath": "dist/pong",
             "index": "projects/pong/src/index.html",
             "browser": "projects/pong/src/main.ts",
@@ -55,6 +53,7 @@
           },
           "configurations": {
             "production": {
+              "localize": ["en-US", "es-PR", "fr-FR"],
               "budgets": [
                 {
                   "type": "initial",
@@ -70,6 +69,7 @@
               "outputHashing": "all"
             },
             "development": {
+              "localize": false,
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true

@@ -4,6 +4,7 @@
     <body>
       <trans-unit id="1434444405054901950" datatype="html">
         <source>2 PLAYERS</source>
+        <target>2 JOUEURS</target>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
           <context context-type="linenumber">5,6</context>
@@ -11,6 +12,7 @@
       </trans-unit>
       <trans-unit id="1272249041084454458" datatype="html">
         <source>4 PLAYERS</source>
+        <target>4 JOUEURS</target>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
           <context context-type="linenumber">8,9</context>
@@ -18,6 +20,7 @@
       </trans-unit>
       <trans-unit id="3581572224432842747" datatype="html">
         <source>TOURNAMENT</source>
+        <target>TOURNOI</target>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
           <context context-type="linenumber">11,12</context>
@@ -25,6 +28,7 @@
       </trans-unit>
       <trans-unit id="9167797090289615660" datatype="html">
         <source>TUTORIAL</source>
+        <target>TUTORIEL</target>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
           <context context-type="linenumber">14,15</context>
@@ -32,6 +36,7 @@
       </trans-unit>
       <trans-unit id="1754500060429112168" datatype="html">
         <source>LOG IN</source>
+        <target>SE CONNECTER</target>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
           <context context-type="linenumber">18,19</context>
@@ -39,6 +44,7 @@
       </trans-unit>
       <trans-unit id="5325648582536528830" datatype="html">
         <source>SIGN UP</source>
+        <target>S'INSCRIRE</target>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
           <context context-type="linenumber">21,22</context>
@@ -46,6 +52,7 @@
       </trans-unit>
       <trans-unit id="7814534374327973734" datatype="html">
         <source>SIGN OUT</source>
+        <target>SE DÉCONNECTER</target>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
           <context context-type="linenumber">24,25</context>

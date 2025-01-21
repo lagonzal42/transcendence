@@ -8,6 +8,7 @@ header
 	color: white;
 	box-shadow: 0 2px 4px rgb(0, 0, 1);
 	padding: 0px;
+	align-items: center;
 }
 
 header .home-button
@@ -35,4 +36,16 @@ header .header-button
 
 .btn-update-profile:hover {
     background-color: #ff8c00;
+}
+
+.logo {
+	flex: 0 0 auto;
+}
+
+app-language-switcher {
+	margin: 0 20px;
+}
+
+.buttons {
+	flex: 0 0 auto;
 }

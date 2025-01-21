@@ -20,7 +20,7 @@ import { VerifyComponent } from './verify_token/verify.component';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: ':locale',
     component: LayoutComponent,
     children: [
       { path: '', component: HomeComponent },
@@ -39,6 +39,11 @@ export const routes: Routes = [
       { path: 'two-factor', component: TwoFactorComponent},
       { path: 'verify', component: VerifyComponent},  
     ]
+  },
+  {
+    path: '',
+    redirectTo: '/en-US',
+    pathMatch: 'full'
   },
   {
     path: 'chat/:roomId',

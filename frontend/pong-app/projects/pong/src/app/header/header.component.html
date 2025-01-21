@@ -4,6 +4,7 @@
             <img src="../../assets/PongLogo.png" alt="Pong page logo">
         </button>
     </div>
+    <app-language-switcher></app-language-switcher>
     <div class="buttons" *ngIf="isReady">
         <button *ngIf="isLoggedIn" 
                 (click)="navigateToProfile()" 
