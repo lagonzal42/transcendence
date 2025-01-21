@@ -4,6 +4,15 @@
   "newProjectRoot": "projects",
   "projects": {
     "pong": {
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "es-PR":{
+            "translation": "projects/pong/src/locale/messages.es.xlf",
+            "baseHref": "es-PR"
+          }
+        }
+      },
       "projectType": "application",
       "schematics": {},
       "root": "projects/pong",
@@ -13,10 +22,14 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "localize": [
+              "es-PR"
+            ],
             "outputPath": "dist/pong",
             "index": "projects/pong/src/index.html",
             "browser": "projects/pong/src/main.ts",
             "polyfills": [
+              "projects/pong/src/polyfills.ts",
               "zone.js"
             ],
             "tsConfig": "projects/pong/tsconfig.app.json",

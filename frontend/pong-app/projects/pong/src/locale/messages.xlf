@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="1434444405054901950" datatype="html">
+        <source>2 PLAYERS</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
+          <context context-type="linenumber">5,6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1272249041084454458" datatype="html">
+        <source>4 PLAYERS</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
+          <context context-type="linenumber">8,9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3581572224432842747" datatype="html">
+        <source>TOURNAMENT</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
+          <context context-type="linenumber">11,12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9167797090289615660" datatype="html">
+        <source>TUTORIAL</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
+          <context context-type="linenumber">14,15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1754500060429112168" datatype="html">
+        <source>LOG IN</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
+          <context context-type="linenumber">18,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5325648582536528830" datatype="html">
+        <source>SIGN UP</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
+          <context context-type="linenumber">21,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7814534374327973734" datatype="html">
+        <source>SIGN OUT</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/pong/src/app/home/home.component.html</context>
+          <context context-type="linenumber">24,25</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

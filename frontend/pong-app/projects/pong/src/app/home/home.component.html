@@ -2,26 +2,26 @@
         <div class="button-area" id="button-area">
             <div class="row">
                 <div class="col-12 mb-3" >
-                    <button routerLink="/local-play" class="btn btn-custom" id="play-local-2">2 JUGADORES</button>
+                    <button routerLink="/local-play" class="btn btn-custom" id="play-local-2" i18n>2 PLAYERS</button>
                 </div>
                 <div class="col-12 mb-3">
-                    <button routerLink="/multiplayer" class="btn btn-custom" id="play-local-4">4 JUGADORES</button>
+                    <button routerLink="/multiplayer" class="btn btn-custom" id="play-local-4" i18n>4 PLAYERS</button>
                 </div>
                 <div class="col-12 mb-3">
-                    <button routerLink="/tournament"class="btn btn-custom" id="play-tournament">TORNEO</button>
+                    <button routerLink="/tournament"class="btn btn-custom" id="play-tournament" i18n>TOURNAMENT</button>
                 </div>
                 <div class="col-12 mb-3">
-                    <button (click)="isTutorialVisible = !isTutorialVisible" class="btn btn-custom" id="play-tutorial">TUTORIAL</button>
+                    <button (click)="isTutorialVisible = !isTutorialVisible" class="btn btn-custom" id="play-tutorial" i18n>TUTORIAL</button>
                     <img *ngIf="isTutorialVisible" src="assets/tutorial.jpg" alt="Tutorial" style="width: 100%; margin-top: 10px;">
                 </div>
                 <div class="col-12 col-md-6 mb-3" *ngIf="!isLoggedIn">
-                    <button routerLink="/login" class="btn btn-login" id="btn-login">LOG IN</button>
+                    <button routerLink="/login" class="btn btn-login" id="btn-login" i18n>LOG IN</button>
                 </div>
                 <div class="col-12 col-md-6 mb-3" *ngIf="!isLoggedIn">
-                    <button routerLink="/signup" class="btn btn-singin" id="btn-singin">SIGN UP</button>
+                    <button routerLink="/signup" class="btn btn-singin" id="btn-singin" i18n>SIGN UP</button>
                 </div>
                 <div class="col-12 col-md-6 mb-3" *ngIf="isLoggedIn">
-                    <button class="btn btn-signout" id="btn-signout" (click)="onLogout()">SIGN OUT</button>
+                    <button class="btn btn-signout" id="btn-signout" (click)="onLogout()" i18n>SIGN OUT</button>
                 </div>
             </div>
         </div>
