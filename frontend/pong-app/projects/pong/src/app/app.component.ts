@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
+// import { TranslateModule, TranslateService } from '@ngx-translate/core';
 // import { HomeComponent } from './home/home.component';
 // import { AboutComponent } from './about/about.component';
 

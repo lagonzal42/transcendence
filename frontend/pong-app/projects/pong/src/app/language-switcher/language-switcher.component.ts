@@ -1,6 +1,6 @@
-import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TranslationService } from '../services/language.service';
 
 @Component({
   selector: 'app-language-switcher',
@@ -8,14 +8,14 @@ import { Router } from '@angular/router';
   imports: [CommonModule],
   template: `
     <div class="language-switcher">
-      <select 
-        class="form-select" 
-        (change)="switchLanguage($event)" 
-        [value]="currentLanguage">
-        <option value="en-US">English</option>
-        <option value="es-PR">Español</option>
-        <option value="fr-FR">Français</option>
-      </select>
+    <select 
+      class="form-select" 
+      (change)="switchLanguage($event)" 
+      [value]="currentLanguage">
+      <option value="en-US">English</option>
+      <option value="es-PR">Español</option>
+      <option value="fr-FR">Français</option>
+    </select>  
     </div>
   `,
   styles: [`
@@ -28,25 +28,16 @@ import { Router } from '@angular/router';
     }
   `]
 })
-export class LanguageSwitcherComponent implements OnInit {
-  currentLanguage: string = 'en-US';
+export class LanguageSwitcherComponent {
+  currentLanguage: string;
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private router: Router
-  ) {}
-
-  ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.currentLanguage = localStorage.getItem('locale') || 'en-US';
-    }
+  constructor(private translationService: TranslationService) {
+    this.currentLanguage = this.translationService.getCurrentLocale();
   }
 
-  switchLanguage(event: any) {
-    if (isPlatformBrowser(this.platformId)) {
-      const newLocale = event.target.value;
-      localStorage.setItem('locale', newLocale);
-      this.router.navigate([newLocale]);
-    }
+  switchLanguage(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const locale = target.value;
+    this.translationService.setLocale(locale);
   }
 }

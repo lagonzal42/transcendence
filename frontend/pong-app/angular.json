@@ -7,13 +7,13 @@
       "i18n": {
         "sourceLocale": "en-US",
         "locales": {
-          "es-PR":{
+          "es-PR": {
             "translation": "projects/pong/src/locale/messages.es.xlf",
-            "baseHref": "es-PR"
+            "baseHref": ""
           },
           "fr-FR": {
             "translation": "projects/pong/src/locale/messages.fr.xlf",
-            "baseHref": "fr-FR"
+            "baseHref": ""
           }
         }
       },
@@ -56,6 +56,8 @@
           "configurations": {
             "production": {
               "localize": ["en-US", "es-PR", "fr-FR"],
+              "aot": true,
+              "i18nMissingTranslation": "error",
               "budgets": [
                 {
                   "type": "initial",
@@ -75,6 +77,12 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "es": {
+              "localize": ["es-PR"]
+            },
+            "fr": {
+              "localize": ["fr-FR"]
             }
           },
           "defaultConfiguration": "production"
@@ -87,6 +95,12 @@
             },
             "development": {
               "buildTarget": "pong:build:development"
+            },
+            "es": {
+              "buildTarget": "pong:build:es"
+            },
+            "fr": {
+              "buildTarget": "pong:build:fr"
             }
           },
           "defaultConfiguration": "development"

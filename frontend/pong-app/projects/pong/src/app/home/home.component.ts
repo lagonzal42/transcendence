@@ -6,11 +6,13 @@ import { Subscription } from 'rxjs';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
 import { filter, switchMap } from 'rxjs/operators';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterModule, CommonModule, HeaderComponent, FooterComponent],
+  imports: [RouterModule, CommonModule, HeaderComponent, FooterComponent, TranslateModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -21,9 +23,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   isTutorialVisible = false;
 
   constructor(
-    private authService: AuthService,
-
-  ) {}
+    private authService: AuthService ) {
+      // this.translate.addLangs(['fr', 'en', 'es']);
+      // this.translate.setDefaultLang('en');
+      // this.translate.use('en');
+  }
 
   onLogout() : void {
     this.authService.logout();
