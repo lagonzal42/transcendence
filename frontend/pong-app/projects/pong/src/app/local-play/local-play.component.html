@@ -1,46 +1,46 @@
 <div class="localPlayNameArea container-fluid d-flex justify-content-center align-items-center">
-    <h2 class="localPlayFormTitle text-center mb-4">Name selection</h2>
+    <h2 class="localPlayFormTitle text-center mb-4" i18n>Name selection</h2>
     <form [formGroup]="localPlayForm" (ngSubmit)="onSubmit()">
       <div class="formGroup">
-        <label for="player1">Player 1</label>
+        <label for="player1" i18n>Player 1</label>
         <input id="player1" formControlName="player1">
         <div *ngIf="localPlayForm.get('player1')?.touched && localPlayForm.get('player1')?.invalid">
-          <small class="text-danger">Invalid name</small>
+          <small class="text-danger" i18n>Invalid name</small>
         </div>
       </div>
 
       <div class="formGroup">
-        <label>Player 2 Type</label>
+        <label i18n>Player 2 Type</label>
         <div class="player2-options">
           <label>
-            <input type="radio" formControlName="player2Type" value="guest" (change)="onPlayer2TypeChange('guest')">
+            <input type="radio" formControlName="player2Type" value="guest" (change)="onPlayer2TypeChange('guest')" i18n>
             Play as Guest
           </label>
           <label>
-            <input type="radio" formControlName="player2Type" value="registered" (change)="onPlayer2TypeChange('registered')">
+            <input type="radio" formControlName="player2Type" value="registered" (change)="onPlayer2TypeChange('registered')" i18n>
             Play as Registered User
           </label>
         </div>
       </div>
 
       <div class="formGroup" *ngIf="!showPlayer2Auth">
-        <label for="player2">Player 2 Name</label>
+        <label for="player2" i18n>Player 2 Name</label>
         <input id="player2" formControlName="player2">
         <div *ngIf="localPlayForm.get('player2')?.touched && localPlayForm.get('player2')?.invalid">
-          <small class="text-danger">Invalid name</small>
+          <small class="text-danger" i18n>Invalid name</small>
         </div>
       </div>
 
       <div *ngIf="showPlayer2Auth" class="auth-form" [formGroup]="player2AuthForm">
         <div class="formGroup">
-          <label for="username">Username</label>
+          <label for="username" i18n>Username</label>
           <input id="username" formControlName="username">
         </div>
         <div class="formGroup">
-          <label for="password">Password</label>
+          <label for="password" i18n>Password</label>
           <input id="password" type="password" formControlName="password">
         </div>
-        <button type="button" (click)="authenticatePlayer2()">Verify Player 2</button>
+        <button type="button" (click)="authenticatePlayer2()" i18n>Verify Player 2</button>
         <div *ngIf="player2AuthStatus !== 'none'"
               [ngClass]="{'auth-success': player2AuthStatus === 'success',
                         'auth-error': player2AuthStatus === 'error'}"  
@@ -49,9 +49,9 @@
           </div>
       </div>
 
-      <button class="submit-login-btn" type="submit">Ready</button>
+      <button class="submit-login-btn" type="submit" i18n>Ready</button>
       <div *ngIf="localPlayForm.errors?.['nonUniquePlayers']">
-        <small class="text-danger">Player names must be unique.</small>
+        <small class="text-danger" i18n>Player names must be unique.</small>
       </div>
     </form>
 </div>

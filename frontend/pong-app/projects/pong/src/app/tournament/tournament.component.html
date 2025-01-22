@@ -1,43 +1,43 @@
 <div class="tournamentNameArea container-fluid d-flex justify-content-center align-items-center">
   <!-- Initial Form View -->
   <div *ngIf="!formSubmitted">
-    <h2 class="tournamentFormTitle text-center mb-4">Name selection</h2>
+    <h2 class="tournamentFormTitle text-center mb-4" i18n>Name selection</h2>
     <form [formGroup]="tournamentForm" (ngSubmit)="onSubmit()">
       <div class="formGroup">
-        <label for="player1">Player 1</label>
+        <label for="player1" i18n>Player 1</label>
         <input id="player1" formControlName="player1">
         <div *ngIf="tournamentForm.get('player1')?.touched && tournamentForm.get('player1')?.invalid">
-          <small class="text-danger">Invalid name</small>
+          <small class="text-danger" i18n>Invalid name</small>
         </div>
       </div>
       <div class="formGroup">
-        <label for="player2">Player 2</label>
+        <label for="player2" i18n>Player 2</label>
         <input id="player2" formControlName="player2">
         <div *ngIf="tournamentForm.get('player2')?.touched && tournamentForm.get('player2')?.invalid">
-          <small class="text-danger">Invalid name</small>
+          <small class="text-danger" i18n>Invalid name</small>
         </div>
       </div>
       <div class="formGroup">
-        <label for="player3">Player 3</label>
+        <label for="player3" i18n>Player 3</label>
         <input id="player3" formControlName="player3">
         <div *ngIf="tournamentForm.get('player3')?.touched && tournamentForm.get('player3')?.invalid">
-          <small class="text-danger">Invalid name</small>
+          <small class="text-danger" i18n>Invalid name</small>
         </div>
       </div>
       <div class="formGroup">
-        <label for="player4">Player 4</label>
+        <label for="player4" i18n>Player 4</label>
         <input id="player4" formControlName="player4">
         <div *ngIf="tournamentForm.get('player4')?.touched && tournamentForm.get('player4')?.invalid">
-          <small class="text-danger">Invalid name</small>
+          <small class="text-danger" i18n>Invalid name</small>
         </div>
       </div>
-      <button class="submit-login-btn" type="submit">Ready</button>
+      <button class="submit-login-btn" type="submit" i18n>Ready</button>
       <div *ngIf="tournamentForm.errors?.['nonUniquePlayers'] && tournamentForm.get('player4')?.touched && tournamentForm.get('player3')?.touched && tournamentForm.get('player2')?.touched && tournamentForm.get('player1')?.touched">
-        <small class="text-danger">Player names must be unique.</small>
+        <small class="text-danger" i18n>Player names must be unique.</small>
       </div>
     </form>
     <div>
-      <button (click)="resetTournament()">Reset Tournament</button>
+      <button (click)="resetTournament()" i18n>Reset Tournament</button>
     </div>
   </div>
 

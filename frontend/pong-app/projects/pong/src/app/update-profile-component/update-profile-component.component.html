@@ -1,1 +1,34 @@
-<p>update-profile-component works!</p>
+<div class="update-profile-container">
+    <h3 i18n>Update Profile</h3>
+    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label i18n>Display Name</label>
+        <input type="text" formControlName="tournament_name" class="form-control">
+      </div>
+      
+      <div class="form-group">
+        <label i18n>Email</label>
+        <input type="email" formControlName="email" class="form-control">
+        <div *ngIf="updateForm.get('email')?.errors?.['email']" class="error-message" i18n>
+          Please enter a valid email address
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label i18n>Avatar</label>
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-control">
+      </div>
+
+      <div class="avatar-preview" *ngIf="avatarPreview">
+        <img [src]="avatarPreview" alt="Avatar preview">
+      </div>
+
+      <button type="submit" 
+              [disabled]="updateForm.get('email')?.errors?.['email'] || 
+                         (!updateForm.get('tournament_name')?.value && 
+                          !updateForm.get('email')?.value && 
+                          !selectedFile)" i18n>
+        Update Profile
+      </button>
+    </form>
+  </div>

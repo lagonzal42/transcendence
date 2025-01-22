@@ -9,25 +9,25 @@
         <button *ngIf="isLoggedIn" 
                 (click)="navigateToProfile()" 
                 class="btn-profile" 
-                id="profile-button">
+                id="profile-button" i18n>
             Profile
         </button>
         <button *ngIf="isLoggedIn"
                 (click)="navigateToUpdateProfile()"
                 class="btn-update-profile"
-                id="update-profile-button">
+                id="update-profile-button" i18n>
             Update Profile
         </button>
         <button *ngIf="isLoggedIn"
                 (click)="logout()"
                 class="btn-logout"
-                id="logout-button">
+                id="logout-button" i18n>
             Logout
         </button>
         <button *ngIf="!isLoggedIn" 
                 routerLink="/login" 
                 class="btn-login" 
-                id="login-button">
+                id="login-button" i18n>
             Login
         </button>
     </div>
