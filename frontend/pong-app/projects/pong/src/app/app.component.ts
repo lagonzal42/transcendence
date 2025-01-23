@@ -16,4 +16,10 @@ import { FooterComponent } from './footer/footer.component';
 })
 export class AppComponent {
   title = 'pong';
+
+  localesList = [
+    { code: 'en-US', label: 'English'},
+    { code: 'es-PR', label: 'Spanish'},
+    { code: 'fr-FR', label: 'French'},
+  ];
 }

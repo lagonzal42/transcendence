@@ -4,7 +4,7 @@ npm install
 
 #ng serve --host 0.0.0.0
 # Start the English version (default)
-ng serve --host 0.0.0.0 --port 4200 &
+ng serve --host 0.0.0.0
 
 # Start the Spanish version
 #ng serve --configuration=es --host 0.0.0.0 --port 4201 &

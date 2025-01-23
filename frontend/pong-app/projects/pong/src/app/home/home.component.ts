@@ -22,6 +22,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   private authSubscription?: Subscription;
   isTutorialVisible = false;
 
+  localesList = [
+    { code: 'en-US', label: 'English'},
+    { code: 'es-PR', label: 'Spanish'},
+    { code: 'fr-FR', label: 'French'},
+  ];
+
   constructor(
     private authService: AuthService ) {
       // this.translate.addLangs(['fr', 'en', 'es']);

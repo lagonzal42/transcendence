@@ -20,31 +20,41 @@ import { VerifyComponent } from './verify_token/verify.component';
 
 export const routes: Routes = [
   {
-    path: '',
-    component: LayoutComponent,
+    path: ':lang',
     children: [
-      { path: '', component: HomeComponent },
-      { path: 'Home', component: HomeComponent },
-      { path: 'login', component: LoginComponent },
-      { path: 'signup', component: SignupComponent },
-      { path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard] },
-      { path: 'profile/:username', component: ProfileComponent, canActivate: [AuthenticationGuard] },
-      { path: 'tournament', component: TournamentComponent },
-      { path: 'local-play', component: LocalPlayComponent },
-      { path: 'pong-game', component: PongGameComponent },
-      { path: 'multiplayer', component: MultiplayerComponent },
-      { path: 'profile/:username/update', component: UpdateProfileComponent, canActivate: [AuthenticationGuard] },
-      { path: 'match-history/:username', component: MatchHistoryComponent },
-      { path: 'two-factor', component: TwoFactorComponent },
-      { path: 'verify', component: VerifyComponent },
+      {
+        path: '',
+        component: LayoutComponent,
+        children: [
+          { path: '', component: HomeComponent },
+          { path: 'Home', component: HomeComponent },
+          { path: 'login', component: LoginComponent },
+          { path: 'signup', component: SignupComponent },
+          { path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard] },
+          { path: 'profile/:username', component: ProfileComponent, canActivate: [AuthenticationGuard] },
+          { path: 'tournament', component: TournamentComponent },
+          { path: 'local-play', component: LocalPlayComponent },
+          { path: 'pong-game', component: PongGameComponent },
+          { path: 'multiplayer', component: MultiplayerComponent },
+          { path: 'profile/:username/update', component: UpdateProfileComponent, canActivate: [AuthenticationGuard] },
+          { path: 'match-history/:username', component: MatchHistoryComponent },
+          { path: 'two-factor', component: TwoFactorComponent },
+          { path: 'verify', component: VerifyComponent },
+        ]
+      },
+      {
+        path: 'chat/:roomId',
+        component: ChatComponent
+      },
+      {
+        path: 'verify/:token',
+        component: VerifyComponent
+      }
     ]
   },
   {
-    path: 'chat/:roomId',
-    component: ChatComponent
-  },
-  {
-    path: 'verify/:token',
-    component: VerifyComponent
+    path: '',
+    redirectTo: '/en-US',
+    pathMatch: 'full'
   }
 ];

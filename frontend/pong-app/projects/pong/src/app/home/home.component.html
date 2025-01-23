@@ -1,4 +1,10 @@
-
+<ul>
+    <li *ngFor="let locale of localesList">
+      <a href="/{{locale.code}}/">
+        {{locale.label}}
+      </a>
+    </li>
+  </ul>
         <div class="button-area" id="button-area">
             <div class="row">
                 <div class="col-12 mb-3" >
