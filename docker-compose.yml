@@ -12,6 +12,8 @@ services:
       - app-network
     env_file:
       - .env
+    ports:
+      - "5432:5432"
 
   backend:
     container_name: backend
@@ -76,69 +78,69 @@ services:
     depends_on:
       - db
 
-  # node-exporter:
-  #   image: prom/node-exporter
-  #   container_name: node-exporter
-  #   restart: unless-stopped
-  #   volumes:
-  #     - /proc:/host/proc:ro
-  #     - /sys:/host/sys:ro
-  #     - /:/rootfs:ro
-  #   command:
-  #     - '--path.procfs=/host/proc'
-  #     - '--path.rootfs=/rootfs'
-  #     - '--path.sysfs=/host/sys'
-  #     - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-  #   expose: 
-  #     - 9100
-  #   networks:
-  #     - app-network
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    expose: 
+      - 9100
+    networks:
+      - app-network
 
-  # prometheus:
-  #   image: prom/prometheus
-  #   container_name: prometheus
-  #   restart: unless-stopped
-  #   user: root
-  #   volumes:
-  #     - /sgoinfre/students/abasante/transcendence/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-  #     - prometheus_data:/prometheus
-  #   command:
-  #     - '--config.file=/etc/prometheus/prometheus.yml'
-  #     - '--storage.tsdb.path=/prometheus'
-  #     - '--web.console.libraries=/etc/prometheus/console_libraries'
-  #     - '--web.console.templates=/etc/prometheus/consoles'
-  #     - '--web.enable-lifecycle'
-  #   ports:
-  #     - '9090:9090'
-  #   networks:
-  #     - app-network
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    user: root
+    volumes:
+      - /sgoinfre/students/abasante/transcendence/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - '9090:9090'
+    networks:
+      - app-network
   
-  # grafana:
-  #   image: grafana/grafana-enterprise
-  #   container_name: grafana
-  #   restart: unless-stopped
-  #   ports:
-  #    - '3000:3000'
-  #   volumes:
-  #     - grafana-storage:/var/lib/grafana
-  #     - ./grafana/dashboards:/var/lib/grafana/dashboards
-  #     - ./grafana/provisioning:/etc/grafana/provisioning
-  #   environment:
-  #   - GF_SECURITY_ADMIN_USER=admin
-  #   - GF_SECURITY_ADMIN_PASSWORD=admin
-  #   networks:
-  #     - app-network
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+     - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+    - GF_SECURITY_ADMIN_USER=admin
+    - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - app-network
   
-  # pg_exporter:
-  #   image: wrouesnel/postgres_exporter
-  #   container_name: pg-exporter
-  #   restart: always
-  #   ports:
-  #     - '9187:9187'
-  #   environment:
-  #     - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres:5432/postgres?sslmode=disable
-  #   networks:
-  #     - app-network
+  pg_exporter:
+    image: wrouesnel/postgres_exporter
+    container_name: pg-exporter
+    restart: always
+    ports:
+      - '9187:9187'
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres:5432/postgres?sslmode=disable
+    networks:
+      - app-network
 
 networks:
   app-network:
