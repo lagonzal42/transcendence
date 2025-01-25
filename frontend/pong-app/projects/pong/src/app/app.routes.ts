@@ -20,7 +20,7 @@ import { VerifyComponent } from './verify_token/verify.component';
 
 export const routes: Routes = [
   {
-    path: ':lang',
+    path: '',
     children: [
       {
         path: '',
@@ -52,9 +52,9 @@ export const routes: Routes = [
       }
     ]
   },
-  {
-    path: '',
-    redirectTo: '/en-US',
-    pathMatch: 'full'
-  }
+  //{
+  //path: '',
+  //redirectTo: '/en-US',
+  //pathMatch: 'full'
+  //}
 ];
