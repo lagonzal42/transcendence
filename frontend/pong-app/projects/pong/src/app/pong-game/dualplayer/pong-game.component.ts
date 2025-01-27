@@ -55,6 +55,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
       if (players) {
         this.leftPlayerName = players.leftPlayerName;
         this.rightPlayerName = players.rightPlayerName;
+        this.isTournamentMatch = players.isTournamentMatch || false;
         this.players = players;
       }
     }
@@ -219,11 +220,6 @@ export class PongGameComponent implements OnInit, AfterViewInit {
 
         this.ctx.fillText(winnerMessage, xPosition, yPosition);
 
-        // Get authentication status from the players object passed through navigation
-        const isAuthenticated = this.players?.isAuthenticated || {
-            player1: false,
-            player2: false
-        };
 
         this.http.post('http://localhost:8000/accounts/matches/', {
             player1_username: this.leftPlayerName,
@@ -232,7 +228,6 @@ export class PongGameComponent implements OnInit, AfterViewInit {
             player2_score: this.rightPlayerScore,
             winner_username: winnerName,
             match_type: this.isTournamentMatch ? 'tournament' : 'local',
-            isAuthenticated: isAuthenticated
         }).subscribe({
             next: (response) => console.log('Match processed successfully:', response),
             error: (error) => console.error('Error processing match:', error)
