@@ -52,7 +52,7 @@ export class LocalPlayComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error getting current user: ', error);
+        //console.error('Error getting current user: ', error);
         this.isLoggedIn = false;
       }
     })
