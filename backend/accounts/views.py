@@ -159,8 +159,11 @@ class MatchCreateView(APIView):
     def post(self, request):
         try:
             # Get authentication status for both players from request
-            player1_auth = request.data.get('isAuthenticated', {}).get('player1', False)
-            player2_auth = request.data.get('isAuthenticated', {}).get('player2', False)
+            # player1_auth = request.data.get('isAuthenticated', {}).get('player1', False)
+            # player2_auth = request.data.get('isAuthenticated', {}).get('player2', False)
+
+            player1_auth = User.objects.get(username=request.data['player1_username'])
+            player2_auth = User.objects.get(username=request.data['player2_username'])
 
             # If either player is not authenticated, don't save the match
             if not player1_auth or not player2_auth:

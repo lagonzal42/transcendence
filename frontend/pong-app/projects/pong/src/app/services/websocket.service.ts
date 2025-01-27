@@ -74,13 +74,24 @@ export class WebSocketService {
       console.log('Status WebSocket closed');
       if (this.authService.getAccessToken()) {
         console.log('Attempting to reconnect...');
-        setTimeout(() => this.connectWebSocket(), 100);
+        setTimeout(() => this.handleTokenRefresh(), 100);
       }
     };
 
     this.socket.onerror = (error: any) => {
       console.error('Status WebSocket error:', error);
     };
+  }
+
+  private handleTokenRefresh() {
+    this.authService.refreshToken().subscribe(
+      () => {
+        this.connectWebSocket();
+      },
+      (error: any) => {
+        console.error('Token refresh failed:', error);
+      }
+    );
   }
 
   isUserOnline(userId: number): boolean {
