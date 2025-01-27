@@ -40,12 +40,13 @@ export const routes: Routes = [
           { path: 'match-history/:username', component: MatchHistoryComponent },
           { path: 'two-factor', component: TwoFactorComponent },
           { path: 'verify', component: VerifyComponent },
+          { path: 'chat/:roomId', component: ChatComponent },
         ]
       },
-      {
-        path: 'chat/:roomId',
-        component: ChatComponent
-      },
+      //{
+      //  path: 'chat/:roomId',
+      //  component: ChatComponent
+      //},
       {
         path: 'verify/:token',
         component: VerifyComponent
