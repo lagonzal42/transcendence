@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,8 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
   imports: [
     CommonModule,
     RouterLink,
-    LanguageSwitcherComponent
+    LanguageSwitcherComponent,
+    TranslateModule
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']

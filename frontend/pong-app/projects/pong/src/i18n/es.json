@@ -1,3 +1,14 @@
 {
-	"demo.title": "PONG HP"
+	"demo.title": "PONG HP",
+	"header.login": "Iniciar Sesión",
+	"header.logout": "Cerrar Sesión",
+	"header.profile": "Perfil",
+	"header.UpdateProfile": "Actualización del perfil",
+	"home.2.players": "2 JUGADORES",
+	"home.4.players": "4 JUGADORES",
+	"home.login": "INICIAR SESIÓN",
+	"home.signout": "DESCONECTAR",
+	"home.signup": "REGISTRARSE",
+	"home.tournament": "TORNEO",
+	"home.tutorial": "TUTORIAL"
 }

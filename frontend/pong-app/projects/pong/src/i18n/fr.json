@@ -1,3 +1,14 @@
 {
-	"demo.title": "PONG M`F"
+	"demo.title": "PONG M`F",
+	"header.login": "Se connecter",
+	"header.logout": "Se déconnecter",
+	"header.profile": "Profil",
+	"header.UpdateProfile": "Mettre à jour le profil",
+	"home.2.players": "2 JOUEURS",
+	"home.4.players": "4 JOUEURS",
+	"home.login": "SE CONNECTER",
+	"home.signout": "SE DÉCONNECTER",
+	"home.signup": "S'INSCRIRE",
+	"home.tournament": "TOURNOI",
+	"home.tutorial": "DIDACTICIEL"
 }

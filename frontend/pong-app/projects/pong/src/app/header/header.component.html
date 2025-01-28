@@ -10,25 +10,25 @@
                 (click)="navigateToProfile()" 
                 class="btn-profile" 
                 id="profile-button" i18n>
-            Profile
+            {{ 'header.profile' | translate }}
         </button>
         <button *ngIf="isLoggedIn"
                 (click)="navigateToUpdateProfile()"
                 class="btn-update-profile"
                 id="update-profile-button" i18n>
-            Update Profile
+                {{ 'header.UpdateProfile' | translate }}
         </button>
         <button *ngIf="isLoggedIn"
                 (click)="logout()"
                 class="btn-logout"
                 id="logout-button" i18n>
-            Logout
+                {{ 'header.logout' | translate }}
         </button>
         <button *ngIf="!isLoggedIn" 
                 routerLink="/login" 
                 class="btn-login" 
                 id="login-button" i18n>
-            Login
+                {{ 'header.login' | translate }}
         </button>
     </div>
 </header>

@@ -1,3 +1,14 @@
 {
-	"demo.title": "PONG MF"
+	"demo.title": "PONG MF",
+	"header.login": "Login",
+	"header.logout": "Logout",
+	"header.profile": "Profile",
+	"header.UpdateProfile": "Update Profile",
+	"home.2.players": "2 PLAYERS",
+	"home.4.players": "4 PLAYERS",
+	"home.login": "LOGIN",
+	"home.signout": "SIGN OUT",
+	"home.signup": "SIGN UP",
+	"home.tournament": "TOURNAMENT",
+	"home.tutorial": "TUTORIAL"
 }

@@ -9,26 +9,26 @@
             <h1>{{ 'demo.title' | translate }} </h1>
             <div class="row">
                 <div class="col-12 mb-3" >
-                    <button routerLink="/local-play" class="btn btn-custom" id="play-local-2">2 PLAYERS</button>
+                    <button routerLink="/local-play" class="btn btn-custom" id="play-local-2">{{ 'home.2.players' | translate }}</button>
                 </div>
                 <div class="col-12 mb-3">
-                    <button routerLink="/multiplayer" class="btn btn-custom" id="play-local-4">4 PLAYERS</button>
+                    <button routerLink="/multiplayer" class="btn btn-custom" id="play-local-4">{{ 'home.4.players' | translate }}</button>
                 </div>
                 <div class="col-12 mb-3">
-                    <button routerLink="/tournament"class="btn btn-custom" id="play-tournament">TOURNAMENT</button>
+                    <button routerLink="/tournament"class="btn btn-custom" id="play-tournament">{{ 'home.tournament' | translate }}</button>
                 </div>
                 <div class="col-12 mb-3">
-                    <button (click)="isTutorialVisible = !isTutorialVisible" class="btn btn-custom" id="play-tutorial">TUTORIAL</button>
+                    <button (click)="isTutorialVisible = !isTutorialVisible" class="btn btn-custom" id="play-tutorial">{{ 'home.tutorial' | translate }}</button>
                     <img *ngIf="isTutorialVisible" src="assets/tutorial.jpg" alt="Tutorial" style="width: 100%; margin-top: 10px;">
                 </div>
                 <div class="col-12 col-md-6 mb-3" *ngIf="!isLoggedIn">
-                    <button routerLink="/login" class="btn btn-login" id="btn-login">LOG IN</button>
+                    <button routerLink="/login" class="btn btn-login" id="btn-login">{{ 'home.login' | translate }}</button>
                 </div>
                 <div class="col-12 col-md-6 mb-3" *ngIf="!isLoggedIn">
-                    <button routerLink="/signup" class="btn btn-singin" id="btn-singin">SIGN UP</button>
+                    <button routerLink="/signup" class="btn btn-singin" id="btn-singin">{{ 'home.signup' | translate }}</button>
                 </div>
                 <div class="col-12 col-md-6 mb-3" *ngIf="isLoggedIn">
-                    <button class="btn btn-signout" id="btn-signout" (click)="onLogout()">SIGN OUT</button>
+                    <button class="btn btn-signout" id="btn-signout" (click)="onLogout()">{{ 'home.signout' | translate }}</button>
                 </div>
             </div>
         </div>
