@@ -6,11 +6,12 @@ import { uniquePlayerNamesValidator } from '../uniquePlayerName/uniquePlayerName
 import { Router } from '@angular/router';
 import { platform } from 'os';
 import { AuthService } from '../auth/auth.service'
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-local-play',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TranslateModule],
   templateUrl: './local-play.component.html',
   styleUrl: './local-play.component.css'
 })
