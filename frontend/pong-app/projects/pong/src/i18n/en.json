@@ -11,6 +11,7 @@
 	"home.signup": "SIGN UP",
 	"home.tournament": "TOURNAMENT",
 	"home.tutorial": "TUTORIAL",
+
 	"local.invalidname": "Invalid name",
 	"local.nameselection": "Name Selection",
 	"local.password": "Password",
@@ -23,6 +24,7 @@
 	"local.ready": "Ready",
 	"local.username": "Username",
 	"local.verifyplayer2": "Verify Player 2",
+
 	"tournament.nameSelection": "Name selection",
     "tournament.player1": "Player 1",
     "tournament.player2": "Player 2",
@@ -40,5 +42,28 @@
     "tournament.finals": "Finals",
     "tournament.tournamentComplete": "Tournament Complete!",
     "tournament.startNewTournament": "Start New Tournament",
-    "tournament.nextMatchStartingIn": "Next match starting in {{ countdownSeconds }} seconds..."
+    "tournament.nextMatchStartingIn": "Wait next match starting ...",
+
+	"profile.loading": "Loading...",
+    "profile.userAvatar": "User avatar",
+    "profile.profile": "Profile",
+    "profile.stats": "Stats",
+    "profile.gamesPlayed": "Games Played",
+    "profile.wins": "Wins",
+    "profile.losses": "Losses",
+    "profile.friends": "Friends",
+    "profile.noFriends": "No friends",
+    "profile.block": "Block",
+    "profile.blockedUsers": "Blocked Users",
+    "profile.noBlockedUsers": "No blocked users",
+    "profile.unblock": "Unblock",
+    "profile.chat": "Chat",
+    "profile.matchHistory": "Match History",
+    "profile.findFriends": "Find Friends",
+    "profile.searchUsers": "Search users...",
+    "profile.search": "Search",
+    "profile.sendFriendRequest": "Send Friend Request",
+    "profile.friendRequests": "Friend Requests",
+    "profile.accept": "Accept",
+    "profile.decline": "Decline"
 }

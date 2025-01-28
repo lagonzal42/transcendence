@@ -11,6 +11,7 @@
 	"home.signup": "REGISTRARSE",
 	"home.tournament": "TORNEO",
 	"home.tutorial": "TUTORIAL",
+	
 	"local.invalidname": "Nombre inválido",
 	"local.nameselection": "Selección de nombre",
 	"local.password": "Contraseña",
@@ -23,6 +24,7 @@
 	"local.ready": "Listo",
 	"local.username": "Nombre de usuario",
 	"local.verifyplayer2": "Verificar jugador 2",
+
     "tournament.nameSelection": "Selección de nombre",
     "tournament.player1": "Jugador 1",
     "tournament.player2": "Jugador 2",
@@ -40,5 +42,30 @@
     "tournament.finals": "Finales",
     "tournament.tournamentComplete": "¡Torneo Completo!",
     "tournament.startNewTournament": "Iniciar Nuevo Torneo",
-    "tournament.nextMatchStartingIn": "El próximo partido comienza en {{ countdownSeconds }} segundos..."
+    "tournament.nextMatchStartingIn": "Espere el próximo partido comienza...",
+
+	"profile.loading": "Cargando...",
+    "profile.userAvatar": "Avatar del usuario",
+    "profile.profile": "Perfil de",
+    "profile.stats": "Estadísticas",
+    "profile.gamesPlayed": "Juegos Jugados",
+    "profile.wins": "Victorias",
+    "profile.losses": "Derrotas",
+    "profile.friends": "Amigos",
+    "profile.noFriends": "No hay amigos",
+    "profile.block": "Bloquear",
+    "profile.blockedUsers": "Usuarios Bloqueados",
+    "profile.noBlockedUsers": "No hay usuarios bloqueados",
+    "profile.unblock": "Desbloquear",
+    "profile.chat": "Chat",
+    "profile.matchHistory": "Historial de Partidos",
+    "profile.findFriends": "Buscar Amigos",
+    "profile.searchUsers": "Buscar usuarios...",
+    "profile.search": "Buscar",
+    "profile.sendFriendRequest": "Enviar Solicitud de Amistad",
+    "profile.friendRequests": "Solicitudes de Amistad",
+    "profile.accept": "Aceptar",
+    "profile.decline": "Rechazar"
+
+
 }
