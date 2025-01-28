@@ -9,24 +9,27 @@ import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 
-// const HttpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
-//   new TranslateHttpLoader(http, './i18n', '.json');
+const HttpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
+  new TranslateHttpLoader(http, './i18n/', '.json');
 
-
-// export const appConfig: ApplicationConfig = {
-//   providers: [
-//     provideZoneChangeDetection({ eventCoalescing: true}),
-//     provideHttpClient(withFetch(), withInterceptors([AuthInterceptor])),
-//     importProvidersFrom([TranslateModule.forRoot({
-//       loader: {
-//         provide: TranslateLoader,
-//         useFactory: HttpLoaderFactory, 
-//         deps: [HttpClient],
-//       },
-//     })])
-//   ],
-// }
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(withFetch(), withInterceptors([AuthInterceptor]))]
-};
+  providers: [
+    provideRouter(routes),
+    provideClientHydration(),
+
+    provideZoneChangeDetection({ eventCoalescing: true}),
+    provideHttpClient(withFetch(), withInterceptors([AuthInterceptor])),
+    importProvidersFrom([TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory, 
+        deps: [HttpClient],
+      },
+    })])
+  ],
+}
+
+// export const appConfig: ApplicationConfig = {
+//   providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(withFetch(), withInterceptors([AuthInterceptor]))]
+// };

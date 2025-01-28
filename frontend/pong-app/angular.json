@@ -38,7 +38,8 @@
             "tsConfig": "projects/pong/tsconfig.app.json",
             "assets": [
               "projects/pong/src/favicon.ico",
-              "projects/pong/src/assets"
+              "projects/pong/src/assets",
+              "projects/pong/src/i18n"
             ],
             "styles": [
               "projects/pong/src/styles.css", 

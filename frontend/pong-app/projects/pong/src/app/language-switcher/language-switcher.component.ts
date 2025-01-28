@@ -1,20 +1,22 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslationService } from '../services/language.service';
+//import { TranslationService } from '../services/language.service';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-language-switcher',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="language-switcher">
     <select 
       class="form-select" 
       (change)="switchLanguage($event)" 
       [value]="currentLanguage">
-      <option value="en-US">English</option>
-      <option value="es-PR">Español</option>
-      <option value="fr-FR">Français</option>
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
     </select>  
     </div>
   `,
@@ -31,13 +33,13 @@ import { TranslationService } from '../services/language.service';
 export class LanguageSwitcherComponent {
   currentLanguage: string;
 
-  constructor(private translationService: TranslationService) {
-    this.currentLanguage = this.translationService.getCurrentLocale();
+  constructor(private translateService: TranslateService) {
+    this.currentLanguage = this.translateService.currentLang || 'en';
   }
 
   switchLanguage(event: Event): void {
     const target = event.target as HTMLSelectElement;
-    const locale = target.value;
-    this.translationService.setLocale(locale);
+    const lang = target.value;
+    this.translateService.use(lang);
   }
 }
