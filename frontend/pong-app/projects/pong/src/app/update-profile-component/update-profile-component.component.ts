@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-update-profile',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  template: './update-profile-component.html',
+  template: './update-profile-component.component.html',
   styles: [`
     .update-profile-container {
       max-width: 500px;
