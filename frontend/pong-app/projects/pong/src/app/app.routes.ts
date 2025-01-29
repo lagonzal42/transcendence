@@ -16,6 +16,8 @@ import { UpdateProfileComponent } from './update-profile-component/update-profil
 import { MatchHistoryComponent } from './match-history/match-history.component';
 import { TwoFactorComponent} from './2FA/2FA.component';
 import { VerifyComponent } from './verify_token/verify.component';
+import { Page4Component } from './page4/page4.component';
+
 
 
 export const routes: Routes = [
@@ -41,6 +43,7 @@ export const routes: Routes = [
           { path: 'two-factor', component: TwoFactorComponent },
           { path: 'verify', component: VerifyComponent },
           { path: 'chat/:roomId', component: ChatComponent },
+          { path: '4page', component: Page4Component },
         ]
       },
       //{
