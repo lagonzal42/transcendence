@@ -1,25 +1,24 @@
-
 <div class="login-area container-fluid d-flex justify-content-center align-items-center">
-  <h2 class="login-title text-center mb-4" i18n>Log in</h2>
+  <h2 class="login-title text-center mb-4">{{ 'login.login' | translate }}</h2>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <div *ngIf="loginError" class="alert alert-danger">
       {{ loginError }}
     </div>
 
     <div class="formGroup">
-      <label for="username" i18n>Username</label>
+      <label for="username">{{ 'login.username' | translate }}</label>
       <input id="username" formControlName="username">
       <div *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
-        <small class="text-danger" i18n>Invalid username</small>
+        <small class="text-danger">{{ 'login.invalidUsername' | translate }}</small>
       </div>
     </div>
     <div class="formGroup">
-      <label for="password" i18n>Password</label>
+      <label for="password">{{ 'login.password' | translate }}</label>
       <input id="password" type="password" formControlName="password">
       <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
-        <small class="text-danger" i18n>Invalid password</small>
+        <small class="text-danger">{{ 'login.invalidPassword' | translate }}</small>
       </div>
     </div>
-    <button class="submit-login-btn" type="submit" i18n>Login</button>
+    <button class="submit-login-btn" type="submit">{{ 'login.login' | translate }}</button>
   </form>
 </div>

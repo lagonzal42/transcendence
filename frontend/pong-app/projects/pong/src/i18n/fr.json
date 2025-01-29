@@ -62,5 +62,18 @@
 	"tournament.startNewTournament": "Commencer un nouveau tournoi",
 	"tournament.tournamentComplete": "Tournoi terminé!",
 	"tournament.tournamentProgress": "Progression du tournoi",
-	"tournament.winner": "Vainqueur"
+	"tournament.winner": "Vainqueur",
+	"signup.signup": "S'inscrire",
+	"signup.username": "Nom d'utilisateur",
+	"signup.invalidUsername": "Nom d'utilisateur invalide",
+	"signup.email": "Email",
+	"signup.invalidEmail": "Email invalide",
+	"signup.password": "Mot de passe",
+	"signup.invalidPassword": "Mot de passe invalide",
+	"signup.repeatpassword": "Répéter le mot de passe",
+	"login.login": "Se connecter",
+	"login.username": "Nom d'utilisateur",
+	"login.invalidUsername": "Nom d'utilisateur invalide",
+	"login.password": "Mot de passe",
+	"login.invalidPassword": "Mot de passe invalide"
 }

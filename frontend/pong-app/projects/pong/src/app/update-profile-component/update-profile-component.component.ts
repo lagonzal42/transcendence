@@ -10,7 +10,33 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-update-profile',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  template: './update-profile-component.component.html',
+  //template: './update-profile-component.component.html',
+  template: `<div class="update-profile-container">
+    <h3 i18n>Update Profile</h3>
+    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label i18n>Tournament name</label>
+        <input type="text" formControlName="tournament_name" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label i18n>Avatar</label>
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-control">
+      </div>
+
+      <div class="avatar-preview" *ngIf="avatarPreview">
+        <img [src]="avatarPreview" alt="Avatar preview">
+      </div>
+
+      <button type="submit" 
+              [disabled]="updateForm.get('email')?.errors?.['email'] || 
+                         (!updateForm.get('tournament_name')?.value && 
+                          !updateForm.get('email')?.value && 
+                          !selectedFile)" i18n>
+        Update Profile
+      </button>
+    </form>
+  </div>`,
   styles: [`
     .update-profile-container {
       max-width: 500px;

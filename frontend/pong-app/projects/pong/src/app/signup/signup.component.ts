@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { HttpClient} from '@angular/common/http'
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ErrorResponse {
   error: {
@@ -16,7 +17,7 @@ interface ErrorResponse {
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TranslateModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
