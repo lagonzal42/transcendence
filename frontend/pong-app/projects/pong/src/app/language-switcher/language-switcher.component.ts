@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 //import { TranslationService } from '../services/language.service';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
@@ -33,13 +33,19 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 export class LanguageSwitcherComponent {
   currentLanguage: string;
 
-  constructor(private translateService: TranslateService) {
+  constructor(
+    private translateService: TranslateService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
     this.currentLanguage = this.translateService.currentLang || 'en';
   }
 
   switchLanguage(event: Event): void {
     const target = event.target as HTMLSelectElement;
     const lang = target.value;
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('selectedLanguage', lang);
+    }
     this.translateService.use(lang);
   }
 }

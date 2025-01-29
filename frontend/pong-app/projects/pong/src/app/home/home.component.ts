@@ -23,10 +23,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isTutorialVisible = false;
 
   constructor(
-    private authService: AuthService, private translate: TranslateService ) {
-      this.translate.addLangs(['fr', 'en', 'es']);
-      this.translate.setDefaultLang('en');
-      this.translate.use('en');
+    private authService: AuthService ) {
   }
 
   onLogout() : void {
