@@ -151,7 +151,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             if (response.user && response.user.username) {
               this.currentUsername = response.user.username;
               if (response.user.avatar) {
-                this.userAvatar = `${environment.backendURL}${response.user.avatar}`;
+                this.userAvatar = `${environment.apiUrl}${response.user.avatar}`;
               } else {
                 this.userAvatar = 'assets/default-avatar.png';
               }
