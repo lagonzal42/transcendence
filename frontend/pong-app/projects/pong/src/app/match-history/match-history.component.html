@@ -1,13 +1,13 @@
 <div class="match-history">
-    <h3>Match History of {{currentUsername}} </h3>
+    <h3 i18n>Match History of {{currentUsername}} </h3>
     <div class="matches-list">
-        <div *ngIf="matches.length === 0" class="empty-message">
+        <div *ngIf="matches.length === 0" class="empty-message" i18n>
             No matches played yet
         </div>
         <div *ngFor="let match of matches" class="match-item">
             <div class="match-header">
                 <span class="match-date">{{match.match_date | date:'medium'}}</span>
-                <span class="match-type">{{match.match_type}}</span>
+                <span class="match-type" i18n>{{match.match_type}}</span>
             </div>
             <div class="match-details">
                 <span [class.winner]="match.winner_username === match.player1_username">

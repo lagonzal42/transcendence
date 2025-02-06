@@ -4,30 +4,31 @@
             <img src="../../assets/PongLogo.png" alt="Pong page logo">
         </button>
     </div>
+    <app-language-switcher></app-language-switcher>
     <div class="buttons" *ngIf="isReady">
         <button *ngIf="isLoggedIn" 
                 (click)="navigateToProfile()" 
                 class="btn-profile" 
-                id="profile-button">
-            Profile
+                id="profile-button" i18n>
+            {{ 'header.profile' | translate }}
         </button>
         <button *ngIf="isLoggedIn"
                 (click)="navigateToUpdateProfile()"
                 class="btn-update-profile"
-                id="update-profile-button">
-            Update Profile
+                id="update-profile-button" i18n>
+                {{ 'header.UpdateProfile' | translate }}
         </button>
         <button *ngIf="isLoggedIn"
                 (click)="logout()"
                 class="btn-logout"
-                id="logout-button">
-            Logout
+                id="logout-button" i18n>
+                {{ 'header.logout' | translate }}
         </button>
         <button *ngIf="!isLoggedIn" 
                 routerLink="/login" 
                 class="btn-login" 
-                id="login-button">
-            Login
+                id="login-button" i18n>
+                {{ 'header.login' | translate }}
         </button>
     </div>
 </header>

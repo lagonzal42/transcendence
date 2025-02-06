@@ -6,11 +6,12 @@ import { uniquePlayerNamesValidator } from '../uniquePlayerName/uniquePlayerName
 import { platform } from 'os';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tournament',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TranslateModule],
   templateUrl: './tournament.component.html',
   styleUrl: './tournament.component.css'
 })

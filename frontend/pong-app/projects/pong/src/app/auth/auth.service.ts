@@ -164,7 +164,7 @@ export class AuthService {
 
     return this.httpClient.post<any>(`${environment.backendURL}accounts/account-refresh/`, {
         refresh: refresh_token,
-        access: access_token, 
+        access: access_token,
         username: localStorage.getItem('username')
     }).pipe(
         map((response: any) => {

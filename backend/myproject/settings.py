@@ -233,6 +233,8 @@ AUTH_USER_MODEL = 'accounts.User'
 # Allow the frontend domain
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
+    "http://localhost:4201",
+    "http://localhost:4202",
 ]
 
 ########## Commented 20241101

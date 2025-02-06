@@ -6,11 +6,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { userInfo } from 'os';
 import { UserInterface } from '../auth/login/interfaces/user.interface';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-login',
 	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule],
+	imports: [ReactiveFormsModule, CommonModule, TranslateModule],
 	templateUrl: './login.component.html',
 	styleUrl: './login.component.css'
 })

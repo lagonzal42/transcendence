@@ -147,8 +147,12 @@ class StatusConsumer(AsyncWebsocketConsumer):
             
             self.scope["user"] = valid_user
             
-        except Exception as e:
+        except TokenError as e:
             print(f"Token validation error: {e}")
+            await self.close()
+            return
+        except Exception as e:
+            print(f"Unexpected error during token validation: {e}")
             await self.close()
             return
         

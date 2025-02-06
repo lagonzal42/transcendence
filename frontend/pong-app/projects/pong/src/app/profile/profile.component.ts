@@ -9,6 +9,7 @@ import { WebSocketService } from '../services/websocket.service';
 import { Subscription } from 'rxjs';
 import { MatchHistoryComponent } from '../match-history/match-history.component';
 import { environment } from '../../environment/environment'
+import { TranslateModule } from '@ngx-translate/core';
 
 interface User {
   id: number;
@@ -62,7 +63,7 @@ interface UserResponse {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatchHistoryComponent    ],
+  imports: [CommonModule, FormsModule, MatchHistoryComponent, TranslateModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })

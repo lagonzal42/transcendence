@@ -55,6 +55,8 @@ services:
       - ./frontend:/usr/src/app  # Montar el directorio local en el contenedor
     ports:
       - "4200:4200"
+      - "4201:4201"
+      - "4202:4202"
     depends_on:
       - backend
     networks:
