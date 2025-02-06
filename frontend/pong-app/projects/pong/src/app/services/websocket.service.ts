@@ -2,6 +2,7 @@ import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
+import { environment } from '../../environment/environment';
 
 interface UserStatus {
   user_id: number;
@@ -37,7 +38,7 @@ export class WebSocketService {
     const token = this.authService.getAccessToken();
     if (!token) return;
 
-    this.socket = new (window as any).WebSocket(`ws://localhost:8000/ws/status/?token=${token}`);
+    this.socket = new (window as any).WebSocket(`${environment.webSocketURL}ws/status/?token=${token}`);
     
     this.socket.onopen = () => {
       console.log('Status WebSocket connected');

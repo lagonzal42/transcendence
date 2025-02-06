@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { HttpClient} from '@angular/common/http'
 import { Router } from '@angular/router';
+import { environment } from '../../environment/environment';
 
 interface ErrorResponse {
   error: {
@@ -42,7 +43,7 @@ export class SignupComponent {
   
     if (this.signupForm.valid) {
       const formData = this.signupForm.value;
-      this.httpClient.post('http://localhost:8000/accounts/register/', formData).subscribe({
+      this.httpClient.post(`${environment.backendURL}accounts/register/`, formData).subscribe({
         next: (response: any) => {
           this.router.navigate(['']);
           console.log("Server response: ", response);

@@ -2,6 +2,7 @@ import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environment/environment';
 
 export interface ChatMessage {
   message: string;
@@ -26,7 +27,7 @@ export class ChatService {
 
   constructor(@Inject(PLATFORM_ID) platformId: Object, private http: HttpClient) {
     this.isBrowser = isPlatformBrowser(platformId);
-    this.API_URL = 'http://localhost:8000';
+    this.API_URL = environment.backendURL;
   }
 
   getMessages(roomName: string): Observable<ChatMessage[]> {
@@ -53,7 +54,7 @@ export class ChatService {
       error: (error) => console.error('Error fetching messages', error)
     });
 
-    this.socket = new WebSocket(`ws://localhost:8000/ws/chat/${roomName}/`);
+    this.socket = new WebSocket(`${environment.webSocketURL}ws/chat/${roomName}/`);
 
     this.socket.onopen = () => {
       console.log('WebSocket connection established');
@@ -96,18 +97,18 @@ export class ChatService {
   }
 
   blockUser(userId: number): Observable<any> {
-    return this.http.post(`${this.API_URL}/accounts/block/${userId}/`, {});
+    return this.http.post(`${this.API_URL}accounts/block/${userId}/`, {});
   }
 
   unblockUser(userId: number): Observable<any> {
-    return this.http.post(`${this.API_URL}/accounts/unblock/${userId}/`, {});
+    return this.http.post(`${this.API_URL}accounts/unblock/${userId}/`, {});
   }
 
   getBlockedUsers(): Observable<ChatUser[]> {
-    return this.http.get<ChatUser[]>(`${this.API_URL}/accounts/blocked-users/`);
+    return this.http.get<ChatUser[]>(`${this.API_URL}accounts/blocked-users/`);
   }
 
   getUserProfile(username: string): Observable<any> {
-    return this.http.get(`${this.API_URL}/accounts/users/${username}/`);
+    return this.http.get(`${this.API_URL}accounts/users/${username}/`);
   }
 }  

@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { WebSocketService } from '../services/websocket.service';
 import { Subscription } from 'rxjs';
 import { MatchHistoryComponent } from '../match-history/match-history.component';
+import { environment } from '../../environment/environment'
 
 interface User {
   id: number;
@@ -74,7 +75,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   friendRequests: FriendRequest[] = [];
   friends: Friend[] = [];
   blockedUsers: any[] = [];
-  public readonly API_URL = 'http://localhost:8000';
+  public readonly API_URL = environment.backendURL;
 
   userAvatar: string = 'assets/default-avatar.png';
   isUserOnline: boolean = false;
@@ -144,12 +145,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.authService.getCurrentUser().subscribe({
       next: (currentUser) => {
         this.isOwnProfile = currentUser.username === username;
-        this.http.get<UserResponse>(`http://localhost:8000/accounts/users/${username}/`).subscribe({
+        this.http.get<UserResponse>(`${environment.backendURL}accounts/users/${username}/`).subscribe({
           next: (response) => {
             if (response.user && response.user.username) {
               this.currentUsername = response.user.username;
               if (response.user.avatar) {
-                this.userAvatar = `http://localhost:8000${response.user.avatar}`;
+                this.userAvatar = `${environment.backendURL}${response.user.avatar}`;
               } else {
                 this.userAvatar = 'assets/default-avatar.png';
               }
@@ -191,7 +192,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.http.get<Friend[]>(`http://localhost:8000/accounts/users/${username}/friends/`).subscribe({
+    this.http.get<Friend[]>(`${environment.backendURL}accounts/users/${username}/friends/`).subscribe({
       next: (friends) => {
         console.log('Friends data:', friends);
         this.friends = friends;
@@ -243,7 +244,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   loadFriendRequests() {
-    this.http.get<FriendRequest[]>("http://localhost:8000/accounts/friend-requests/").subscribe({
+    this.http.get<FriendRequest[]>(`${environment.backendURL}accounts/friend-requests/`).subscribe({
       next: (requests) => {
         this.friendRequests = requests;
       },

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environment/environment';
 
 interface Match {
   id: number;
@@ -41,7 +42,7 @@ export class MatchHistoryComponent {
   }
 
   loadMatchHistory(username: string) {
-    this.http.get<Match[]>(`http://localhost:8000/accounts/users/${username}/matches/`)
+    this.http.get<Match[]>(`${environment.backendURL}accounts/users/${username}/matches/`)
       .subscribe({
         next: (matches) => {
           this.matches = matches;
