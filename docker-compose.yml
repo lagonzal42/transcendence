@@ -171,3 +171,4 @@ volumes:
     driver: local
   grafana-storage: {}
   prometheus_data: {}
+  grafana-provisioning: {}
