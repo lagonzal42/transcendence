@@ -5,6 +5,13 @@ import { BallComponent } from './ball.component';
 export class BallComponent4p extends BallComponent
 {
 
+    constructor(xPos: number, yPos: number)
+    {
+        super(xPos, yPos);
+        this.dx = Math.sin(this.getRandomNumber(0, Math.PI * 2));
+        this.dy = Math.cos(this.getRandomNumber(0, Math.PI * 2));
+    }
+
     calculateCollisions4p(PaddleLeft: Paddle, PaddleRight: Paddle, PaddleUp: Paddle, PaddleDown: Paddle): void
     {
         
