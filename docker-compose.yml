@@ -129,15 +129,18 @@ services:
       - app-network
   
   grafana:
-    image: grafana/grafana-enterprise
+    #image: grafana/grafana-enterprise
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: grafana
     restart: unless-stopped
     ports:
      - '3000:3000'
     volumes:
       - grafana-storage:/var/lib/grafana
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
-      - ./grafana/provisioning:/etc/grafana/provisioning
+      # - ./grafana/dashboards:/var/lib/grafana/dashboards
+      # - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
     - GF_SECURITY_ADMIN_USER=admin
     - GF_SECURITY_ADMIN_PASSWORD=admin
