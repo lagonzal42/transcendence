@@ -15,6 +15,9 @@ scrape_configs:
     static_configs:
       - targets: ['pg-exporter:9187']
 
+rule_files:
+  - "alert.rules.yml"
+
 remote_write:
   - url: 'https://prometheus-prod-39-prod-eu-north-0.grafana.net/api/prom/push'
     basic_auth:
