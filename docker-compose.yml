@@ -137,8 +137,8 @@ services:
     restart: unless-stopped
     ports:
      - '3000:3000'
-    volumes:
-      - grafana-storage:/var/lib/grafana
+    #volumes:
+      #- grafana-storage:/var/lib/grafana
       # - ./grafana/dashboards:/var/lib/grafana/dashboards
       # - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
@@ -172,6 +172,6 @@ volumes:
   postgres-data:
     name: postgres_data
     driver: local
-  grafana-storage: {}
+  #grafana-storage: {}
   prometheus_data: {}
   grafana-provisioning: {}
