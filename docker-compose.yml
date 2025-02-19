@@ -125,7 +125,7 @@ services:
     ports:
       - "9093:9093"
     volumes:
-      w- ./grafana/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ./grafana/alertmanager.yml:/etc/alertmanager/alertmanager.yml
     networks:
       - app-network
   
