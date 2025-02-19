@@ -15,68 +15,68 @@ services:
     ports:
       - "5432:5432"
 
-  backend:
-    container_name: backend
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000" 
-    # expose:
-    #   - "8000"
-    # environment:
-    #   - DB_NAME=postgres
-    #   - DB_USER=postgres
-    #   - DB_PASSWORD=postgres
-    #   - DB_HOST=db
-    #   - DB_PORT=5432
-    depends_on:
-      - db
-      - redis
-    networks:
-      - app-network
-    env_file:
-      - .env
+  # backend:
+  #   container_name: backend
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - .:/code
+  #   ports:
+  #     - "8000:8000" 
+  #   # expose:
+  #   #   - "8000"
+  #   # environment:
+  #   #   - DB_NAME=postgres
+  #   #   - DB_USER=postgres
+  #   #   - DB_PASSWORD=postgres
+  #   #   - DB_HOST=db
+  #   #   - DB_PORT=5432
+  #   depends_on:
+  #     - db
+  #     - redis
+  #   networks:
+  #     - app-network
+  #   env_file:
+  #     - .env
     
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6378:6379"
-    networks:
-      - app-network
+  # redis:
+  #   image: redis:latest
+  #   container_name: redis
+  #   ports:
+  #     - "6378:6379"
+  #   networks:
+  #     - app-network
 
-  frontend:
-    container_name: frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/usr/src/app  # Montar el directorio local en el contenedor
-    ports:
-      - "4200:4200"
-      - "4201:4201"
-      - "4202:4202"
-    depends_on:
-      - backend
-    networks:
-      - app-network
-    env_file:
-      - .env
+  # frontend:
+  #   container_name: frontend
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./frontend:/usr/src/app  # Montar el directorio local en el contenedor
+  #   ports:
+  #     - "4200:4200"
+  #     - "4201:4201"
+  #     - "4202:4202"
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - app-network
+  #   env_file:
+  #     - .env
 
-  adminer:
-    container_name: adminer
-    image: adminer
-    restart: always
-    networks:
-      - app-network
-    ports:
-      - "8080:8080"
-      - "9876:8080"
-    depends_on:
-      - db
+  # adminer:
+  #   container_name: adminer
+  #   image: adminer
+  #   restart: always
+  #   networks:
+  #     - app-network
+  #   ports:
+  #     - "8080:8080"
+  #     - "9876:8080"
+  #   depends_on:
+  #     - db
 
   node-exporter:
     image: prom/node-exporter

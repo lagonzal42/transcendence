@@ -1,11 +1,12 @@
 FROM grafana/grafana-enterprise
 
 # Copy provisioning files
-COPY ./grafana/dashboards /etc/grafana/provisioning/dashboards
-COPY ./grafana/provisioning /etc/grafana/provisioning
 
-# ADD ./grafana/dashboards /var/lib/grafana/dashboards
-# ADD ./grafana/provisioning /etc/grafana/provisioning
+COPY ./grafana/dashboards/node_exporter.json /var/lib/grafana/dashboards
+COPY ./grafana/dashboards/prometheus.json /var/lib/grafana/dashboards
+COPY ./grafana/dashboards/pg-exporter.json /var/lib/grafana/dashboards
+
+COPY ./grafana/provisioning /etc/grafana/provisioning
 
 # Set correct permissions
 USER root
