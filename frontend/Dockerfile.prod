@@ -21,3 +21,14 @@ RUN npm run build
 
 FROM nginx:1.26
 COPY --from=build /usr/src/app/pong-app/pong-app /usr/share/nginx/html
+# Install OpenSSL
+RUN apt-get update && apt-get install -y openssl
+
+# Generate SSL certificates
+RUN mkdir -p /etc/nginx/ssl && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/nginx/ssl/nginx.key \
+    -out /etc/nginx/ssl/nginx.crt \
+    -subj "/C=Spain/L=Urduliz/O=Transcendence/CN=transcendence.com"
+
+# ...existing code...
