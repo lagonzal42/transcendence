@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 //import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environment/environment';
 // import { map, catchError } from 'rxjs/operators';
 // import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
 // import { Injectable, Inject , PLATFORM_ID} from '@angular/core';
@@ -42,7 +43,7 @@ export class VerifyComponent implements OnInit {
 	}
 	
 	activateAccount(token: string): void {
-		this.http.get(`http://localhost:8000/accounts/activation/?token=${token}`).subscribe({
+		this.http.get(`${environment.backendURL}accounts/activation/?token=${token}`).subscribe({
 		  next: (response: any) => {
 			if (response.message === 'Account activated successfully') {
 			  this.message = 'Your account has been successfully activated!';

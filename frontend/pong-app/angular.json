@@ -66,14 +66,14 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "6kb"
                 }
               ],
               "outputHashing": "all"
             },
             "development": {
               "localize": false,
-              "optimization": false,
+              "optimization": true,
               "extractLicenses": false,
               "sourceMap": true
             },

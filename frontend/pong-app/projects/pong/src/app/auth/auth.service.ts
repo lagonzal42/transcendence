@@ -6,12 +6,13 @@ import { map, catchError, timeout } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../../src/environment/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  public readonly API_URL = 'http://localhost:8000';
+  public readonly API_URL =  environment.backendURL;
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private isAuthenticatedAparte = new BehaviorSubject<boolean>(false);
   private isAuthReadySubject = new BehaviorSubject<boolean>(false);
@@ -104,7 +105,7 @@ export class AuthService {
 
   login(userCredentials: UserInterface) : Observable<number>
   {
-    return (this.httpClient.post('http://localhost:8000/accounts/login/', userCredentials).pipe(
+    return (this.httpClient.post(`${environment.backendURL}accounts/login/`, userCredentials).pipe(
       map((response: any) => {
         if (isPlatformBrowser(this.platformId))
         {
@@ -161,7 +162,7 @@ export class AuthService {
         return of(401);
     }
 
-    return this.httpClient.post<any>('http://localhost:8000/accounts/account-refresh/', {
+    return this.httpClient.post<any>(`${environment.backendURL}accounts/account-refresh/`, {
         refresh: refresh_token,
         access: access_token,
         username: localStorage.getItem('username')
@@ -193,11 +194,11 @@ export class AuthService {
   }
 
   getCurrentUser(): Observable<UserInterface> {
-    return this.httpClient.get<UserInterface>(`http://localhost:8000/accounts/me/`);
+    return this.httpClient.get<UserInterface>(`${environment.backendURL}accounts/me/`);
   }
  
   updateProfile(formData: FormData, username: string): Observable<any> {
-    return this.httpClient.put(`http://localhost:8000/accounts/users/${username}/update/`, formData);
+    return this.httpClient.put(`${environment.backendURL}accounts/users/${username}/update/`, formData);
   }
 
   getAccessToken(): string | null {
@@ -209,7 +210,7 @@ export class AuthService {
   }
 
   validateCredentials(username: string, password: string): Observable<boolean> {
-    return this.httpClient.post<any>('http://localhost:8000/accounts/validate-credentials/', {
+    return this.httpClient.post<any>(`${environment.backendURL}accounts/validate-credentials/`, {
       username: username,
       password: password
     }).pipe(

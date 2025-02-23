@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
 import { Injectable, Inject , PLATFORM_ID} from '@angular/core';
+import {environment} from '../../../src/environment/environment'
 
 
 
@@ -46,7 +47,7 @@ export class TwoFactorComponent {
 				}
 				console.log('Sending verification info:', verifyInfo);
 				
-				this.httpClient.post('http://localhost:8000/two_factor_auth/verify/', verifyInfo).pipe(
+				this.httpClient.post(`${environment.backendURL}two_factor_auth/verify/`, verifyInfo).pipe(
 					map((response: any) => 
 					{
 						if (isPlatformBrowser(this.platformId))

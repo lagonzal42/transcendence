@@ -5,6 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { PaddleComponent as Paddle } from "../gameClasses/paddle/paddle.component"
 import { BallComponent as Ball } from '../gameClasses/ball/ball.component';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environment/environment';
 
 @Component({
   selector: 'app-pong-game',
@@ -221,7 +222,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
         this.ctx.fillText(winnerMessage, xPosition, yPosition);
 
 
-        this.http.post('http://localhost:8000/accounts/matches/', {
+        this.http.post(`${environment.backendURL}accounts/matches/`, {
             player1_username: this.leftPlayerName,
             player2_username: this.rightPlayerName,
             player1_score: this.leftPlayerScore,
