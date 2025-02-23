@@ -5,17 +5,7 @@
   "projects": {
     "pong": {
       "i18n": {
-        "sourceLocale": "en-US",
-        "locales": {
-          "es-PR": {
-            "translation": "projects/pong/src/locale/messages.es.xlf",
-            "baseHref": ""
-          },
-          "fr-FR": {
-            "translation": "projects/pong/src/locale/messages.fr.xlf",
-            "baseHref": ""
-          }
-        }
+        "sourceLocale": "en-US"
       },
       "projectType": "application",
       "schematics": {},
