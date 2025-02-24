@@ -2,6 +2,7 @@ import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
+import { environment } from '../../environment/environment';
 
 interface UserStatus {
   user_id: number;
@@ -37,7 +38,7 @@ export class WebSocketService {
     const token = this.authService.getAccessToken();
     if (!token) return;
 
-    this.socket = new (window as any).WebSocket(`ws://localhost:8000/ws/status/?token=${token}`);
+    this.socket = new (window as any).WebSocket(`${environment.webSocketURL}ws/status/?token=${token}`);
     
     this.socket.onopen = () => {
       console.log('Status WebSocket connected');
@@ -74,13 +75,24 @@ export class WebSocketService {
       console.log('Status WebSocket closed');
       if (this.authService.getAccessToken()) {
         console.log('Attempting to reconnect...');
-        setTimeout(() => this.connectWebSocket(), 5000);
+        setTimeout(() => this.handleTokenRefresh(), 100);
       }
     };
 
     this.socket.onerror = (error: any) => {
       console.error('Status WebSocket error:', error);
     };
+  }
+
+  private handleTokenRefresh() {
+    this.authService.refreshToken().subscribe(
+      () => {
+        this.connectWebSocket();
+      },
+      (error: any) => {
+        console.error('Token refresh failed:', error);
+      }
+    );
   }
 
   isUserOnline(userId: number): boolean {

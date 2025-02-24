@@ -1,0 +1,23 @@
+<div class="match-history">
+    <h3 i18n>Match History of {{currentUsername}} </h3>
+    <div class="matches-list">
+        <div *ngIf="matches.length === 0" class="empty-message" i18n>
+            No matches played yet
+        </div>
+        <div *ngFor="let match of matches" class="match-item">
+            <div class="match-header">
+                <span class="match-date">{{match.match_date | date:'medium'}}</span>
+                <span class="match-type" i18n>{{match.match_type}}</span>
+            </div>
+            <div class="match-details">
+                <span [class.winner]="match.winner_username === match.player1_username">
+                    {{match.player1_username}}
+                </span>
+                <span class="score">{{match.player1_score}} - {{match.player2_score}}</span>
+                <span [class.winner]="match.winner_username === match.player2_username">
+                  {{match.player2_username}}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

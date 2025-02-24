@@ -1,12 +1,11 @@
-<h2 class="singin-title text-center mb-4">Sign up</h2>
-
 <div class="singin-area container-fluid d-flex justify-content-center align-items-center">
+  <h2 class="login-title text-center mb-4">{{ 'signup.signup' | translate }}</h2>
   <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
     <div class="formGroup">
-      <label for="username">Username</label>
+      <label for="username">{{ 'signup.username' | translate }}</label>
       <input id="username" formControlName="username">
       <div *ngIf="signupForm.get('username')?.touched && signupForm.get('username')?.invalid">
-        <small class="text-danger">Invalid username</small>
+        <small class="text-danger">{{ 'signup.invalidUsername' | translate }}</small>
       </div>
       <div *ngIf="usernameError">
         <small class="text-danger">{{ usernameError }}</small>
@@ -14,10 +13,10 @@
     </div>
 
     <div class="formGroup">
-      <label for="email">Email</label>
+      <label for="email">{{ 'signup.email' | translate }}</label>
       <input id="email" formControlName="email">
       <div *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">
-        <small class="text-danger">Invalid email</small>
+        <small class="text-danger">{{ 'signup.invalidEmail' | translate }}</small>
       </div>
       <div *ngIf="emailError">
         <small class="text-danger">{{ emailError }}</small>
@@ -25,10 +24,10 @@
     </div>
 
     <div class="formGroup">
-      <label for="password">Password</label>
+      <label for="password">{{ 'signup.password' | translate }}</label>
       <input id="password" type="password" formControlName="password">
       <div *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid">
-        <small class="text-danger">Invalid password</small>
+        <small class="text-danger">{{ 'signup.invalidPassword' | translate }}</small>
       </div>
       <div *ngIf="passwordError">
         <small class="text-danger">{{ passwordError }}</small>
@@ -36,13 +35,13 @@
     </div>
 
     <div class="formGroup">
-      <label for="password2">Repeat password</label>
+      <label for="password2">{{ 'signup.repeatpassword' | translate }}</label>
       <input id="password2" type="password" formControlName="password2">
       <div *ngIf="signupForm.get('password2')?.touched && signupForm.get('password2')?.invalid">
-        <small class="text-danger">Invalid password</small>
+        <small class="text-danger" i18n>Invalid password</small>
       </div>
     </div>
 
-    <button class="submit-singin-btn" type="submit">Sign up</button>
+    <button class="submit-singin-btn" type="submit" i18n>Sign up</button>
   </form>
 </div>

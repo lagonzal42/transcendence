@@ -21,3 +21,5 @@ test
 .gitattributes
 **/.angular/*
 **/migrations/*
+cookies.txt
+.idea/*

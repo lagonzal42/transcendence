@@ -4,21 +4,21 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { HttpClient} from '@angular/common/http'
 import { Router } from '@angular/router';
+import { environment } from '../../environment/environment';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ErrorResponse {
   error: {
-    error?:{
-      username?: string[];
-      email?: string[];
-      password?: string[];
-    }
+    username?: string[];
+    email?: string[];
+    password?: string[];
   }
 }
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TranslateModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
@@ -38,37 +38,33 @@ export class SignupComponent {
   }
 
   onSubmit() {
-
     this.usernameError = '';
     this.emailError = '';
     this.passwordError = '';
   
     if (this.signupForm.valid) {
       const formData = this.signupForm.value;
-			console.log('Form Submitted!', this.signupForm.value);
-			//direction must be changed this is only for test
-			this.httpClient.post('http://localhost:8000/accounts/register/', formData).subscribe({
-				next: (response: any) =>
-				{
+      this.httpClient.post(`${environment.backendURL}accounts/register/`, formData).subscribe({
+        next: (response: any) => {
           this.router.navigate(['']);
-					console.log("Server response: ", response);
-				},
-				error: (err: any) => {
-					console.error("Error details", err.error.error);
-          if (err.error.error.username) {
-            this.usernameError = err.error.error.username[0];
+          console.log("Server response: ", response);
+        },
+        error: (err: ErrorResponse) => {
+          console.error("Error details:", err.error);
+          
+          if (err.error?.username) {
+            this.usernameError = err.error.username[0];
           }
-          if (err.error.error.email){
-            this.emailError = err.error.error.email[0];
+          if (err.error?.email) {
+            this.emailError = err.error.email[0];
           }
-          if (err.error.error.password){
-            this.passwordError = err.error.error.password[0];
+          if (err.error?.password) {
+            this.passwordError = err.error.password[0];
           }
-				}
-			})
+        }
+      });
     } else {
       console.log('Form is invalid');
-      // this.signupForm.markAllAsTouched();
     }
   }
 }

@@ -1,5 +1,5 @@
 from django.db import models
-from django.db import models
+import uuid
 import hashlib
 from datetime import timedelta
 from django.utils import timezone
@@ -68,3 +68,64 @@ class OtpToken(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+
+# For further activation and token creation
+class AccountActivateTokensManager(models.Manager):
+
+    def activate_user_by_token(self, activate_token):
+        # Obtain tokens within the validity period.
+        user_activate_token = self.filter(
+            activate_token=activate_token,
+            expired_at__gte=timezone.now()
+        ).first()
+
+        # Activate the account if a token exists
+        if user_activate_token:
+            user = user_activate_token.user
+            user.is_active = True
+            user.save()
+            return user
+        else:
+            raise self.model.DoesNotExist
+
+    def create_token(self, user):
+        token = self.model(user=user)
+        token.set_expiration_date()
+        token.save()
+        return token
+
+# Make activation token
+class AccountActivateToken(models.Model):
+    token = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE,
+                                related_name='activate_token')
+    activate_token = models.UUIDField(default=uuid.uuid4)
+    expired_at = models.DateTimeField()
+    objects = AccountActivateTokensManager()
+
+    def set_expiration_date(self):
+        self.expired_at = timezone.now() + timedelta(minutes=10)
+        self.save()
+        return self.expired_at
+
+
+class Match(models.Model):
+    player1 = models.ForeignKey(User, related_name='matches_as_player1', on_delete=models.CASCADE)
+    player2 = models.ForeignKey(User, related_name='matches_as_player2', on_delete=models.CASCADE)
+    player1_score = models.IntegerField()
+    player2_score = models.IntegerField()
+    winner = models.ForeignKey(User, related_name='matches_won', on_delete=models.CASCADE)
+    match_date = models.DateTimeField(auto_now_add=True)
+    match_type = models.CharField(max_length=20, choices=[
+        ('tournament', 'Tournament'),
+        ('local', 'Local')
+    ])
+
+    class Meta:
+        ordering = ['-match_date']
+
+    def __str__(self):
+        return f"{self.player1.username} vs {self.player2.username} - {self.match_date.strftime('%Y-%m-%d')}"

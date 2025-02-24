@@ -1,0 +1,15 @@
+<div class="container">
+    <h1 i18n>Account Activation</h1>
+
+    <div [ngClass]="{'success-message': isActivated, 'error-message': isError}">
+        <p>{{ message }}</p>
+    </div>
+        
+    <button *ngIf="isActivated"
+            (click)="goToHome()"
+            class="home-button"
+            i18n>
+        Go to Home Page
+    </button>
+</div>
+

@@ -1,4 +1,5 @@
-from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer, FriendSerializer
+from django.db.models import Q
+from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer, FriendSerializer, MatchSerializer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView
@@ -6,7 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 # For JWT
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -18,7 +20,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, action, permission_classes
 from django.contrib.auth.decorators import login_required
 
-from .models import User, OtpToken, FriendRequest
+from .models import User, OtpToken, FriendRequest, Match
 from django.db import IntegrityError
 from django.shortcuts import render
 
@@ -29,6 +31,15 @@ from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
+
+from .services import send_activation_email
+from .models import AccountActivateToken
+from django.shortcuts import redirect
+from django.urls import reverse
+import requests
+from two_factor_auth.views import Send2FACodeView
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.exceptions import TokenError
 
 class AccountList(ListAPIView):
     queryset = User.objects.all()
@@ -51,41 +62,58 @@ def send_code_to_user(email):
         to = [user.email]
     ).send()
 
-
-#   @user_not_authenticated
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     serializer_class = UserRegisterSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-    
-        if serializer.is_valid():
-            user = serializer.save()
-            refresh = RefreshToken.for_user(user)
+        if serializer.is_valid(raise_exception=True):
+            user_intra = serializer.save()
+            #user = serializer.data
+            # send_code_to_user(user['email'])
+            send_activation_email(user_intra, from_email="noreply@essencecatch.com")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            return Response({
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                },
-                'tokens': {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
-            }, status=status.HTTP_201_CREATED)
-        print(f"Validation errors for register: {serializer.errors}")
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+class ActivateAccountView(APIView):
+
+    permission_classes = [AllowAny]
+    def get(self, request):
+        token = request.query_params.get('token')  # Token passed as query param
+
+        try:
+            # Attempt to activate the user by token
+            user = AccountActivateToken.objects.activate_user_by_token(token)
+
+            # If the user is successfully activated
+            if user:
+
+                # Delete the activation token after successful activation
+                AccountActivateToken.objects.filter(user=user).delete()
+
+                return Response(
+                    {'message': 'Account activated successfully'},
+                    status=status.HTTP_200_OK
+                )
+            else:
+                return Response(
+                    {'message': 'Invalid or expired token.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        except AccountActivateToken.DoesNotExist:
+            return Response(
+                {'message': 'Invalid token or user does not exist.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
 
 class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, username):
-        # Obtain user info
         user = User.objects.filter(username=username).first()
 
         if not user:
-            # If user doesn't exist
             return Response({"message": "No User found"}, status=404)
 
         avatar_url = user.avatar.url if user.avatar else None
@@ -103,41 +131,163 @@ class UserDetailView(APIView):
                 "last_login": user.last_login,
                 "date_joined": user.date_joined,
                 "is_online": user.is_online,
+                "games_played": user.games_played,
+                "games_won": user.games_won,
+                "games_lost": user.games_lost,
             }
         }
         return Response(response_data, status=200)
 
+class UserMatchHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            matches = Match.objects.filter(
+                Q(player1=user) | Q(player2=user)
+            ).select_related('player1', 'player2', 'winner')
+
+            serializer = MatchSerializer(matches, many=True)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+
+class MatchCreateView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            # Get authentication status for both players from request
+            # player1_auth = request.data.get('isAuthenticated', {}).get('player1', False)
+            # player2_auth = request.data.get('isAuthenticated', {}).get('player2', False)
+
+            player1_auth = User.objects.get(username=request.data['player1_username'])
+            player2_auth = User.objects.get(username=request.data['player2_username'])
+
+            # If either player is not authenticated, don't save the match
+            if not player1_auth or not player2_auth:
+                return Response({'message': 'Match not saved - both players must be authenticated'}, status=200)
+
+            # Get the usernames
+            player1_username = request.data['player1_username']
+            player2_username = request.data['player2_username']
+            winner_username = request.data['winner_username']
+
+            try:
+                # Get both players from database
+                player1 = User.objects.get(username=player1_username)
+                player2 = User.objects.get(username=player2_username)
+                
+                # Determine winner
+                if winner_username == player1_username:
+                    winner = player1
+                elif winner_username == player2_username:
+                    winner = player2
+                else:
+                    return Response({'error': 'Invalid winner username'}, status=400)
+
+                # Create match data
+                match_data = {
+                    'player1': player1.id,
+                    'player2': player2.id,
+                    'player1_score': request.data['player1_score'],
+                    'player2_score': request.data['player2_score'],
+                    'winner': winner.id,
+                    'match_type': request.data['match_type']
+                }
+
+                # Use the serializer to validate and save
+                serializer = MatchSerializer(data=match_data)
+                if serializer.is_valid():
+                    match = serializer.save()
+                    
+                    # Update player stats
+                    player1.games_played += 1
+                    player2.games_played += 1
+                    
+                    if winner == player1:
+                        player1.games_won += 1
+                        player2.games_lost += 1
+                    else:
+                        player2.games_won += 1
+                        player1.games_lost += 1
+                    
+                    player1.save()
+                    player2.save()
+                    
+                    return Response(serializer.data, status=201)
+                return Response(serializer.errors, status=400)
+                
+            except User.DoesNotExist:
+                return Response({'error': 'One or more users not found'}, status=404)
+            
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
+
 class LoginView(GenericAPIView):
-    """API login class"""
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data) 
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            username = serializer.validated_data['username']
-            password = serializer.validated_data['password']
-            # print(username)
-            # print(password)
-            user = authenticate(username=username, password=password)
+            print(f"Logint attempt for: {serializer.validated_data['username']}")
 
-            if user:
-                refresh = RefreshToken.for_user(user)
-                return Response({
-                    'user': {
-                        'id': user.id,
-                        'username': user.username,
-                        'email': user.email,    
-                    },
-                    'tokens': {
-                        'refresh': str(refresh),
-                        'access': str(refresh.access_token),
-                    }       
-                }, status=status.HTTP_200_OK)
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            user_exists = User.objects.filter(username=serializer.validated_data['username']).exists()
+            print(f"User exists in DB: {user_exists}")
+
+
+            user = authenticate(
+                username=serializer.validated_data['username'],
+                password=serializer.validated_data['password']
+            )
+            print(f"Authentication result: {user}")  # Debug print
+
+            if user is not None:
+                # print(f"User authenticated, is_active: {user.is_active}")  # Debug print
+                # Instead of making a new request, call the 2FA view directly
+                from two_factor_auth.views import Send2FACodeView
+                
+                # Store user_id in session
+                request.session['user_id'] = user.id
+                request.session.save()
+                
+                # Use the same session for 2FA
+                two_factor_view = Send2FACodeView()
+                two_factor_response = two_factor_view.post(request, user_id=user.id)
+                return two_factor_response
             else:
-                print("entering here")
-                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'error': 'Invalid credentials'}, 
+                              status=status.HTTP_401_UNAUTHORIZED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        #     username = serializer.validated_data['username']
+        #     password = serializer.validated_data['password']
+        #     # print(username)
+        #     # print(password)
+        #     user = authenticate(username=username, password=password)
+
+        #     if user:
+        #         refresh = RefreshToken.for_user(user)
+        #         return Response({
+        #             'user': {
+        #                 'id': user.id,
+        #                 'username': user.username,
+        #                 'email': user.email,    
+        #             },
+        #             'tokens': {
+        #                 'refresh': str(refresh),
+        #                 'access': str(refresh.access_token),
+        #             }       
+        #         }, status=status.HTTP_200_OK)
+        #     else:
+        #         print("entering here")
+        #         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -223,12 +373,16 @@ class AcceptFriendRequestView(APIView):
         from_username = request.data.get('from_username')
         
         try:
-            # Find the pending request from this user
             friend_request = FriendRequest.objects.get(
                 from_user__username=from_username,
-                to_user=request.user,
-                status='pending'
+                to_user=request.user
             )
+            
+            if friend_request.status != 'pending':
+                return Response(
+                    {'error': f'Friend request already {friend_request.status}'}, 
+                    status=400
+                )
             
             # Add each other as friends
             request.user.friends.add(friend_request.from_user)
@@ -348,21 +502,25 @@ class SendFriendRequestView(APIView):
             if request.user.friends.filter(id=to_user.id).exists():
                 return Response({'error': 'Already friends'}, status=400)
 
-            # Check if a request already exists
+            # Check if there's a pending request in either direction
             existing_request = FriendRequest.objects.filter(
-                from_user=request.user,
-                to_user=to_user,
+                (Q(from_user=request.user) & Q(to_user=to_user)) |
+                (Q(from_user=to_user) & Q(to_user=request.user)),
+                status='pending'
             ).first()
 
             if existing_request:
-                if existing_request.status == 'pending':
-                    return Response({'error': 'Friend request already sent'}, status=200)
-                elif existing_request.status == 'declined':
-                    # If there was a declined request, update it to pending
-                    existing_request.status = 'pending'
+                if existing_request.from_user == request.user:
+                    return Response({'error': 'Friend request already sent'}, status=400)
+                else:
+                    # If there's a pending request from the other user, accept it
+                    request.user.friends.add(to_user)
+                    to_user.friends.add(request.user)
+                    existing_request.status = 'accepted'
                     existing_request.save()
-                    return Response({'message': 'Friend request sent successfully'}, status=201)
+                    return Response({'message': 'Friend request accepted'}, status=200)
 
+            # Create new friend request
             friend_request = FriendRequest.objects.create(
                 from_user=request.user,
                 to_user=to_user,
@@ -373,8 +531,10 @@ class SendFriendRequestView(APIView):
 
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
+        except IntegrityError:
+            return Response({'error': 'Friend request already exists'}, status=400)
         except Exception as e:
-            print(f"Error in SendFriendRequestView: {str(e)}")  # For debugging
+            print(f"Error in SendFriendRequestView: {str(e)}")
             return Response(
                 {'error': 'An error occurred while processing your request'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -445,3 +605,51 @@ class BlockedUsersListView(APIView):
                 {'error': 'An error occurred while fetching blocked users'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class AccountRefresh(TokenRefreshView):
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        access_token = request.data.get('access')
+        
+        username = request.data.get('username')
+        user = User.objects.get(username=username)
+        
+        if not refresh_token or not access_token:
+            return Response({'error': 'Both refresh and access tokens are required'}, status=400)
+
+        try:
+            #Validate both tokens
+            try:
+                RefreshToken(refresh_token)
+                AccessToken(access_token)
+            except TokenError:
+                #token validation failed
+                new_refresh = RefreshToken.for_user(user)
+                
+                return Response({
+                    'access': str(new_refresh.access_token),
+                    'refresh': str(new_refresh)
+                }, status=200)
+                
+            #usually it wont get here, but if the two tokens are valid it gets
+            return Response({
+                'access': access_token,
+                'refresh': refresh_token
+            }, status=200)
+            
+        except Exception as e:
+            return Response({'error': str(e)}, status=401)
+
+        
+@api_view(['POST'])
+def validate_credentials(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        return Response({'valid': True})
+    else:
+        return Response({'valid': False})

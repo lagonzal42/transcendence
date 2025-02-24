@@ -1,6 +1,6 @@
 <div class="profile-container">
     <div *ngIf="isLoading" class="loading">
-        Loading...
+        {{ 'profile.loading' | translate }}
     </div>
 
     <div *ngIf="error" class="error">
@@ -18,21 +18,21 @@
                 </div>
 
                 <div class="profile-right">
-                    <h2 class="profile-username">{{ currentUsername }}'s Profile</h2>
+                    <h2 class="profile-username">{{ 'profile.profile' | translate }} {{ currentUsername }}</h2>
                     
                     <div class="stats-section">
-                        <h3 class="section-title">Stats</h3>
+                        <h3 class="section-title">{{ 'profile.stats' | translate }}</h3>
                         <div class="stat-grid">
                             <div class="stat-item">
-                                <span class="stat-label">Games Played</span>
+                                <span class="stat-label">{{ 'profile.gamesPlayed' | translate }}</span>
                                 <span class="stat-value">{{userStats.games_played}}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Wins</span>
+                                <span class="stat-label">{{ 'profile.wins' | translate }}</span>
                                 <span class="stat-value">{{userStats.games_won}}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Losses</span>
+                                <span class="stat-label">{{ 'profile.losses' | translate }}</span>
                                 <span class="stat-value">{{userStats.games_lost}}</span>
                             </div>
                         </div>
@@ -41,9 +41,17 @@
             </div>
         </section>
 
+        <!-- <section class="match-history-section content-card">
+            <app-match-history></app-match-history>
+        </section> -->
+        <div>
+            <button (click)="GoToMatchHistory()" class="match-history-button">{{ 'profile.matchHistory' | translate }}</button>  
+        </div>
+        
+
         <div class="content-sections">
             <section *ngIf="isOwnProfile" class="search-section content-card">
-                <h3 class="section-title">Find Friends</h3>
+                <h3 class="section-title">{{ 'profile.findFriends' | translate }}</h3>
                 <div class="search-box">
                     <input 
                         type="text" 
@@ -51,35 +59,35 @@
                         placeholder="Search users..."
                         class="search-input"
                     >
-                    <button (click)="searchUsers()" class="search-button">Search</button>
+                    <button (click)="searchUsers()" class="search-button">{{ 'profile.search' | translate }}</button>
                 </div>
 
                 <ul *ngIf="searchResults.length > 0" class="search-results">
                     <li *ngFor="let user of searchResults" class="search-result-item">
-                        <span>{{ user.username }}</span>
-                        <button (click)="sendFriendRequest(user.username)" class="action-button">
-                            Send Friend Request
+                        <span i18n>{{ user.username }}</span>
+                        <button (click)="sendFriendRequest(user.username)" class="action-button" i18n>
+                            {{ 'profile.sendFriendRequest' | translate }}
                         </button>
                     </li>
                 </ul>
             </section>
 
             <section *ngIf="isOwnProfile && friendRequests.length > 0" class="friend-requests-section content-card">
-                <h3 class="section-title">Friend Requests</h3>
+                <h3 class="section-title">{{ 'profile.friendRequests' | translate }}</h3>
                 <ul class="request-list">
                     <li *ngFor="let request of friendRequests" class="request-item">
                         <span>{{ request.from_user.username }}</span>
                         <div class="action-buttons">
-                            <button (click)="acceptFriendRequest(request)" class="action-button accept">Accept</button>
-                            <button (click)="declineFriendRequest(request.id)" class="action-button decline">Decline</button>
+                            <button (click)="acceptFriendRequest(request)" class="action-button accept">{{ 'profile.accept' | translate }}</button>
+                            <button (click)="declineFriendRequest(request.id)" class="action-button decline">{{ 'profile.decline' | translate }}</button>
                         </div>
                     </li>
                 </ul>
             </section>
 
             <section class="friends-section content-card">
-                <h3 class="section-title">Friends</h3>
-                <div *ngIf="friends.length === 0" class="empty-state">No friends found</div>
+                <h3 class="section-title">{{ 'profile.friends' | translate }}</h3>
+                <div *ngIf="friends.length === 0" class="empty-state">{{ 'profile.noFriends' | translate }}</div>
                 <ul *ngIf="friends.length > 0" class="friends-list">
                     <li *ngFor="let friend of friends" class="list-item">
                         <div class="friend-info">
@@ -87,20 +95,20 @@
                             <span class="online-status" [class.online]="isUserOnline_f(friend.id)"></span>
                         </div>
                         <div class="action-buttons" *ngIf="isOwnProfile">
-                            <button (click)="startChat(friend.username)" class="action-button chat">Chat</button>
-                            <button (click)="blockUser(friend.id)" class="action-button block">Block</button>
+                            <button (click)="startChat(friend.username)" class="action-button chat">{{ 'profile.chat' | translate }}</button>
+                            <button (click)="blockUser(friend.id)" class="action-button block">{{ 'profile.block' | translate }}</button>
                         </div>
                     </li>
                 </ul>
             </section>
 
             <section *ngIf="isOwnProfile" class="blocked-section content-card">
-                <h3 class="section-title">Blocked Users</h3>
-                <div *ngIf="blockedUsers.length === 0" class="empty-state">No blocked users</div>
+                <h3 class="section-title">{{ 'profile.blockedUsers' | translate }}</h3>
+                <div *ngIf="blockedUsers.length === 0" class="empty-state">{{ 'profile.noBlockedUsers' | translate }}</div>
                 <ul *ngIf="blockedUsers.length > 0" class="blocked-list">
                     <li *ngFor="let user of blockedUsers" class="list-item">
                         <span>{{ user.username }}</span>
-                        <button (click)="unblockUser(user.id)" class="action-button unblock">Unblock</button>
+                        <button (click)="unblockUser(user.id)" class="action-button unblock">{{ 'profile.unblock' | translate }}</button>
                     </li>
                 </ul>
             </section>

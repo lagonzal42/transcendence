@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, FriendRequest
+from .models import User, FriendRequest, Match
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, write_only=True)
@@ -14,14 +14,20 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         password2 = attrs.get('password2', '')
         username = attrs.get('username', '')
         email = attrs.get('email', '')
+        
+        errors = {}
+        
         if password != password2:
-            raise serializers.ValidationError('passwords do not match')
+            errors['password'] = ['Passwords do not match']
         
         if User.objects.filter(username=username).exists():
-            raise serializers.ValidationError('This username is already taken')
+            errors['username'] = ['This username is already taken']
         
         if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError('This email is already taken')
+            errors['email'] = ['This email is already taken']
+            
+        if errors:
+            raise serializers.ValidationError(errors)
 
         return attrs
 
@@ -32,6 +38,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username = validated_data.get('username'),
             email = validated_data.get('email'),
+            #is_active=False  # User is deactivated by default
         )
         user.set_password(password)
         user.save()
@@ -82,3 +89,18 @@ class FriendSerializer(serializers.ModelSerializer):
         model = FriendRequest
         fields = ['from_user', 'to_user']
 
+class MatchSerializer(serializers.ModelSerializer):
+    # Fields for reading (GET requests) - converts User objects to usernames
+    player1_username = serializers.CharField(source='player1.username', read_only=True)
+    player2_username = serializers.CharField(source='player2.username', read_only=True)
+    winner_username = serializers.CharField(source='winner.username', read_only=True)
+
+    # Fields for writing (POST requests) - converts IDs to User objects
+    player1 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+    player2 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+    winner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+
+    class Meta:
+        model = Match
+        fields = ['id', 'player1_username', 'player2_username', 'player1_score', 
+                 'player2_score', 'winner_username', 'match_date', 'match_type', 'winner', 'player1', 'player2']

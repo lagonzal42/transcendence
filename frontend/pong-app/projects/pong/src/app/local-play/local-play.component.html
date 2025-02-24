@@ -1,23 +1,57 @@
 <div class="localPlayNameArea container-fluid d-flex justify-content-center align-items-center">
-    <h2 class="localPlayFormTitle text-center mb-4">Name selection</h2>
+    <h2 class="localPlayFormTitle text-center mb-4">{{ 'local.nameselection' | translate }}</h2>
     <form [formGroup]="localPlayForm" (ngSubmit)="onSubmit()">
       <div class="formGroup">
-        <label for="player1">Player 1</label>
+        <label for="player1">{{ 'local.player1' | translate }}</label>
         <input id="player1" formControlName="player1">
         <div *ngIf="localPlayForm.get('player1')?.touched && localPlayForm.get('player1')?.invalid">
-          <small class="text-danger">Invalid name</small>
+          <small class="text-danger">{{ 'local.invalidname' | translate }}</small>
         </div>
       </div>
+
       <div class="formGroup">
-        <label for="player2">Player 2</label>
+        <label>{{ 'local.player2type' | translate }}</label>
+        <div class="player2-options">
+          <label>
+            <input type="radio" formControlName="player2Type" value="guest" (change)="onPlayer2TypeChange('guest')" i18n>
+            {{ 'local.playasguest' | translate }}
+          </label>
+          <label>
+            <input type="radio" formControlName="player2Type" value="registered" (change)="onPlayer2TypeChange('registered')" i18n>
+            {{ 'local.playasregistereduser' | translate }}
+          </label>
+        </div>
+      </div>
+
+      <div class="formGroup" *ngIf="!showPlayer2Auth">
+        <label for="player2">{{ 'local.player2name' | translate }}</label>
         <input id="player2" formControlName="player2">
         <div *ngIf="localPlayForm.get('player2')?.touched && localPlayForm.get('player2')?.invalid">
-          <small class="text-danger">Invalid name</small>
+          <small class="text-danger">{{ 'local.invalidname' | translate }}</small>
         </div>
       </div>
-      <button class="submit-login-btn" type="submit">Ready</button>
-      <div *ngIf="localPlayForm.errors?.['nonUniquePlayers'] && localPlayForm.get('player2')?.touched && localPlayForm.get('player1')?.touched">
-        <small class="text-danger">Player names must be unique.</small>
+
+      <div *ngIf="showPlayer2Auth" class="auth-form" [formGroup]="player2AuthForm">
+        <div class="formGroup">
+          <label for="username">{{ 'local.username' | translate }}</label>
+          <input id="username" formControlName="username">
+        </div>
+        <div class="formGroup">
+          <label for="password">{{ 'local.password' | translate }}</label>
+          <input id="password" type="password" formControlName="password">
+        </div>
+        <button type="button" (click)="authenticatePlayer2()">{{'local.verifyplayer2' | translate }}</button>
+        <div *ngIf="player2AuthStatus !== 'none'"
+              [ngClass]="{'auth-success': player2AuthStatus === 'success',
+                        'auth-error': player2AuthStatus === 'error'}"  
+              class="auth-message">
+            {{ player2AuthMessage }}
+          </div>
+      </div>
+
+      <button class="submit-login-btn" type="submit">{{'local.ready' | translate }}</button>
+      <div *ngIf="localPlayForm.errors?.['nonUniquePlayers']">
+        <small class="text-danger">{{'local.playernamesmustbeunique' | translate }}</small>
       </div>
     </form>
 </div>

@@ -4,6 +4,9 @@
   "newProjectRoot": "projects",
   "projects": {
     "pong": {
+      "i18n": {
+        "sourceLocale": "en-US"
+      },
       "projectType": "application",
       "schematics": {},
       "root": "projects/pong",
@@ -13,16 +16,20 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "localize": true,
+            "i18nMissingTranslation": "error",
             "outputPath": "dist/pong",
             "index": "projects/pong/src/index.html",
             "browser": "projects/pong/src/main.ts",
             "polyfills": [
+              "projects/pong/src/polyfills.ts",
               "zone.js"
             ],
             "tsConfig": "projects/pong/tsconfig.app.json",
             "assets": [
               "projects/pong/src/favicon.ico",
-              "projects/pong/src/assets"
+              "projects/pong/src/assets",
+              "projects/pong/src/i18n"
             ],
             "styles": [
               "projects/pong/src/styles.css", 
@@ -37,6 +44,9 @@
           },
           "configurations": {
             "production": {
+              "localize": true,
+              "aot": true,
+              "i18nMissingTranslation": "error",
               "budgets": [
                 {
                   "type": "initial",
@@ -46,15 +56,22 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "6kb"
                 }
               ],
               "outputHashing": "all"
             },
             "development": {
-              "optimization": false,
+              "localize": false,
+              "optimization": true,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "es": {
+              "localize": ["es-PR"]
+            },
+            "fr": {
+              "localize": ["fr-FR"]
             }
           },
           "defaultConfiguration": "production"
@@ -67,6 +84,12 @@
             },
             "development": {
               "buildTarget": "pong:build:development"
+            },
+            "es": {
+              "buildTarget": "pong:build:es"
+            },
+            "fr": {
+              "buildTarget": "pong:build:fr"
             }
           },
           "defaultConfiguration": "development"
@@ -74,7 +97,9 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "pong:build"
+            "buildTarget": "pong:build",
+            "outputPath": "projects/pong/src/locale",
+            "format": "xlf"
           }
         },
         "test": {
