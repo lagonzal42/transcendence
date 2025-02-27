@@ -8,18 +8,22 @@ import { Router } from '@angular/router';
 export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   
-  // Skip interceptor for login and register endpoints
-  if (req.url.includes('/login/') || req.url.includes('/register/')) {
-    return next(req);
+  // Clone request with common headers
+  let modifiedReq = req.clone({
+    headers: req.headers
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+  });
+
+  // Add Authorization header if needed
+  if (!req.url.includes('/register/') && !req.url.includes('/login/')) {
+    const token = authService.getAccessToken();
+    if (token) {
+      modifiedReq = modifiedReq.clone({
+        headers: modifiedReq.headers.set('Authorization', `Bearer ${token}`)
+      });
+    }
   }
 
-  const token = authService.getAccessToken();
-  if (token) {
-    const authReq = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`)
-    });
-    return next(authReq);
-  }
-
-  return next(req);
+  return next(modifiedReq);
 }; 

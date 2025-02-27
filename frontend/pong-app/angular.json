@@ -44,6 +44,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/pong/src/environment/environment.ts",
+                  "with": "projects/pong/src/environment/environment.prod.ts"
+                }
+              ],
               "localize": true,
               "aot": true,
               "i18nMissingTranslation": "error",

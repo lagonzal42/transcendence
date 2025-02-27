@@ -232,9 +232,10 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # Allow the frontend domain
 CORS_ALLOWED_ORIGINS = [
+    "https://localhost:8089",
     "http://localhost:4200",
     "http://localhost:4201",
-    "http://localhost:4202",
+    "http://localhost:4202"
 ]
 
 ########## Commented 20241101
@@ -310,3 +311,28 @@ AUTHENTICATION_BACKENDS = [
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8089']
+
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]

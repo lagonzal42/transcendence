@@ -11,7 +11,7 @@ RUN npm install
 COPY ./pong-app .
 WORKDIR /usr/src/app/pong-app/pong-app
 RUN npx ngcc --properties es2023 
-RUN npm run build
+RUN npm run build --configuration=production
 
 # Segunda etapa - Nginx
 FROM nginx:1.26
