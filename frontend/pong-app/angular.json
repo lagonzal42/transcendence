@@ -29,7 +29,11 @@
             "assets": [
               "projects/pong/src/favicon.ico",
               "projects/pong/src/assets",
-              "projects/pong/src/i18n"
+              {
+                "glob": "**/*",
+                "input": "projects/pong/src/assets/i18n",
+                "output": "/assets/i18n/"
+              }
             ],
             "styles": [
               "projects/pong/src/styles.css", 

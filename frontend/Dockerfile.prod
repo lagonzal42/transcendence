@@ -19,6 +19,11 @@ FROM nginx:1.26
 # Copiar los archivos de build de Angular
 COPY --from=build /usr/src/app/pong-app/dist/pong/* /usr/share/nginx/html/
 
+RUN cp -r /usr/share/nginx/html/en-US/assets /usr/share/nginx/html/assets
+
+# Ensure i18n files and assets are in the correct location
+#COPY --from=build /usr/src/app/pong-app/dist/pong/en-US/assets /usr/share/nginx/html/assets
+
 # Install OpenSSL
 RUN apt-get update && apt-get install -y openssl
 
