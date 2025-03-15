@@ -113,19 +113,51 @@ class AccountActivateToken(models.Model):
 
 
 class Match(models.Model):
-    player1 = models.ForeignKey(User, related_name='matches_as_player1', on_delete=models.CASCADE)
-    player2 = models.ForeignKey(User, related_name='matches_as_player2', on_delete=models.CASCADE)
+    # Required players (for 1v1)
+    player1 = models.ForeignKey(User, related_name='matches_as_player1', on_delete=models.CASCADE, null=True, blank=True)
+    player2 = models.ForeignKey(User, related_name='matches_as_player2', on_delete=models.CASCADE, null=True, blank=True)
     player1_score = models.IntegerField()
     player2_score = models.IntegerField()
-    winner = models.ForeignKey(User, related_name='matches_won', on_delete=models.CASCADE)
+    
+    # Optional players (for 4-player matches)
+    player3 = models.ForeignKey(User, related_name='matches_as_player3', on_delete=models.CASCADE, null=True, blank=True)
+    player4 = models.ForeignKey(User, related_name='matches_as_player4', on_delete=models.CASCADE, null=True, blank=True)
+    player3_score = models.IntegerField(null=True, blank=True)
+    player4_score = models.IntegerField(null=True, blank=True)
+    
+    # Store guest player names
+    player1_name = models.CharField(max_length=150)
+    player2_name = models.CharField(max_length=150)
+    player3_name = models.CharField(max_length=150, null=True, blank=True)
+    player4_name = models.CharField(max_length=150, null=True, blank=True)
+    
+    winner_name = models.CharField(max_length=150)
+    winner = models.ForeignKey(User, related_name='matches_won', on_delete=models.CASCADE, null=True, blank=True)
     match_date = models.DateTimeField(auto_now_add=True)
     match_type = models.CharField(max_length=20, choices=[
         ('tournament', 'Tournament'),
-        ('local', 'Local')
+        ('local', 'Local'),
+        ('multiplayer', 'Multiplayer')
     ])
 
     class Meta:
         ordering = ['-match_date']
 
     def __str__(self):
-        return f"{self.player1.username} vs {self.player2.username} - {self.match_date.strftime('%Y-%m-%d')}"
+        if self.match_type == 'multiplayer' and self.player3_name and self.player4_name:
+            return f"4-Player Match: {self.player1_name}, {self.player2_name}, {self.player3_name}, {self.player4_name} - {self.match_date.strftime('%Y-%m-%d')}"
+        return f"{self.player1_name} vs {self.player2_name} - {self.match_date.strftime('%Y-%m-%d')}"
+
+    def save(self, *args, **kwargs):
+        # Validate match type and players
+        if self.match_type == 'multiplayer':
+            if not all([self.player3, self.player4, self.player3_score, self.player4_score]):
+                raise ValueError("Multiplayer matches require all 4 players and their scores")
+        else:
+            # Ensure player3 and player4 are None for non-multiplayer matches
+            self.player3 = None
+            self.player4 = None
+            self.player3_score = None
+            self.player4_score = None
+        
+        super().save(*args, **kwargs)

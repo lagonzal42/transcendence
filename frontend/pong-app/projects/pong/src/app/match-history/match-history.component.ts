@@ -6,11 +6,15 @@ import { environment } from '../../environment/environment';
 
 interface Match {
   id: number;
-  player1_username: string;
-  player2_username: string;
+  player1_name: string;
+  player2_name: string;
+  player3_name?: string;
+  player4_name?: string;
   player1_score: number;
   player2_score: number;
-  winner_username: string;
+  player3_score?: number;
+  player4_score?: number;
+  winner_name: string;
   match_date: string;
   match_type: string;
 }
@@ -20,9 +24,9 @@ interface Match {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './match-history.component.html',
-  styleUrl: './match-history.component.css'
+  styleUrls: ['./match-history.component.css']
 })
-export class MatchHistoryComponent {
+export class MatchHistoryComponent implements OnInit {
   matches: Match[] = [];
   currentUsername: string = '';
 

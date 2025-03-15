@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Page4Component } from './page4.component';
+import { Page4Component } from './multiplayer-setup.component';
 
 describe('Page4Component', () => {
   let component: Page4Component;

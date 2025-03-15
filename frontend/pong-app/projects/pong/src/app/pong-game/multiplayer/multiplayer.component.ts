@@ -3,6 +3,8 @@ import { Router, NavigationExtras } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { PaddleComponent as Paddle } from "../gameClasses/paddle/paddle.component"
 import { BallComponent4p as Ball } from '../gameClasses/ball/ball4p.component';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environment/environment';
 
 @Component({
   selector: 'app-pong-game',
@@ -21,6 +23,8 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   // Nombres de los jugadores
   public leftPlayerName: string = '';
   public rightPlayerName: string = '';
+  public upPlayerName: string = '';
+  public downPlayerName: string = '';
 
   // Paddle settings
   private paddleHeight: number = 120;
@@ -40,7 +44,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   public upPlayerScore: number = 0;
   public downPlayerScore: number = 0;
   private winningScore: number = 10;
-  private gameEnded: boolean = false;
+  public gameEnded: boolean = false;
 
   // Paddle movement flags
   private leftPaddleUp: boolean = false;
@@ -56,16 +60,33 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   // Point status
   private pointStatus = {upGoal : false, downGoal : false, leftGoal : false, rightGoal : false};
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router, private ngZone: NgZone) {
+  // Authentication status
+  private playersAuthenticated: { player1: boolean; player2: boolean; player3: boolean; player4: boolean } = { player1: false, player2: false, player3: false, player4: false };
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object, 
+    private router: Router, 
+    private ngZone: NgZone,
+    private http: HttpClient
+  ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
       const players = navigation.extras.state['players'];
       if (players) {
-        this.leftPlayerName = players.leftPlayerName;
-        this.rightPlayerName = players.rightPlayerName;
+        this.leftPlayerName = players.player1Name;
+        this.rightPlayerName = players.player2Name;
+        this.upPlayerName = players.player3Name;
+        this.downPlayerName = players.player4Name;
+        console.log("up: " + this.upPlayerName + " down: " + this.downPlayerName + " left: " + this.leftPlayerName + " right: " + this.rightPlayerName);
         
+        // Store authentication status
+        this.playersAuthenticated = {
+          player1: players.isAuthenticated?.player1 || false,
+          player2: players.isAuthenticated?.player2 || false,
+          player3: players.isAuthenticated?.player3 || false,
+          player4: players.isAuthenticated?.player4 || false
+        };
       }
-
     }
   }
 
@@ -222,7 +243,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
         || this.upPlayerScore >= this.winningScore || this.downPlayerScore >= this.winningScore) 
     {
       this.gameEnded = true;
-      //this.displayWinner();
+      this.displayWinner();
       return; // Stop drawing further
     }
 
@@ -278,32 +299,62 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   }
 
   displayWinner(): void {
-    if (this.ctx) {
-      this.ctx.clearRect(0, 0, this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
-      this.ctx.font = '30px Arial';
-      this.ctx.fillStyle = '#FFFFFF';
-
-      let winningPlayers: string[] = [];
-      if (this.leftPlayerScore >= this.winningScore) {
-        winningPlayers.push(this.leftPlayerName);
-      }
-      if (this.rightPlayerScore >= this.winningScore) {
-        winningPlayers.push(this.rightPlayerName);
-      }
-      // if (this.upPlayerScore >= this.winningScore) {
-      //   winningPlayers.push(this.upPlayerName);
-      // }
-      // if (this.downPlayerScore >= this.winningScore) {
-      //   winningPlayers.push(this.downPlayerName);
-      // }
-
-      const winnerMessage = `${winningPlayers.join(" and ")} wins!`;
-
-      const textWidth = this.ctx.measureText(winnerMessage).width;
-      const xPosition = (this.pongCanvas.nativeElement.width - textWidth) / 2;
-      const yPosition = this.pongCanvas.nativeElement.height / 2;
-
-      this.ctx.fillText(winnerMessage, xPosition, yPosition);
+    if (!this.ctx) return;
+    this.gameEnded = true;
+    
+    // Clear the canvas
+    this.ctx.clearRect(0, 0, this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
+    
+    // Draw a semi-transparent overlay
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    this.ctx.fillRect(0, 0, this.pongCanvas.nativeElement.width, this.pongCanvas.nativeElement.height);
+    
+    // Set text properties
+    this.ctx.font = '40px Arial';
+    this.ctx.fillStyle = 'white';
+    this.ctx.textAlign = 'center';
+    
+    // Determine the winner
+    let winnerName = '';
+    if (this.leftPlayerScore >= this.winningScore) {
+      winnerName = this.leftPlayerName;
+    } else if (this.rightPlayerScore >= this.winningScore) {
+      winnerName = this.rightPlayerName;
+    } else if (this.upPlayerScore >= this.winningScore) {
+      winnerName = this.upPlayerName;
+    } else if (this.downPlayerScore >= this.winningScore) {
+      winnerName = this.downPlayerName;
     }
+    
+    // Draw winner text
+    this.ctx.fillText(
+      `${winnerName} wins!`, 
+      this.pongCanvas.nativeElement.width / 2, 
+      this.pongCanvas.nativeElement.height / 2 - 40
+    );
+    
+    // Draw score text
+    this.ctx.font = '24px Arial';
+    this.ctx.fillText(
+      `${this.leftPlayerName}: ${this.leftPlayerScore} | ${this.rightPlayerName}: ${this.rightPlayerScore}`,
+      this.pongCanvas.nativeElement.width / 2,
+      this.pongCanvas.nativeElement.height / 2 + 20
+    );
+    
+    if (this.upPlayerName && this.downPlayerName) {
+      this.ctx.fillText(
+        `${this.upPlayerName}: ${this.upPlayerScore} | ${this.downPlayerName}: ${this.downPlayerScore}`,
+        this.pongCanvas.nativeElement.width / 2,
+        this.pongCanvas.nativeElement.height / 2 + 60
+      );
+    }
+    
+    // Draw restart instruction
+    this.ctx.font = '20px Arial';
+    this.ctx.fillText(
+      'Press SPACE to restart',
+      this.pongCanvas.nativeElement.width / 2,
+      this.pongCanvas.nativeElement.height / 2 + 120
+    );
   }
 }

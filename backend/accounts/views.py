@@ -158,33 +158,41 @@ class MatchCreateView(APIView):
 
     def post(self, request):
         try:
-            # Get authentication status for both players from request
-            # player1_auth = request.data.get('isAuthenticated', {}).get('player1', False)
-            # player2_auth = request.data.get('isAuthenticated', {}).get('player2', False)
-
-            player1_auth = User.objects.get(username=request.data['player1_username'])
-            player2_auth = User.objects.get(username=request.data['player2_username'])
-
-            # If either player is not authenticated, don't save the match
-            if not player1_auth or not player2_auth:
-                return Response({'message': 'Match not saved - both players must be authenticated'}, status=200)
-
-            # Get the usernames
+            # Get basic match data
             player1_username = request.data['player1_username']
             player2_username = request.data['player2_username']
+            match_type = request.data['match_type']
             winner_username = request.data['winner_username']
 
             try:
-                # Get both players from database
+                # Get required players
                 player1 = User.objects.get(username=player1_username)
                 player2 = User.objects.get(username=player2_username)
                 
+                # Initialize optional players
+                player3 = None
+                player4 = None
+                
+                # For multiplayer matches, get additional players
+                if match_type == 'multiplayer':
+                    player3_username = request.data.get('player3_username')
+                    player4_username = request.data.get('player4_username')
+                    if player3_username and player4_username:
+                        player3 = User.objects.get(username=player3_username)
+                        player4 = User.objects.get(username=player4_username)
+
                 # Determine winner
+                winner = None
                 if winner_username == player1_username:
                     winner = player1
                 elif winner_username == player2_username:
                     winner = player2
-                else:
+                elif player3 and winner_username == player3.username:
+                    winner = player3
+                elif player4 and winner_username == player4.username:
+                    winner = player4
+                
+                if not winner:
                     return Response({'error': 'Invalid winner username'}, status=400)
 
                 # Create match data
@@ -194,27 +202,35 @@ class MatchCreateView(APIView):
                     'player1_score': request.data['player1_score'],
                     'player2_score': request.data['player2_score'],
                     'winner': winner.id,
-                    'match_type': request.data['match_type']
+                    'match_type': match_type
                 }
 
-                # Use the serializer to validate and save
+                # Add multiplayer data if applicable
+                if match_type == 'multiplayer' and player3 and player4:
+                    match_data.update({
+                        'player3': player3.id,
+                        'player4': player4.id,
+                        'player3_score': request.data['player3_score'],
+                        'player4_score': request.data['player4_score']
+                    })
+
+                # Validate and save
                 serializer = MatchSerializer(data=match_data)
                 if serializer.is_valid():
                     match = serializer.save()
                     
                     # Update player stats
-                    player1.games_played += 1
-                    player2.games_played += 1
-                    
-                    if winner == player1:
-                        player1.games_won += 1
-                        player2.games_lost += 1
-                    else:
-                        player2.games_won += 1
-                        player1.games_lost += 1
-                    
-                    player1.save()
-                    player2.save()
+                    players = [player1, player2]
+                    if match_type == 'multiplayer' and player3 and player4:
+                        players.extend([player3, player4])
+
+                    for player in players:
+                        player.games_played += 1
+                        if player == winner:
+                            player.games_won += 1
+                        else:
+                            player.games_lost += 1
+                        player.save()
                     
                     return Response(serializer.data, status=201)
                 return Response(serializer.errors, status=400)

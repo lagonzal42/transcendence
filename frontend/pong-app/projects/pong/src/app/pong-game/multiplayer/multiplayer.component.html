@@ -1,7 +1,16 @@
 <div class="game-container">
     <canvas #pongCanvas [width]="canvasSize" [height]="canvasSize"></canvas>
-    <div id="player1Score" class="score">0</div>
-    <div id="player2Score" class="score">0</div>
-    <div id="player3Score" class="score">0</div>
-    <div id="player4Score" class="score">0</div>
+    @if (gameEnded) {
+        <div class="home-button-container">
+          <button class="back-home-btn" routerLink="/" i18n>Back to Home</button>
+        </div>
+      }
+
+<!-- Score display -->
+<div class="score-container">
+<div class="score">{{ leftPlayerName }}: {{ leftPlayerScore }}</div>
+<div class="score">{{ rightPlayerName }}: {{ rightPlayerScore }}</div>
+<div class="score" *ngIf="upPlayerName">{{ upPlayerName }}: {{ upPlayerScore }}</div>
+<div class="score" *ngIf="downPlayerName">{{ downPlayerName }}: {{ downPlayerScore }}</div>
+</div>
 </div>
