@@ -6,15 +6,15 @@ import { environment } from '../../environment/environment';
 
 interface Match {
   id: number;
-  player1_name: string;
-  player2_name: string;
-  player3_name?: string;
-  player4_name?: string;
+  player1_username: string;
+  player2_username: string;
+  player3_username: string;
+  player4_username: string;
   player1_score: number;
   player2_score: number;
-  player3_score?: number;
-  player4_score?: number;
-  winner_name: string;
+  player3_score: number;
+  player4_score: number;
+  winner_username: string;
   match_date: string;
   match_type: string;
 }

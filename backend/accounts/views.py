@@ -174,6 +174,8 @@ class MatchCreateView(APIView):
             player2_username = request.data['player2_username']
             winner_username = request.data['winner_username']
 
+            player3_username = request.data['player3_username']
+            player4_username = request.data['player4_username']
             try:
                 # Get both players from database
                 player1 = User.objects.get(username=player1_username)
@@ -193,9 +195,25 @@ class MatchCreateView(APIView):
                     'player2': player2.id,
                     'player1_score': request.data['player1_score'],
                     'player2_score': request.data['player2_score'],
-                    'winner': winner.id,
-                    'match_type': request.data['match_type'],
+                    #'winner': winner.id,
+                    'match_type': request.data['match_type']
                 }
+
+                if not player3_username in [None, ''] and not player4_username in [None, '']:
+                    player3 = User.objects.get(username=player3_username)
+                    player4 = User.objects.get(username=player4_username)
+                    match_extension = {
+                        'player3': player3.id,
+                        'player4': player4.id,
+                        'player3_score': request.data['player3_score'],
+                        'player4_score': request.data['player4_score']
+                    }
+                    match_data.update(match_extension)
+                    if winner_username == player3_username:
+                        winner = player3
+                    elif winner_username == player4_username:
+                        winner = player4
+                match_data.update({'winner': winner.id})
 
                 # Use the serializer to validate and save
                 serializer = MatchSerializer(data=match_data)
