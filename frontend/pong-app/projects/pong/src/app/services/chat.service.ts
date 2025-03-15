@@ -38,7 +38,7 @@ export class ChatService {
   }
 
   fetchPreviousMessages(roomName: string): Observable<ChatMessage[]> {
-    return this.http.get<ChatMessage[]>(`${this.API_URL}/chat/messages/${roomName}/`);
+    return this.http.get<ChatMessage[]>(`${this.API_URL}chat/messages/${roomName}/`);
   }
 
   connectToChat(roomName: string, username: string): void {

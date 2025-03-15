@@ -46,6 +46,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.roomName = params['roomId'];
       if (this.roomName.startsWith('private_')) {
         const users = this.roomName.replace('private_', '').split('_');
+        console.log("IMPORTANT:  ", `${this.authService.API_URL}/accounts/me/`)
         this.http.get<User>(`${this.authService.API_URL}/accounts/me/`).subscribe({
           next: (user) => {
             this.username = user.username;

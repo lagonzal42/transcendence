@@ -12,7 +12,7 @@ import { environment } from '../../../src/environment/environment'
   providedIn: 'root'
 })
 export class AuthService {
-  public readonly API_URL =  environment.backendURL;
+  public readonly API_URL =  environment.apiUrl;
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private isAuthenticatedAparte = new BehaviorSubject<boolean>(false);
   private isAuthReadySubject = new BehaviorSubject<boolean>(false);
