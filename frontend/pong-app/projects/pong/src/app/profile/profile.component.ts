@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   friendRequests: FriendRequest[] = [];
   friends: Friend[] = [];
   blockedUsers: any[] = [];
-  public readonly API_URL = environment.backendURL;
+  public readonly API_URL = environment.apiUrl;
 
   userAvatar: string = 'assets/default-avatar.png';
   isUserOnline: boolean = false;
@@ -151,7 +151,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             if (response.user && response.user.username) {
               this.currentUsername = response.user.username;
               if (response.user.avatar) {
-                this.userAvatar = `${environment.backendURL}${response.user.avatar}`;
+                this.userAvatar = `${environment.apiUrl}${response.user.avatar}`;
               } else {
                 this.userAvatar = 'assets/default-avatar.png';
               }
