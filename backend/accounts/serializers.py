@@ -90,22 +90,26 @@ class FriendSerializer(serializers.ModelSerializer):
         fields = ['from_user', 'to_user']
 
 class MatchSerializer(serializers.ModelSerializer):
+    # Fields for reading (GET requests) - converts User objects to usernames
+    player1_username = serializers.CharField(source='player1.username', read_only=True)
+    player2_username = serializers.CharField(source='player2.username', read_only=True)
+    player3_username = serializers.CharField(source='player3.username', read_only=True, allow_null=True)
+    player4_username = serializers.CharField(source='player4.username', read_only=True, allow_null=True)
+    winner_username = serializers.CharField(source='winner.username', read_only=True)
+
+    # Fields for writing (POST requests) - converts IDs to User objects
+    player1 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+    player2 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+    player1 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True, allow_null=True)
+    player2 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True, allow_null=True)
+    winner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
+
     class Meta:
         model = Match
         fields = [
-            'id', 
-            'player1', 'player2', 'player3', 'player4',
-            'player1_name', 'player2_name', 'player3_name', 'player4_name',
-            'player1_score', 'player2_score', 'player3_score', 'player4_score',
-            'winner', 'winner_name', 'match_date', 'match_type'
+            'id', 'player1', 'player2', 'player3', 'player4', 
+            'player1_score', 'player2_score', 'winner', 
+            'match_date', 'match_type', 
+            'player1_username', 'player2_username', 
+            'player3_username', 'player4_username', 'winner_username'
         ]
-
-    def validate(self, data):
-        # Validate that multiplayer matches have all required names and scores
-        if data.get('match_type') == 'multiplayer':
-            if not all([data.get('player3_name'), data.get('player4_name')]):
-                raise serializers.ValidationError("Multiplayer matches require all 4 player names")
-            if not all([data.get('player3_score'), data.get('player4_score')]):
-                raise serializers.ValidationError("Multiplayer matches require scores for all players")
-        
-        return data
