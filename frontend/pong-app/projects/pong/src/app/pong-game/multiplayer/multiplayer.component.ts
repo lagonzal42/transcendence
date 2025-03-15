@@ -357,5 +357,24 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
       this.pongCanvas.nativeElement.width / 2,
       this.pongCanvas.nativeElement.height / 2 + 120
     );
+    this.http.post(`${environment.backendURL}accounts/matches/`, {
+      player1_username: this.leftPlayerName,
+      player2_username: this.rightPlayerName,
+      player3_username: this.upPlayerName,
+      player4_username: this.downPlayerName,
+      player1_score: this.leftPlayerScore,
+      player2_score: this.rightPlayerScore,
+      player3_score: this.upPlayerScore,
+      player4_score: this.downPlayerScore,
+      winner_username: winnerName,
+      match_type: 'multiplayer'
+    }).subscribe({
+      next: (response) => console.log('Match processed successfully:', response),
+      error: (error) => console.error('Error processing match:', error)
+    });
+  
   }
+
+
+
 }

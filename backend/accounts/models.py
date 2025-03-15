@@ -119,8 +119,8 @@ class Match(models.Model):
     player4 = models.ForeignKey(User, related_name='matches_as_player4', on_delete=models.CASCADE, null=True, blank=True)
     player1_score = models.IntegerField()
     player2_score = models.IntegerField()
-    player1_score = models.IntegerField(null=True, blank=True)
-    player2_score = models.IntegerField(null=True, blank=True)
+    player3_score = models.IntegerField(null=True, blank=True)
+    player4_score = models.IntegerField(null=True, blank=True)
     winner = models.ForeignKey(User, related_name='matches_won', on_delete=models.CASCADE)
     match_date = models.DateTimeField(auto_now_add=True)
     match_type = models.CharField(max_length=20, choices=[

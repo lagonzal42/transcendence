@@ -17,11 +17,11 @@ export class BallComponent {
       this.xPosition = xPos;
       this.yPosition = yPos;
       this.ballRadius = 10;
-      let ranNum = this.getRandomNumber(-45, 45);
-      let ranNum2 = this.getRandomNumber(180 - 45, 180 + 45);
+      let ranNum = this.getRandomNumber(-0.3, 0.3);
+      let ranNum2 = this.getRandomNumber(0.7, 1.3);
       let ranNumD= this.getRandomNumber(0, 1);
-      this.dx = Math.sin(ranNumD? ranNum : ranNum2);
-      this.dy = Math.cos(ranNumD? ranNum : ranNum2);
+      this.dx = Math.cos(ranNumD? ranNum : ranNum2);
+      this.dy = Math.sin(ranNumD? ranNum : ranNum2);
       this.touches = 0;
       this.speed = 7;
       this.lastTouch = 0;

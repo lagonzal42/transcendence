@@ -194,7 +194,7 @@ class MatchCreateView(APIView):
                     'player1_score': request.data['player1_score'],
                     'player2_score': request.data['player2_score'],
                     'winner': winner.id,
-                    'match_type': request.data['match_type']
+                    'match_type': request.data['match_type'],
                 }
 
                 # Use the serializer to validate and save
@@ -217,7 +217,7 @@ class MatchCreateView(APIView):
                     player2.save()
                     
                     return Response(serializer.data, status=201)
-                return Response(serializer.errors, status=400)
+                return Response(serializer.errors, status=402)
                 
             except User.DoesNotExist:
                 return Response({'error': 'One or more users not found'}, status=404)

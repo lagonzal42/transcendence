@@ -221,6 +221,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
 
         this.ctx.fillText(winnerMessage, xPosition, yPosition);
 
+        console.log("player1 " + this.leftPlayerName);
 
         this.http.post(`${environment.backendURL}accounts/matches/`, {
             player1_username: this.leftPlayerName,
