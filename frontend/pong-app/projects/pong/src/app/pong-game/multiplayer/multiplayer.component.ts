@@ -5,11 +5,12 @@ import { PaddleComponent as Paddle } from "../gameClasses/paddle/paddle.componen
 import { BallComponent4p as Ball } from '../gameClasses/ball/ball4p.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environment/environment';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-pong-game',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: 'multiplayer.component.html',
   styleUrl: './multiplayer.component.css'
 })
