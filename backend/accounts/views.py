@@ -72,7 +72,7 @@ class RegisterView(APIView):
             user_intra = serializer.save()
             #user = serializer.data
             # send_code_to_user(user['email'])
-            send_activation_email(user_intra, from_email="noreply@essencecatch.com")
+            send_activation_email(user_intra, from_email="trascendence.simplepong@gmail.com")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -271,7 +271,7 @@ class LoginView(GenericAPIView):
             )
             print(f"Authentication result: {user}")  # Debug print
 
-            if user is not None:
+            if user is not None and user.account_activate:
                 # print(f"User authenticated, is_active: {user.is_active}")  # Debug print
                 # Instead of making a new request, call the 2FA view directly
                 from two_factor_auth.views import Send2FACodeView
