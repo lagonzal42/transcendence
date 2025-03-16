@@ -1,14 +1,13 @@
 .match-history {
-  padding: 20px;
+  padding-top: 450px;
+  display: flex;
+  flex-direction: column;
 }
 
 .matches-container {
-  display: flex;
-  flex-direction: column;
   gap: 15px;
   max-width: 800px;
   margin: 0px auto;
-  padding-top: 30px;
 }
 
 .match-card {
