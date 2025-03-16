@@ -1,7 +1,7 @@
 .match-history {
-  padding-top: 450px;
   display: flex;
   flex-direction: column;
+  height: 50vh;
 }
 
 .matches-container {
@@ -15,6 +15,7 @@
   border-radius: 8px;
   padding: 15px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  margin-bottom: 2px;
 }
 
 .match-header {
