@@ -201,12 +201,18 @@ class MatchCreateView(APIView):
                     player4_username = request.data['player4_username']
                     player3 = User.objects.get(username=player3_username)
                     player4 = User.objects.get(username=player4_username)
+                    print("players are in database")
+                    print(player3.id)
+                    print(player4.id)
+                    print(request.data['player3_score'])
+                    print(request.data['player4_score'])
                     match_extension = {
                         'player3': player3.id,
                         'player4': player4.id,
                         'player3_score': request.data['player3_score'],
                         'player4_score': request.data['player4_score']
                     }
+                    print('match extesion: ' + match_extension)
                     match_data.update(match_extension)
                     if winner_username == player3_username:
                         winner = player3

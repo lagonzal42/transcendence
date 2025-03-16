@@ -8,8 +8,12 @@ export class BallComponent4p extends BallComponent
     constructor(xPos: number, yPos: number)
     {
         super(xPos, yPos);
-        this.dx = Math.sin(this.getRandomNumber(0, Math.PI * 2));
-        this.dy = Math.cos(this.getRandomNumber(0, Math.PI * 2));
+        this.speed = 5;
+        let ranNum = this.getRandomNumber(0, 2 * Math.PI);
+        let ranNum2 = this.getRandomNumber(0, 2 * Math.PI);
+        let ranNumD= this.getRandomNumber(0, 1);
+        this.dx = Math.cos(ranNumD? ranNum : ranNum2);
+        this.dy = Math.sin(ranNumD? ranNum : ranNum2);
     }
 
     calculateCollisions4p(PaddleLeft: Paddle, PaddleRight: Paddle, PaddleUp: Paddle, PaddleDown: Paddle): void

@@ -108,7 +108,7 @@ class MatchSerializer(serializers.ModelSerializer):
         model = Match
         fields = [
             'id', 'player1', 'player2', 'player3', 'player4', 
-            'player1_score', 'player2_score', 'winner', 
+            'player1_score', 'player2_score', 'player3_score', 'player4_score', 'winner', 
             'match_date', 'match_type', 
             'player1_username', 'player2_username', 
             'player3_username', 'player4_username', 'winner_username'

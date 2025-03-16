@@ -40,8 +40,8 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   private ball2? : Ball;
 
   // Score
-  public leftPlayerScore: number = -1;
-  public rightPlayerScore: number = 0;
+  public leftPlayerScore: number = 0;
+  public rightPlayerScore: number = 9;
   public upPlayerScore: number = 0;
   public downPlayerScore: number = 0;
   private winningScore: number = 10;
@@ -282,21 +282,23 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
 
   updateScoreDisplay(ball: Ball): void {
     console.log(ball.getLastTouch() + ' is the last touch');
-    switch (ball.getLastTouch())
-    {
-      case 1:
-        this.leftPlayerScore += 1;
-        break;
-      case 2:
-        this.rightPlayerScore += 1;
-        break;
-      case 3:
-        this.upPlayerScore += 1;
-        break;
-      case 4:
-        this.downPlayerScore += 1;
-        break;
-    }
+    this.ngZone.run(() =>{
+      switch (ball.getLastTouch())
+      {
+        case 1:
+          this.leftPlayerScore += 1;
+          break;
+        case 2:
+          this.rightPlayerScore += 1;
+          break;
+        case 3:
+          this.upPlayerScore += 1;
+          break;
+        case 4:
+          this.downPlayerScore += 1;
+          break;
+      }
+    });
   }
 
   displayWinner(): void {
@@ -357,7 +359,8 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
       this.pongCanvas.nativeElement.width / 2,
       this.pongCanvas.nativeElement.height / 2 + 120
     );
-    this.http.post(`${environment.backendURL}accounts/matches/`, {
+
+    let matchData = {
       player1_username: this.leftPlayerName,
       player2_username: this.rightPlayerName,
       player3_username: this.upPlayerName,
@@ -368,7 +371,11 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
       player4_score: this.downPlayerScore,
       winner_username: winnerName,
       match_type: 'multiplayer'
-    }).subscribe({
+    }
+
+    console.log(matchData);
+
+    this.http.post(`${environment.backendURL}accounts/matches/`, matchData).subscribe({
       next: (response) => console.log('Match processed successfully:', response),
       error: (error) => console.error('Error processing match:', error)
     });

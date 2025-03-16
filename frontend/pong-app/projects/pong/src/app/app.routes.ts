@@ -41,10 +41,10 @@ export const routes: Routes = [
           { path: 'two-factor', component: TwoFactorComponent },
           { path: 'verify', component: VerifyComponent },
           { path: 'chat/:roomId', component: ChatComponent },
+          { path: 'dual-play', component: PongGameComponent },
+          { path: 'multiplayer', component: MultiplayerComponent },
         ]
       },
-      { path: 'dual-play', component: PongGameComponent },
-      { path: 'multiplayer', component: MultiplayerComponent },
       {
         path: 'verify/:token',
         component: VerifyComponent
