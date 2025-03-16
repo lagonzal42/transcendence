@@ -27,6 +27,8 @@ class User(AbstractUser):
     last_login = models.DateTimeField(default=timezone.now)
     friends = models.ManyToManyField('self', blank=True, symmetrical=True)
     blocked_users = models.ManyToManyField('self', symmetrical=False, related_name='blocked_by', blank=True)
+    account_activate = models.BooleanField(default=False)
+
 
 
     #USERNAME_FIELD = 'email'
@@ -84,7 +86,8 @@ class AccountActivateTokensManager(models.Manager):
         # Activate the account if a token exists
         if user_activate_token:
             user = user_activate_token.user
-            user.is_active = True
+            # user.is_active = True
+            user.account_activate = True
             user.save()
             return user
         else:

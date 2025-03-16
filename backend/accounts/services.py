@@ -11,12 +11,12 @@ def send_activation_email(user, from_email):
     
     # Create the activation URL
     #url = f'{settings.ACTIVATE_URL}/activation/?token={activate_token}'
-    url = f'http://localhost:4200/verify?token={activate_token}'
+    url = f'https://localhost:8089/verify?token={activate_token}'
 
-    subject = 'Essence Catch : Account Activation'
+    subject = 'Pong game : Account Activation'
     message = f'''
     Hi {user.username},
-    This email is sent from Essence Catch.
+    This email is sent from Pong game.
     Please click the link below to activate your account.
     {url}
 

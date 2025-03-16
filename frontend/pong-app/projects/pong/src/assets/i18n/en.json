@@ -75,7 +75,7 @@
 	"login.username": "Username",
 	"login.invalidUsername": "Invalid username",
 	"login.password": "Password",
-	"login.invalidPassword": "Invalid password",
+	"login.invalidPassword": "Incorrect credentials or account not verified",
 	"multiplayer.nameselection": "4 Players Name Selection",
 	"multiplayer.player1": "Player 1 (You)",
 	"multiplayer.player2": "Player 2",

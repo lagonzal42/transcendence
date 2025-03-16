@@ -75,7 +75,7 @@
 	"login.username": "Nom d'utilisateur",
 	"login.invalidUsername": "Nom d'utilisateur invalide",
 	"login.password": "Mot de passe",
-	"login.invalidPassword": "Mot de passe invalide",
+	"login.invalidPassword": "Informations d'identification incorrectes ou compte non vérifié",
 	"multiplayer.nameselection": "Sélection des Noms à 4 Joueurs",
 	"multiplayer.player1": "Joueur 1 (Vous)",
 	"multiplayer.player2": "Joueur 2",
