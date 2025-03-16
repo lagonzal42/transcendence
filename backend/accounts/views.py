@@ -212,7 +212,7 @@ class MatchCreateView(APIView):
                         'player3_score': request.data['player3_score'],
                         'player4_score': request.data['player4_score']
                     }
-                    print('match extesion: ' + match_extension)
+                    print('match extesion: ' , match_extension)
                     match_data.update(match_extension)
                     if winner_username == player3_username:
                         winner = player3
