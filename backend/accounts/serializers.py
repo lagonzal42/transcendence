@@ -100,7 +100,7 @@ class MatchSerializer(serializers.ModelSerializer):
     # Fields for writing (POST requests) - converts IDs to User objects
     player1 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
     player2 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
-    player3 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True,required=False, allow_null=True, )
+    player3 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True,required=False, allow_null=True)
     player4 = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True, required=False,allow_null=True)
     winner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
 
