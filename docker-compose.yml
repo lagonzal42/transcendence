@@ -19,7 +19,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     volumes:
-      - .:/code
+      - ./backend:/code/backend
     expose:
       - "8000"
     # environment:
