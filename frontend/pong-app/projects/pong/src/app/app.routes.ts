@@ -43,6 +43,7 @@ export const routes: Routes = [
           { path: 'chat/:roomId', component: ChatComponent },
           { path: 'dual-play', component: PongGameComponent },
           { path: 'multiplayer', component: MultiplayerComponent },
+          { path: 'verify', component: VerifyComponent }
         ]
       },
       {

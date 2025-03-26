@@ -30,16 +30,27 @@ export class VerifyComponent implements OnInit {
 	) {}
 
 	ngOnInit(){
-	this.route.queryParams.subscribe(params => {
-		const token = params['token'];
-		if (token){
-			console.log("token exists")
-			this.activateAccount(token);
-		} else {
-			this.message = 'Invalid activation link';
-			this.isError = true;
-		}
-		});
+		// First check for URL params (/:token style)
+		this.route.params.subscribe(params => {
+			const pathToken = params['token'];
+			if (pathToken) {
+			  console.log("token exists in path param");
+			  this.activateAccount(pathToken);
+			  return;
+			}
+			
+			// If no path param, check for query params (?token= style)
+			this.route.queryParams.subscribe(qParams => {
+			  const queryToken = qParams['token'];
+			  if (queryToken) {
+				console.log("token exists in query param");
+				this.activateAccount(queryToken);
+			  } else {
+				this.message = 'Invalid activation link';
+				this.isError = true;
+			  }
+			});
+		  });
 	}
 	
 	activateAccount(token: string): void {
