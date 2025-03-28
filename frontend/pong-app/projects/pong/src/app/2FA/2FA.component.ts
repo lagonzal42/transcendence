@@ -8,7 +8,8 @@ import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
 import { Injectable, Inject , PLATFORM_ID} from '@angular/core';
-import {environment} from '../../../src/environment/environment'
+import {environment} from '../../../src/environment/environment';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 
@@ -16,13 +17,14 @@ import {environment} from '../../../src/environment/environment'
 @Component({
 	selector: 'app-2FA',
 	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule],
+	imports: [ReactiveFormsModule, CommonModule, TranslateModule],
 	templateUrl: './2FA.component.html',
 	styleUrl: './2FA.component.css'
 })
 export class TwoFactorComponent {
 	twoForm: FormGroup;
 	loginError: string = '';
+	failed : boolean = false;
 
 	constructor(
 		private fb: FormBuilder,
@@ -62,6 +64,7 @@ export class TwoFactorComponent {
 						}
 					}),
 					catchError((error: any) => {
+						this.failed = true;
 						console.log("Falla aqui" + error);
 						return throwError(() => error);
 					})).subscribe();

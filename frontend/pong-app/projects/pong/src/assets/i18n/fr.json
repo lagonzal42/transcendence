@@ -95,5 +95,6 @@
 	"multiplayer.verifyplayer3": "Vérifier Joueur 3",
 	"multiplayer.verifyplayer4": "Vérifier Joueur 4",
 	"multiplayer.invalidname": "Nom invalide",
-	"multiplayer.ready": "Commencer la Partie"
+	"multiplayer.ready": "Commencer la Partie",
+	"2fa.failed": "Code invalide"
 }

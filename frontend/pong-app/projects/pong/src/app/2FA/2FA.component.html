@@ -12,6 +12,7 @@
       <!-- <div *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
         <small class="text-danger">Invalid username</small>
       </div> -->
+      <small *ngIf="this.failed==true"  class="text-danger">{{ '2fa.failed' | translate }}</small>
     </div>
     <button class="submit-btn" type="submit">VERIFY</button>
   </form>

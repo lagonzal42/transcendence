@@ -115,7 +115,7 @@ export class TournamentComponent implements OnInit {
       this.formSubmitted = true;
       this.saveTournamentState();
       
-      this.startMatch(this.group1[0], this.group1[1]);
+      // this.startMatch(this.group1[0], this.group1[1]);
     } else {
       this.tournamentForm.markAllAsTouched();
     }
@@ -135,26 +135,32 @@ export class TournamentComponent implements OnInit {
         score2: rightScore
       });
     }
-
+  
     this.winners.push(winner);
-
+  
     if (this.currentRound === 1) {
       if (this.winners.length === 1) {
-        this.countdownSeconds = 8; // Start countdown from 8
-        const countdownInterval = setInterval(() => {
-          this.countdownSeconds--;
-          if (this.countdownSeconds <= 0) {
-            clearInterval(countdownInterval);
-          }
-        }, 1000);
+        // First match complete
+        // Remove the countdown timer and automatic start of second match
+        this.currentMatch = null;
+        // Delete these lines:
+        // this.countdownSeconds = 8; // Start countdown from 8
+        // const countdownInterval = setInterval(() => {
+        //   this.countdownSeconds--;
+        //   if (this.countdownSeconds <= 0) {
+        //     clearInterval(countdownInterval);
+        //   }
+        // }, 1000);
         
-        setTimeout(() => {
-          this.startMatch(this.group2[0], this.group2[1]);
-        }, 8000);
+        // Remove the automatic start of the second match
+        // setTimeout(() => {
+        //   this.startMatch(this.group2[0], this.group2[1]);
+        // }, 8000);
       } else if (this.winners.length === 2) {
         // After second match, prepare for finals
         this.currentRound = 2;
-        // Don't automatically start final match - let user click button
+        this.currentMatch = null;
+        // Final match is already handled by button click
       }
     } else if (this.currentRound === 2 && this.winners.length === 3) {
       this.tournamentComplete = true;

@@ -95,5 +95,6 @@
 	"multiplayer.verifyplayer3": "Verify Player 3",
 	"multiplayer.verifyplayer4": "Verify Player 4",
 	"multiplayer.invalidname": "Invalid name",
-	"multiplayer.ready": "Start Game"
+	"multiplayer.ready": "Start Game",
+	"2fa.failed": "Ivalid code"
 }

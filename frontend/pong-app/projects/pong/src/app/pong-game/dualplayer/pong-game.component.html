@@ -5,9 +5,7 @@
     <div id="rightScore" class="score right-score">0</div>
   </div>
   <div class="winner-message"></div>
-  @if (gameEnded) {
-    <div class="home-button-container">
-      <button class="back-home-btn" routerLink="/" i18n>Back to Home</button>
-    </div>
-  }
+  <div *ngIf="gameEnded && !isTournamentMatch" class="home-button-container">
+    <button class="back-home-btn" routerLink="/" i18n>Back to Home</button>
+  </div>
 </div>
