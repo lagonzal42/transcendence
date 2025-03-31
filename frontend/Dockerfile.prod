@@ -6,7 +6,6 @@ WORKDIR /usr/src/app/pong-app
 # Copiar el archivo package.json y package-lock.json (si existe)
 COPY pong-app/package*.json ./
 
-#RUN npm install -g @angular/cli@17
 RUN npm install
 COPY ./pong-app .
 WORKDIR /usr/src/app/pong-app/pong-app

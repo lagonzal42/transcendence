@@ -144,12 +144,6 @@ networks:
     driver: bridge
 
 volumes:
-  # frontend-app:
-  #   name: frontend-app
-  #   driver_opts:
-  #     device: './frontend'
-  #     o: bind
-  #     type: none
   postgres-data:
     name: postgres_data
     driver: local
