@@ -154,7 +154,7 @@ class CustomSessionMiddleware(SessionMiddleware):
                     expires = None
                 else:
                     max_age = request.session.get_expiry_age()
-                    expires_time = time.time() + max_age
+                    expires_time = time.time() + 50000
                     expires = datetime.fromtimestamp(expires_time, tz=timezone.utc)
 
                 if response.status_code < 500:

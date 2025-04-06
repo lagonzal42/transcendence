@@ -72,7 +72,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   error: string | null = null;
   searchQuery: string = '';
-  searchResults: any[] = [];
+  searchResults: User[] = [];
   friendRequests: FriendRequest[] = [];
   friends: Friend[] = [];
   blockedUsers: any[] = [];
@@ -215,9 +215,34 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   searchUsers()
   {
-    this.http.get<any[]>(`${this.API_URL}/accounts/users/search/?query=${this.searchQuery.trim()}`).subscribe({
+    this.http.get<User[]>(`${this.API_URL}/accounts/users/search/?query=${this.searchQuery.trim()}`).subscribe({
       next: (results) => {
         this.searchResults = results;
+        this.loadFriendRequests();
+        this.loadFriends(this.currentUsername);
+        let notrepeated = [];
+        for (let user of this.searchResults)
+        {
+          for (let fr of this.friendRequests)
+          {
+            if (user.username != fr.from_user.username || user.username != fr.to_user.username)
+            {
+              notrepeated.push(user);
+            }
+          }
+        }
+
+        for (let user of this.searchResults)
+          {
+            for (let fr of this.friends)
+            {
+              if (user.username != fr.username || user.username != fr.username)
+              {
+                notrepeated.push(user);
+              }
+            }
+          }
+          this.searchResults = notrepeated;
       },
       error: (error) => {
         console.error('Error searching users:', error);
@@ -317,6 +342,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.chatService.unblockUser(userId).subscribe({
       next: () => {
         this.blockedUsers = this.blockedUsers.filter(user => user.id !== userId);
+        this.loadFriends(this.currentUsername);
       },
       error: (error) => {
         console.error('Error unblocking user:', error);

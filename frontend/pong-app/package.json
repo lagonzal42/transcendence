@@ -4,11 +4,22 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:pong": "node dist/pong/server/server.mjs"
   },
+  "configurations": {
+    "production": {
+      "optimization": false,
+      "sourceMap": true,
+      "namedChunks": true,
+      "extractLicenses": false,
+      "vendorChunk": true,
+      "buildOptimizer": false
+      }
+  },
+
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.3.0",

@@ -536,7 +536,7 @@ class SendFriendRequestView(APIView):
 
             if existing_request:
                 if existing_request.from_user == request.user:
-                    return Response({'error': 'Friend request already sent'}, status=400)
+                    return Response({'error': 'Friend request already sent'}, status=200)
                 else:
                     # If there's a pending request from the other user, accept it
                     request.user.friends.add(to_user)

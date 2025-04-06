@@ -16,6 +16,7 @@ for app in accounts live_chat two_factor_auth; do
   fi
 done
 
+python manage.py makemigrations
 python manage.py migrate
 
 # Create superuser
