@@ -16,7 +16,14 @@ scrape_configs:
       - targets: ['pg-exporter:9187']
 
 rule_files:
-  - "alert.rules.yml"
+  - "/etc/prometheus/alert.rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "alertmanager:9093"  # Make sure this name matches your Docker service or container
+
 
 remote_write:
   - url: 'https://prometheus-prod-39-prod-eu-north-0.grafana.net/api/prom/push'
