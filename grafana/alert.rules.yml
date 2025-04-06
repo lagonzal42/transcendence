@@ -1,4 +1,3 @@
-groups:
   - name: instance-health
     rules:
       # CPU Usage Alert

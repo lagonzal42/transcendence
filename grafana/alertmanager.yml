@@ -1,5 +1,10 @@
 global:
   resolve_timeout: 5m
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'transcendence.simplepong@gmail.com'
+  smtp_auth_username: 'transcendence.simplepong@gmail.com'
+  smtp_auth_password: 'feov cjkg mylj aise'
+  smtp_require_tls: true
 
 route:
   group_by: ['alertname']
@@ -12,7 +17,13 @@ receivers:
   - name: 'email'
     email_configs:
       - to: 'otxoboy64@gmail.com'
-        from: 'transcendence.simplepong@gmail.com'
-        smarthost: 'smtp.gmail.com:587'
-        auth_username: 'transcendence.simplepong'
-        auth_password: 'feov cjkg mylj aise'
+        send_resolved: true
+
+# receivers:
+#   - name: 'email'
+#     email_configs:
+#       - to: 'otxoboy64@gmail.com'
+#         from: 'transcendence.simplepong@gmail.com'
+#         smarthost: 'smtp.gmail.com:587'
+#         auth_username: 'transcendence.simplepong'
+#         auth_password: 'feov cjkg mylj aise'
