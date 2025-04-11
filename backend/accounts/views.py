@@ -1,3 +1,4 @@
+import os
 from django.db.models import Q
 from .serializers import UserRegisterSerializer, LoginSerializer, UpdateUserSerializer, FriendSerializer, MatchSerializer
 from rest_framework.response import Response
@@ -116,7 +117,18 @@ class UserDetailView(APIView):
         if not user:
             return Response({"message": "No User found"}, status=404)
 
-        avatar_url = user.avatar.url if user.avatar else None
+        if user.avatar and hasattr(user.avatar, 'url'):
+            avatar_url = user.avatar.url
+            print(f"Avatar URL from model: {avatar_url}")
+            # Use try/except to handle potential file system errors
+            try:
+                print(f"File exists: {os.path.exists(user.avatar.path)}")
+                print(f"File size: {os.path.getsize(user.avatar.path) if os.path.exists(user.avatar.path) else 'N/A'}")
+            except Exception as e:
+                print(f"Error checking avatar file: {str(e)}")
+        else:
+            avatar_url = None
+            print("No avatar URL available")
 
         response_data = {
             "message": "Found user",
@@ -358,6 +370,36 @@ class UpdateProfileView(UpdateAPIView):
 
         return Response(serializer.data)
 
+    def put(self, request, *args, **kwargs):
+        # Log received content type for debugging
+        print(f"Request content type: {request.content_type}")
+        print(f"Request data: {request.data}")
+        print(f"Request FILES: {request.FILES}")
+        
+        try:
+            instance = self.get_object()
+            
+            # Direct update approach for clarity
+            if 'tournament_name' in request.data:
+                instance.tournament_name = request.data['tournament_name']
+            if 'email' in request.data:
+                instance.email = request.data['email']
+            if 'avatar' in request.FILES:
+                instance.avatar = request.FILES['avatar']
+                
+            # Save directly
+            instance.save()
+            
+            # Return serialized data
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except Exception as e:
+            print(f"Exception in update: {str(e)}")
+            return Response(
+                {"error": str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 class CloseAccountView(APIView):
     def post(self, request, id):
         ## Remove account
@@ -470,7 +512,7 @@ class SearchUsersView(APIView):
         # print(f"Current user ID: {request.user.id}")
         
         # Original query with debug
-        users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)[:10]
+        users = User.objects.filter(username__icontains(query).exclude(id=request.user.id)[:10])
         #print(f"Found users for query '{query}': {[(user.username, user.id) for user in users]}")
         
         user_data = [{

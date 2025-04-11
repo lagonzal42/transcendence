@@ -151,7 +151,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
             if (response.user && response.user.username) {
               this.currentUsername = response.user.username;
               if (response.user.avatar) {
-                this.userAvatar = `${environment.apiUrl}${response.user.avatar}`;
+                // Fix the URL construction to use backendURL instead of apiUrl
+                this.userAvatar = `${environment.backendURL}media/avatars/${response.user.avatar.split('/').pop()}`;
+                // Add a timestamp to prevent caching
+                this.userAvatar += `?v=${new Date().getTime()}`;
+                console.log('Fixed Avatar URL:', this.userAvatar);
               } else {
                 this.userAvatar = 'assets/default-avatar.png';
               }
@@ -357,5 +361,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   GoToMatchHistory() {
     this.router.navigate(['/match-history', this.currentUsername]);
+  }
+
+  handleImageError(event: any) {
+    console.error('Image failed to load:', this.userAvatar);
+    // Fallback to default avatar
+    event.target.src = 'assets/default-avatar.png';
   }
 }

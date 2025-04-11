@@ -12,7 +12,11 @@
             <div class="profile-layout">
                 <div class="profile-left">
                     <div class="avatar-container">
-                        <img [src]="userAvatar" alt="User avatar" class="user-avatar" [attr.cache-control]="'no-cache'">
+                        <img [src]="userAvatar" 
+                             alt="User avatar" 
+                             class="user-avatar" 
+                             crossorigin="anonymous"
+                             (error)="handleImageError($event)">
                         <span class="online-status" [class.online]="isUserOnline"></span>
                     </div>
                 </div>

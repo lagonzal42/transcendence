@@ -198,7 +198,17 @@ export class AuthService {
   }
  
   updateProfile(formData: FormData, username: string): Observable<any> {
-    return this.httpClient.put(`${environment.backendURL}accounts/users/${username}/update/`, formData);
+    // Debug log
+    console.log('FormData contents:');
+    formData.forEach((value, key) => {
+      console.log(`${key}: ${value instanceof File ? `File: ${value.name}` : value}`);
+    });
+    
+    // Don't set Content-Type header - browser will set it automatically with proper boundary
+    return this.httpClient.put(
+      `${environment.backendURL}accounts/users/${username}/update/`, 
+      formData
+    );
   }
 
   getAccessToken(): string | null {
@@ -225,4 +235,4 @@ export class AuthService {
     )
   }
 
-} 
+}

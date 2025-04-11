@@ -1,4 +1,4 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -7,8 +7,18 @@ import { Router } from '@angular/router';
 
 export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+
+  // For FormData requests, only add auth header, don't modify content-type
+  if (req.body instanceof FormData) {
+    console.log('Interceptor detected FormData - preserving content type');
+    const modifiedReq = req.clone({
+      headers: req.headers
+        .set('Authorization', `Bearer ${authService.getAccessToken()}`)
+    });
+    return next(modifiedReq);
+  }
   
-  // Clone request with common headers
+  // For regular requests, add content-type and auth headers
   let modifiedReq = req.clone({
     headers: req.headers
       .set('Content-Type', 'application/json')
@@ -26,4 +36,4 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   return next(modifiedReq);
-}; 
+};

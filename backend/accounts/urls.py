@@ -4,7 +4,8 @@ from django.urls import path, include
 from accounts.views import UpdateProfileView
 from rest_framework.routers import DefaultRouter
 from .views import ListFriendsView, AcceptFriendRequestView, ActivateAccountView#, AddFriendView, 
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'accounts'
 
@@ -41,3 +42,9 @@ urlpatterns = [
     path('activation/', views.ActivateAccountView.as_view(), name='activate_account'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # For production, consider adding this as well
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
