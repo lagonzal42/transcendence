@@ -495,6 +495,40 @@ class CurrentUser(APIView):
             'username': user.username,
         }, status=status.HTTP_200_OK)
     
+# class SearchUsersView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         query = request.GET.get('query', '')
+#         if not query:
+#             return Response({'error': 'Search query is required'}, status=400)
+
+#         #print(f"Search query: {query}")
+        
+#         # Debug: Check total users in database
+#         all_users = User.objects.all()
+#         # print(f"Total users in database: {all_users.count()}")
+#         # print(f"All usernames and IDs: {[(user.username, user.id) for user in all_users]}")
+#         # print(f"Current user ID: {request.user.id}")
+        
+#         # Original query with debug
+#         #users = User.objects.filter(username__icontains(query).exclude(id=request.user.id))
+#         users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)
+
+#         print(f"Found users for query '{query}':")
+#         print(f"Found users for query '{query}': {[(user.username, user.id) for user in users]}")
+        
+#         user_data = [{
+#             'id': user.id,
+#             'username': user.username,
+#             'email': user.email,
+#             'first_name': user.first_name
+#         } for user in users]
+
+#         print(user_data)
+        
+#         return Response(user_data)
+
 class SearchUsersView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -512,11 +546,8 @@ class SearchUsersView(APIView):
         # print(f"Current user ID: {request.user.id}")
         
         # Original query with debug
-        #users = User.objects.filter(username__icontains(query).exclude(id=request.user.id))
-        users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)
-
-        print(f"Found users for query '{query}':")
-        print(f"Found users for query '{query}': {[(user.username, user.id) for user in users]}")
+        users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)[:10]
+        #print(f"Found users for query '{query}': {[(user.username, user.id) for user in users]}")
         
         user_data = [{
             'id': user.id,
@@ -524,8 +555,6 @@ class SearchUsersView(APIView):
             'email': user.email,
             'first_name': user.first_name
         } for user in users]
-
-        print(user_data)
         
         return Response(user_data)
 

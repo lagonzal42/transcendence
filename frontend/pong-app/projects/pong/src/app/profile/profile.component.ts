@@ -217,22 +217,35 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.router.navigate(['/chat', roomName]);
   }
 
+  // searchUsers()
+  // {
+  //   this.http.get<any[]>(`${this.API_URL}/accounts/users/search/?query=${this.searchQuery.trim()}`).subscribe({
+  //     next: (results) => {
+  //       const filteredUsers = this.searchResults.filter(user => {
+  //         const inFriends = this.friends.some(friend => friend.id === user.id);
+  //         const inFriendRequests = this.friendRequests.some(
+  //           fr => fr.from_user.id === user.id || fr.to_user.id === user.id
+  //         );
+        
+  //         if (inFriends || inFriendRequests) {
+  //           console.log(`Excluded user: ${user.username}`);
+  //         }
+        
+  //         return !inFriends && !inFriendRequests;
+  //       });
+  //     },
+  //     error: (error) => {
+  //       console.error('Error searching users:', error);
+  //       this.error = 'Failed to search users';
+  //     }
+  //   })
+  // }
+
   searchUsers()
   {
-    this.http.get<User[]>(`${this.API_URL}/accounts/users/search/?query=${this.searchQuery.trim()}`).subscribe({
+    this.http.get<any[]>(`${this.API_URL}/accounts/users/search/?query=${this.searchQuery.trim()}`).subscribe({
       next: (results) => {
-        const filteredUsers = this.searchResults.filter(user => {
-          const inFriends = this.friends.some(friend => friend.id === user.id);
-          const inFriendRequests = this.friendRequests.some(
-            fr => fr.from_user.id === user.id || fr.to_user.id === user.id
-          );
-        
-          if (inFriends || inFriendRequests) {
-            // console.log(`Excluded user: ${user.username}`);
-          }
-        
-          return !inFriends && !inFriendRequests;
-        });
+        this.searchResults = results;
       },
       error: (error) => {
         // console.error('Error searching users:', error);

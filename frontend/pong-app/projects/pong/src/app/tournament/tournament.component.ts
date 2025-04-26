@@ -7,6 +7,7 @@ import { platform } from 'os';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-tournament',
@@ -37,12 +38,54 @@ export class TournamentComponent implements OnInit {
   }[] = [];
   countdownSeconds: number = 0;
 
+    isLoggedIn: boolean = false;
+    currentUser: string = '';
+    showPlayer2Auth: boolean = false;
+    showPlayer3Auth: boolean = false;
+    showPlayer4Auth: boolean = false;
+    player2AuthForm: FormGroup;
+    player3AuthForm: FormGroup;
+    player4AuthForm: FormGroup;
+  
+    player2AuthStatus: 'none' | 'success' | 'error' = 'none';
+    player2AuthMessage: string = '';
+    player3AuthStatus: 'none' | 'success' | 'error' = 'none';
+    player3AuthMessage: string = '';
+    player4AuthStatus: 'none' | 'success' | 'error' = 'none';
+    player4AuthMessage: string = '';
+
   constructor(
     private fb: FormBuilder, 
     private router: Router,
     private route: ActivatedRoute,
+    private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object
+    
   ) {
+    this.tournamentForm = this.fb.group({
+      player1: ['', Validators.required],
+      player2: ['', Validators.required],
+      player3: ['', Validators.required],
+      player4: ['', Validators.required],
+      player2Type: ['guest'],
+      player3Type: ['guest'],
+      player4Type: ['guest']
+    }, { validator: uniquePlayerNamesValidator(['player1', 'player2', 'player3', 'player4']) });
+
+    this.player2AuthForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+
+    this.player3AuthForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+
+    this.player4AuthForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
     this.tournamentForm = this.fb.group({
       player1: ['', Validators.required],
       player2: ['', Validators.required],
@@ -65,6 +108,116 @@ export class TournamentComponent implements OnInit {
         this.handleMatchComplete(window.history.state.winner, window.history.state);
       }
     })
+
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        if (user) {
+          this.isLoggedIn = true;
+          this.currentUser = user.username;
+          this.tournamentForm.get('player1')?.setValue(user.username);
+          this.tournamentForm.get('player1')?.disable();
+        }
+      },
+      error: (error) => {
+        this.isLoggedIn = false;
+      }
+    });
+  }
+
+  onPlayer2TypeChange(type: string) {
+    this.showPlayer2Auth = type === 'registered';
+    if (type === 'guest') {
+      this.player2AuthForm.reset();
+    }
+  }
+
+  onPlayer3TypeChange(type: string) {
+    this.showPlayer3Auth = type === 'registered';
+    if (type === 'guest') {
+      this.player3AuthForm.reset();
+    }
+  }
+
+  onPlayer4TypeChange(type: string) {
+    this.showPlayer4Auth = type === 'registered';
+    if (type === 'guest') {
+      this.player4AuthForm.reset();
+    }
+  }
+
+  authenticatePlayer2() {
+    if (this.player2AuthForm.valid) {
+      this.authService.validateCredentials(
+        this.player2AuthForm.get('username')?.value,
+        this.player2AuthForm.get('password')?.value
+      ).subscribe({
+        next: (isValid) => {
+          if (isValid) {
+            this.player2AuthStatus = 'success';
+            this.player2AuthMessage = 'Player 2 verified successfully!';
+            this.tournamentForm.get('player2')?.setValue(this.player2AuthForm.get('username')?.value);
+          } else {
+            this.player2AuthStatus = 'error';
+            this.player2AuthMessage = 'Invalid credentials. Please try again.';
+          }
+        },
+        error: (error) => {
+          this.player2AuthStatus = 'error';
+          this.player2AuthMessage = 'Authentication failed. Please try again.';
+          console.error('Authentication error:', error);
+        }
+      });
+    }
+  }
+
+  authenticatePlayer3() {
+    if (this.player3AuthForm.valid) {
+      this.authService.validateCredentials(
+        this.player3AuthForm.get('username')?.value,
+        this.player3AuthForm.get('password')?.value
+      ).subscribe({
+        next: (isValid) => {
+          if (isValid) {
+            this.player3AuthStatus = 'success';
+            this.player3AuthMessage = 'Player 3 verified successfully!';
+            this.tournamentForm.get('player3')?.setValue(this.player3AuthForm.get('username')?.value);
+          } else {
+            this.player3AuthStatus = 'error';
+            this.player3AuthMessage = 'Invalid credentials. Please try again.';
+          }
+        },
+        error: (error) => {
+          this.player3AuthStatus = 'error';
+          this.player3AuthMessage = 'Authentication failed. Please try again.';
+          console.error('Authentication error:', error);
+        }
+      });
+    }
+  }
+
+  authenticatePlayer4() {
+    if (this.player4AuthForm.valid) {
+      this.authService.validateCredentials(
+        this.player4AuthForm.get('username')?.value,
+        this.player4AuthForm.get('password')?.value
+      ).subscribe({
+        next: (isValid) => {
+          if (isValid) {
+            this.player4AuthStatus = 'success';
+            this.player4AuthMessage = 'Player 4 verified successfully!';
+            this.tournamentForm.get('player4')?.setValue(this.player4AuthForm.get('username')?.value);
+          } else {
+            this.player4AuthStatus = 'error';
+            this.player4AuthMessage = 'Invalid credentials. Please try again.';
+          }
+        },
+        error: (error) => {
+          this.player4AuthStatus = 'error';
+          this.player4AuthMessage = 'Authentication failed. Please try again.';
+          console.error('Authentication error:', error);
+        }
+      });
+    }
   }
 
   private loadTournamentState() {
@@ -100,26 +253,77 @@ export class TournamentComponent implements OnInit {
     }
   }
 
+  shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]]; // swap elements
+    }
+    return array;
+  }
+  
   onSubmit() {
     if (this.tournamentForm.valid) {
       const players = [
-        this.tournamentForm.get('player1')?.value,
-        this.tournamentForm.get('player2')?.value,
-        this.tournamentForm.get('player3')?.value,
-        this.tournamentForm.get('player4')?.value
+        {
+          name: this.tournamentForm.get('player1')?.value,
+          isAuthenticated: this.isLoggedIn
+        },
+        {
+          name: this.tournamentForm.get('player2')?.value,
+          isAuthenticated: this.showPlayer2Auth && this.player2AuthForm.valid
+        },
+        {
+          name: this.tournamentForm.get('player3')?.value,
+          isAuthenticated: this.showPlayer3Auth && this.player3AuthForm.valid
+        },
+        {
+          name: this.tournamentForm.get('player4')?.value,
+          isAuthenticated: this.showPlayer4Auth && this.player4AuthForm.valid
+        }
       ];
-
+  
       const shuffled = this.shuffleArray(players);
+  
       this.group1 = [shuffled[0], shuffled[1]];
       this.group2 = [shuffled[2], shuffled[3]];
+  
       this.formSubmitted = true;
       this.saveTournamentState();
-      
-      // this.startMatch(this.group1[0], this.group1[1]);
+  
+      this.startMatch(this.group1[0], this.group1[1]);
+      // You can also start the second match if needed
+      // this.startMatch(this.group2[0], this.group2[1]);
     } else {
       this.tournamentForm.markAllAsTouched();
     }
   }
+
+  // onSubmit() {
+  //   if (this.tournamentForm.valid) {
+  //     const players = {
+  //       player1Name: this.tournamentForm.get('player1')?.value,
+  //       player2Name: this.tournamentForm.get('player2')?.value,
+  //       player3Name: this.tournamentForm.get('player3')?.value,
+  //       player4Name: this.tournamentForm.get('player4')?.value,
+  //       isAuthenticated: {
+  //         player1: this.isLoggedIn,
+  //         player2: this.showPlayer2Auth && this.player2AuthForm.valid,
+  //         player3: this.showPlayer3Auth && this.player3AuthForm.valid,
+  //         player4: this.showPlayer4Auth && this.player4AuthForm.valid
+  //       }
+  //     };
+  //     // const shuffled = this.shuffleArray(players);
+  //     // this.group1 = [shuffled[0], shuffled[1]];
+  //     // this.group2 = [shuffled[2], shuffled[3]];
+
+  //     this.formSubmitted = true;
+  //     this.saveTournamentState();
+      
+  //     this.startMatch(this.group1[0], this.group1[1]);
+  //   } else {
+  //     this.tournamentForm.markAllAsTouched();
+  //   }
+  // }
 
   handleMatchComplete(winner: string, state: any) {
     const leftScore = state?.leftScore || 0;
@@ -208,9 +412,9 @@ export class TournamentComponent implements OnInit {
     this.router.navigate(['/pong-game'], navigationExtras);
   }
 
-  shuffleArray(array: Array<any>): Array<any> 
-  {
-    const shuffled = array.sort(() => Math.random() - 0.5);
-    return shuffled;
-  }
+  // shuffleArray(array: Array<any>): Array<any> 
+  // {
+  //   const shuffled = array.sort(() => Math.random() - 0.5);
+  //   return shuffled;
+  // }
 }
