@@ -14,10 +14,6 @@ import { ActivatedRoute, Router } from '@angular/router';
   template: `<div class="update-profile-container">
     <h3 i18n>Update Profile</h3>
     <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label i18n>Tournament name</label>
-        <input type="text" formControlName="tournament_name" class="form-control">
-      </div>
 
       <div class="form-group">
         <label i18n>Avatar</label>
