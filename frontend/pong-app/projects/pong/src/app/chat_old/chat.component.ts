@@ -68,7 +68,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             });
           },
           error: (error) => {
-            console.error('Error getting user:', error);
+            // console.error('Error getting user:', error);
           }
         });
       }
@@ -101,15 +101,15 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.chatService.unblockUser(this.otherUserId).subscribe({
         next: () => {
           this.isUserBlocked = false;
-        },
-        error: (error) => console.error('Error unblocking user:', error)
+        }
+        // error: (error) => console.error('Error unblocking user:', error)
       });
     } else {
       this.chatService.blockUser(this.otherUserId).subscribe({
         next: () => {
           this.isUserBlocked = true;
-        },
-        error: (error) => console.error('Error blocking user:', error)
+        }
+        // error: (error) => console.error('Error blocking user:', error)
       });
     }
   }

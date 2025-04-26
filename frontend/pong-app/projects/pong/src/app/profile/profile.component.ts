@@ -155,7 +155,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 this.userAvatar = `${environment.backendURL}media/avatars/${response.user.avatar.split('/').pop()}`;
                 // Add a timestamp to prevent caching
                 this.userAvatar += `?v=${new Date().getTime()}`;
-                console.log('Fixed Avatar URL:', this.userAvatar);
+                // console.log('Fixed Avatar URL:', this.userAvatar);
               } else {
                 this.userAvatar = 'assets/default-avatar.png';
               }
@@ -173,14 +173,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
             }
           },
           error: (error) => {
-            console.error('Error loading user profile:', error);
+            // console.error('Error loading user profile:', error);
             this.error = 'Failed to load user profile';
             this.isLoading = false;
           }
         });
       },
       error: (error) => {
-        console.error('Error getting current user:', error);
+        // console.error('Error getting current user:', error);
         this.isLoading = false;
       }
     });
@@ -193,24 +193,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   loadFriends(username: string) {
     if (!username) {
-      console.error('Username is required to get friends');
+      // console.error('Username is required to get friends');
       return;
     }
 
     this.http.get<Friend[]>(`${environment.backendURL}accounts/users/${username}/friends/`).subscribe({
       next: (friends) => {
-        console.log('Friends data:', friends);
+        // console.log('Friends data:', friends);
         this.friends = friends;
       },
       error: (error) => {
-        console.error('Error loading friends:', error);
+        // console.error('Error loading friends:', error);
       }
     });
   }
 
   startChat(friendUsername: string) {
     if (!this.currentUsername) {
-      console.error('Current user not loaded');
+      // console.error('Current user not loaded');
       return;
     }
     const roomName = this.chatService.createChatRoom(this.currentUsername, friendUsername);
@@ -228,14 +228,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
           );
         
           if (inFriends || inFriendRequests) {
-            console.log(`Excluded user: ${user.username}`);
+            // console.log(`Excluded user: ${user.username}`);
           }
         
           return !inFriends && !inFriendRequests;
         });
       },
       error: (error) => {
-        console.error('Error searching users:', error);
+        // console.error('Error searching users:', error);
         this.error = 'Failed to search users';
       }
     })
@@ -245,11 +245,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
       this.http.post(`${this.API_URL}/accounts/friend-requests/send/`, {to_username: username}, {headers: {'Content-Type': 'application/json'}}).subscribe({
       next: (response) => {
-        console.log('Friend request sent successfully:', response);
+        // console.log('Friend request sent successfully:', response);
         this.searchResults = this.searchResults.filter(user => user.username !== username);
       },
       error: (err) => {
-        console.error('Error sending friend request:', err);
+        // console.error('Error sending friend request:', err);
         if (err.error && err.error.message) {
           this.error = err.error.message;
         } else {
@@ -265,7 +265,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.friendRequests = requests;
       },
       error: (error) => {
-        console.error('Error loading friend requests:', error);
+        // console.error('Error loading friend requests:', error);
         this.error = 'Failed to load friend requests';
       }
     });
@@ -282,7 +282,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.loadUserProfile(this.currentUsername);
       },
       error: (error) => {
-        console.error('Error accepting friend request:', error);
+        // console.error('Error accepting friend request:', error);
         this.error = 'Failed to accept friend request';
       }
     })
@@ -294,7 +294,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.friendRequests = this.friendRequests.filter(req => req.id !== requestId);
       },
       error: (error) => {
-        console.error('Error declining friend request:', error);
+        // console.error('Error declining friend request:', error);
         this.error = 'Failed to decline friend request';
       }
     });
@@ -308,7 +308,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading blocked users:', error);
+        // console.error('Error loading blocked users:', error);
         this.error = 'Failed to load blocked users';
         this.isLoading = false;
       }
@@ -322,7 +322,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.loadBlockedUsers();
       },
       error: (error) => {
-        console.error('Error blocking user:', error);
+        // console.error('Error blocking user:', error);
         this.error = 'Failed to block user';
       }
     });
@@ -335,7 +335,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.loadFriends(this.currentUsername);
       },
       error: (error) => {
-        console.error('Error unblocking user:', error);
+        // console.error('Error unblocking user:', error);
         this.error = 'Failed to unblock user';
       }
     });
@@ -350,7 +350,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   handleImageError(event: any) {
-    console.error('Image failed to load:', this.userAvatar);
+    // console.error('Image failed to load:', this.userAvatar);
     // Fallback to default avatar
     event.target.src = 'assets/default-avatar.png';
   }

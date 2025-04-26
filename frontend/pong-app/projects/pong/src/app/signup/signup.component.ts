@@ -47,10 +47,10 @@ export class SignupComponent {
       this.httpClient.post(`${environment.backendURL}accounts/register/`, formData).subscribe({
         next: (response: any) => {
           this.router.navigate(['']);
-          console.log("Server response: ", response);
+          // console.log("Server response: ", response);
         },
         error: (err: ErrorResponse) => {
-          console.error("Error details:", err.error);
+          // console.error("Error details:", err.error);
           
           if (err.error?.username) {
             this.usernameError = err.error.username[0];
@@ -64,7 +64,7 @@ export class SignupComponent {
         }
       });
     } else {
-      console.log('Form is invalid');
+      // console.log('Form is invalid');
     }
   }
 }

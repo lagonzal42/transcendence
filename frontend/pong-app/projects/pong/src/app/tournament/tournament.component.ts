@@ -59,9 +59,9 @@ export class TournamentComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe(() => {
       if (isPlatformBrowser(this.platformId) && window.history.state.winner) {
-        console.log("Winner from navigation: ", window.history.state.winner);
-        console.log("left score: ", window.history.state.leftScore)
-        console.log("right score: ", window.history.state.rightScore)
+        // console.log("Winner from navigation: ", window.history.state.winner);
+        // console.log("left score: ", window.history.state.leftScore)
+        // console.log("right score: ", window.history.state.rightScore)
         this.handleMatchComplete(window.history.state.winner, window.history.state);
       }
     })
@@ -124,8 +124,8 @@ export class TournamentComponent implements OnInit {
   handleMatchComplete(winner: string, state: any) {
     const leftScore = state?.leftScore || 0;
     const rightScore = state?.rightScore || 0;
-    console.log("leftScore: ", leftScore);
-    console.log("rightScore: ", rightScore);
+    // console.log("leftScore: ", leftScore);
+    // console.log("rightScore: ", rightScore);
     if (this.currentMatch) {
       this.matchResults.push({
         player1: this.currentMatch.player1,

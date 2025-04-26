@@ -85,7 +85,7 @@ export class LocalPlayComponent implements OnInit {
         error: (error) => {
           this.player2AuthStatus = 'error';
           this.player2AuthMessage = 'Authentication failed. Please try again.';
-          console.error('Authentication error:', error);
+          // console.error('Authentication error:', error);
         }
       });
     }

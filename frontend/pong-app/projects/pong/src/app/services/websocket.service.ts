@@ -41,12 +41,12 @@ export class WebSocketService {
     this.socket = new (window as any).WebSocket(`${environment.webSocketURL}ws/status/?token=${token}`);
     
     this.socket.onopen = () => {
-      console.log('Status WebSocket connected');
+      // console.log('Status WebSocket connected');
     };
     
     this.socket.onmessage = (event: any) => {
       const data = JSON.parse(event.data);
-      console.log('Received WebSocket message:', data);
+      // console.log('Received WebSocket message:', data);
       
       if (data.type === 'initial_status') {
         // Handle initial status update
@@ -72,15 +72,15 @@ export class WebSocketService {
     };
 
     this.socket.onclose = () => {
-      console.log('Status WebSocket closed');
+      // console.log('Status WebSocket closed');
       if (this.authService.getAccessToken()) {
-        console.log('Attempting to reconnect...');
+        // console.log('Attempting to reconnect...');
         setTimeout(() => this.handleTokenRefresh(), 100);
       }
     };
 
     this.socket.onerror = (error: any) => {
-      console.error('Status WebSocket error:', error);
+      // console.error('Status WebSocket error:', error);
     };
   }
 
@@ -90,7 +90,7 @@ export class WebSocketService {
         this.connectWebSocket();
       },
       (error: any) => {
-        console.error('Token refresh failed:', error);
+        // console.error('Token refresh failed:', error);
       }
     );
   }

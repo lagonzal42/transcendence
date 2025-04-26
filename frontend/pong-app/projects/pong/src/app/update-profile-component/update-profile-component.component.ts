@@ -95,15 +95,15 @@ export class UpdateProfileComponent implements OnInit {
   loadUserData() {
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
-        console.log('User data received:', user);
+        // console.log('User data received:', user);
         this.updateForm.patchValue({
           tournament_name: user.tournament_name || user.username,
           email: user.email
         });
-        console.log('Form validity:', this.updateForm.valid);
-        console.log('Form errors:', this.updateForm.errors);
+        // console.log('Form validity:', this.updateForm.valid);
+        // console.log('Form errors:', this.updateForm.errors);
       },
-      error: (error) => console.error('Error loading user data:', error)
+      // error: (error) => console.error('Error loading user data:', error)
     });
   }
 
@@ -145,10 +145,10 @@ export class UpdateProfileComponent implements OnInit {
               queryParams: { newAvatarUrl: avatarFilename }
             });
           } else {
-            console.error('No avatar URL in response');
+            // console.error('No avatar URL in response');
           }
-        },
-        error: (error) => console.error('Error updating profile:', error)
+        }
+        // error: (error) => console.error('Error updating profile:', error)
       });
     }
   }

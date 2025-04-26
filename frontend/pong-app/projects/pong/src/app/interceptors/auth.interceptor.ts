@@ -10,7 +10,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
 
   // For FormData requests, only add auth header, don't modify content-type
   if (req.body instanceof FormData) {
-    console.log('Interceptor detected FormData - preserving content type');
+    // console.log('Interceptor detected FormData - preserving content type');
     const modifiedReq = req.clone({
       headers: req.headers
         .set('Authorization', `Bearer ${authService.getAccessToken()}`)

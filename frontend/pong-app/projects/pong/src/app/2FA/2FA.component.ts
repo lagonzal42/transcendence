@@ -47,14 +47,14 @@ export class TwoFactorComponent {
 					code: this.twoForm.value.twoFactor,
 					sessionid: localStorage.getItem('sessionid')
 				}
-				console.log('Sending verification info:', verifyInfo);
+				// console.log('Sending verification info:', verifyInfo);
 				
 				this.httpClient.post(`${environment.backendURL}two_factor_auth/verify/`, verifyInfo).pipe(
 					map((response: any) => 
 					{
 						if (isPlatformBrowser(this.platformId))
 						{
-							console.log('kfjdsaoipfjdapso');
+							// console.log('kfjdsaoipfjdapso');
 							localStorage.setItem('access_token', response.access);
 							localStorage.setItem('refresh_token', response.refresh);
 							//localStorage.setItem('username', response.user.username);
@@ -65,10 +65,10 @@ export class TwoFactorComponent {
 					}),
 					catchError((error: any) => {
 						this.failed = true;
-						console.log("Falla aqui" + error);
+						// console.log("Falla aqui" + error);
 						return throwError(() => error);
 					})).subscribe();
-			console.log('fffffff')
+			// console.log('fffffff')
 		} 
 		else 
 		{

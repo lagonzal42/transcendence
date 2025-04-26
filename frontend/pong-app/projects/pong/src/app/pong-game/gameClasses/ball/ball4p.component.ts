@@ -29,9 +29,9 @@ export class BallComponent4p extends BallComponent
                 {
                     this.calculateReboundAngleHorizontal(PaddleUp, 1);
                     this.touches += 1;
-                    console.log('last Touch to 3');
+                    // console.log('last Touch to 3');
                     this.lastTouch = 3;
-                    console.log(this.lastTouch)
+                    // console.log(this.lastTouch)
                 }
             }
         }
@@ -44,9 +44,9 @@ export class BallComponent4p extends BallComponent
                 {
                     this.calculateReboundAngleHorizontal(PaddleDown, -1);
                     this.touches += 1;
-                    console.log('last Touch to 4');
+                    // console.log('last Touch to 4');
                     this.lastTouch = 4;
-                    console.log(this.lastTouch)
+                    // console.log(this.lastTouch)
                 }
             }
         }

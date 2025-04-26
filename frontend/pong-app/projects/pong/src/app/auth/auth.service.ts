@@ -75,7 +75,7 @@ export class AuthService {
       if (!this.jwtHelper.isTokenExpired(token)) {
         this.authDone = true;
       } else {
-        console.log("Token expired, attempting refresh");
+        // console.log("Token expired, attempting refresh");
         this.refreshToken().subscribe({
           next: (status) => {
             if (status === 0) {
@@ -109,7 +109,7 @@ export class AuthService {
       map((response: any) => {
         if (isPlatformBrowser(this.platformId))
         {
-          console.log('response: ' + response.message);
+          // console.log('response: ' + response.message);
           localStorage.setItem('username', userCredentials.username);
           localStorage.setItem('sessionid', response.sessionid);
           this.isAuthenticatedSubject.next(true);
@@ -118,7 +118,7 @@ export class AuthService {
         return (0);
       }),
       catchError((error: any) => {
-        console.log("Falla aqui" + error);
+        // console.log("Falla aqui" + error);
         return throwError(() => error);
       })
     ));
@@ -141,7 +141,7 @@ export class AuthService {
   }
 
   refreshToken(): Observable<number> {
-    console.log('Starting token refresh...');
+    // console.log('Starting token refresh...');
     
     if (this.isRefreshing) {
         return of(0);
@@ -155,7 +155,7 @@ export class AuthService {
     
     const refresh_token = localStorage.getItem('refresh_token');
     const access_token = localStorage.getItem('access_token');
-    console.log('Refresh token present:', !!refresh_token);
+    // console.log('Refresh token present:', !!refresh_token);
     
     if (!refresh_token) {
         this.isRefreshing = false;
@@ -181,7 +181,7 @@ export class AuthService {
             }
         }),
         catchError((error: any) => {
-            console.error('Refresh failed:', error);
+            // console.error('Refresh failed:', error);
             // If refresh fails, clear tokens and force re-login
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
@@ -199,9 +199,9 @@ export class AuthService {
  
   updateProfile(formData: FormData, username: string): Observable<any> {
     // Debug log
-    console.log('FormData contents:');
+    // console.log('FormData contents:');
     formData.forEach((value, key) => {
-      console.log(`${key}: ${value instanceof File ? `File: ${value.name}` : value}`);
+      // console.log(`${key}: ${value instanceof File ? `File: ${value.name}` : value}`);
     });
     
     // Don't set Content-Type header - browser will set it automatically with proper boundary
@@ -229,7 +229,7 @@ export class AuthService {
       }),
       catchError(response => {
         //console.error('Credential validation error: ', error);
-        console.log("If user exists came back: ", response);
+        // console.log("If user exists came back: ", response);
         return of(false);
       })
     )

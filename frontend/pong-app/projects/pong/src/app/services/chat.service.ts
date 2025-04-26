@@ -50,14 +50,14 @@ export class ChatService {
         if (subject) {
           subject.next(messages);
         }
-      },
-      error: (error) => console.error('Error fetching messages', error)
+      }
+      // error: (error) => console.error('Error fetching messages', error)
     });
 
     this.socket = new WebSocket(`${environment.webSocketURL}ws/chat/${roomName}/`);
 
     this.socket.onopen = () => {
-      console.log('WebSocket connection established');
+      // console.log('WebSocket connection established');
     };
 
     this.socket.onmessage = (event) => {
@@ -70,7 +70,7 @@ export class ChatService {
     };
 
     this.socket.onclose = () => {
-      console.log('WebSocket connection closed');
+      // console.log('WebSocket connection closed');
       this.messageSubjects.delete(roomName);
     };
   }

@@ -46,7 +46,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.roomName = params['roomId'];
       if (this.roomName.startsWith('private_')) {
         const users = this.roomName.replace('private_', '').split('_');
-        console.log("IMPORTANT:  ", `${this.authService.API_URL}/accounts/me/`)
+        // console.log("IMPORTANT:  ", `${this.authService.API_URL}/accounts/me/`)
         this.http.get<User>(`${this.authService.API_URL}/accounts/me/`).subscribe({
           next: (user) => {
             this.username = user.username;
@@ -102,15 +102,15 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.chatService.unblockUser(this.otherUserId).subscribe({
         next: () => {
           this.isUserBlocked = false;
-        },
-        error: (error) => console.error('Error unblocking user:', error)
+        }
+        // error: (error) => console.error('Error unblocking user:', error)
       });
     } else {
       this.chatService.blockUser(this.otherUserId).subscribe({
         next: () => {
           this.isUserBlocked = true;
-        },
-        error: (error) => console.error('Error blocking user:', error)
+        }
+        // error: (error) => console.error('Error blocking user:', error)
       });
     }
   }

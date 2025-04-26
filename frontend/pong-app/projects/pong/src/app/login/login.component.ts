@@ -39,14 +39,14 @@ export class LoginComponent {
 				password: this.loginForm.value.password
 			};
 
-			console.log('Attempting login with:', credentials.username);
+			// console.log('Attempting login with:', credentials.username);
 			this.authService.login(credentials).subscribe({
 				next: (response) => {
-					console.log('Login backend response:', response);
+					// console.log('Login backend response:', response);
 					this.router.navigate(['two-factor']);
 				},
 				error: (err) => {
-					console.error('Server error:', err.error);
+					// console.error('Server error:', err.error);
 					if (err.error.error) {
 						this.loginError = err.error.error;
 					} else {

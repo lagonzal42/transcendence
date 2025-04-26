@@ -60,7 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.currentUsername = user.username;
         },
         error: (error) => {
-          console.error('Error loading current user:', error);
+          // console.error('Error loading current user:', error);
         }
       });
     }

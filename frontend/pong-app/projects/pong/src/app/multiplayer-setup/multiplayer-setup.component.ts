@@ -115,7 +115,7 @@ export class MultiplayerSetupComponent implements OnInit {
         error: (error) => {
           this.player2AuthStatus = 'error';
           this.player2AuthMessage = 'Authentication failed. Please try again.';
-          console.error('Authentication error:', error);
+          // console.error('Authentication error:', error);
         }
       });
     }
@@ -140,7 +140,7 @@ export class MultiplayerSetupComponent implements OnInit {
         error: (error) => {
           this.player3AuthStatus = 'error';
           this.player3AuthMessage = 'Authentication failed. Please try again.';
-          console.error('Authentication error:', error);
+          // console.error('Authentication error:', error);
         }
       });
     }
@@ -165,7 +165,7 @@ export class MultiplayerSetupComponent implements OnInit {
         error: (error) => {
           this.player4AuthStatus = 'error';
           this.player4AuthMessage = 'Authentication failed. Please try again.';
-          console.error('Authentication error:', error);
+          // console.error('Authentication error:', error);
         }
       });
     }

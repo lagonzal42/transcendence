@@ -34,7 +34,7 @@ export class VerifyComponent implements OnInit {
 		this.route.params.subscribe(params => {
 			const pathToken = params['token'];
 			if (pathToken) {
-			  console.log("token exists in path param");
+			//   console.log("token exists in path param");
 			  this.activateAccount(pathToken);
 			  return;
 			}
@@ -43,7 +43,7 @@ export class VerifyComponent implements OnInit {
 			this.route.queryParams.subscribe(qParams => {
 			  const queryToken = qParams['token'];
 			  if (queryToken) {
-				console.log("token exists in query param");
+				// console.log("token exists in query param");
 				this.activateAccount(queryToken);
 			  } else {
 				this.message = 'Invalid activation link';

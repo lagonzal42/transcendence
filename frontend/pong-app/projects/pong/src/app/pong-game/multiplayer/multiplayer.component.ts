@@ -78,7 +78,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
         this.rightPlayerName = players.player2Name;
         this.upPlayerName = players.player3Name;
         this.downPlayerName = players.player4Name;
-        console.log("up: " + this.upPlayerName + " down: " + this.downPlayerName + " left: " + this.leftPlayerName + " right: " + this.rightPlayerName);
+        // console.log("up: " + this.upPlayerName + " down: " + this.downPlayerName + " left: " + this.leftPlayerName + " right: " + this.rightPlayerName);
         
         // Store authentication status
         this.playersAuthenticated = {
@@ -92,7 +92,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   }
 
   ngOnInit(): void {
-    console.log("PongGameComponent initialized with players:", this.leftPlayerName, this.rightPlayerName);
+    // console.log("PongGameComponent initialized with players:", this.leftPlayerName, this.rightPlayerName);
   }
 
   ngAfterViewInit(): void {
@@ -105,8 +105,8 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
 					this.initializeGame();
 					this.startGame();  // Asegúrate de que este método se está llamando
 				} 
-				else
-					console.error("Failed to retrieve the canvas context.");
+				// else
+					// console.error("Failed to retrieve the canvas context.");
         	}, 0);
     	});
     }
@@ -125,7 +125,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
     this.ball1.setSpeed(5);
     this.ball2.setSpeed(5);
 
-    console.log('canvasHeight ' + this.pongCanvas.nativeElement.height + ' canvasWidth: ' + this.pongCanvas.nativeElement.width)
+    // console.log('canvasHeight ' + this.pongCanvas.nativeElement.height + ' canvasWidth: ' + this.pongCanvas.nativeElement.width)
 
   
     this.isGameInitialized = true; // Marcar el juego como inicializado
@@ -281,7 +281,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
   }
 
   updateScoreDisplay(ball: Ball): void {
-    console.log(ball.getLastTouch() + ' is the last touch');
+    // console.log(ball.getLastTouch() + ' is the last touch');
     this.ngZone.run(() =>{
       switch (ball.getLastTouch())
       {
@@ -373,11 +373,11 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
       match_type: 'multiplayer'
     }
 
-    console.log(matchData);
+    // console.log(matchData);
 
     this.http.post(`${environment.backendURL}accounts/matches/`, matchData).subscribe({
-      next: (response) => console.log('Match processed successfully:', response),
-      error: (error) => console.error('Error processing match:', error)
+      // next: (response) => console.log('Match processed successfully:', response),
+      // error: (error) => console.error('Error processing match:', error)
     });
   
   }

@@ -52,7 +52,7 @@ export class MatchHistoryComponent implements OnInit {
           this.matches = matches;
         },
         error: (error) => {
-          console.error('Error loading match history:', error);
+          // console.error('Error loading match history:', error);
         }
       });
   }

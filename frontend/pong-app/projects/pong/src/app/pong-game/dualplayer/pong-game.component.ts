@@ -63,7 +63,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    console.log("PongGameComponent initialized with players:", this.leftPlayerName, this.rightPlayerName);
+    // console.log("PongGameComponent initialized with players:", this.leftPlayerName, this.rightPlayerName);
   }
 
   ngAfterViewInit(): void {
@@ -74,7 +74,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
           this.initializeGame();
           this.startGame();  // Asegúrate de que este método se está llamando
         } else {
-          console.error("Failed to retrieve the canvas context.");
+          // console.error("Failed to retrieve the canvas context.");
         }
       }, 0);
     }
@@ -221,7 +221,7 @@ export class PongGameComponent implements OnInit, AfterViewInit {
 
         this.ctx.fillText(winnerMessage, xPosition, yPosition);
 
-        console.log("player1 " + this.leftPlayerName);
+        // console.log("player1 " + this.leftPlayerName);
 
         this.http.post(`${environment.backendURL}accounts/matches/`, {
             player1_username: this.leftPlayerName,
@@ -231,8 +231,8 @@ export class PongGameComponent implements OnInit, AfterViewInit {
             winner_username: winnerName,
             match_type: this.isTournamentMatch ? 'tournament' : 'local',
         }).subscribe({
-            next: (response) => console.log('Match processed successfully:', response),
-            error: (error) => console.error('Error processing match:', error)
+            // next: (response) => console.log('Match processed successfully:', response),
+            // error: (error) => console.error('Error processing match:', error)
         });
 
         if (this.isTournamentMatch) {
