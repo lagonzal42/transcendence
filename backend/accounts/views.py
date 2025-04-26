@@ -512,8 +512,11 @@ class SearchUsersView(APIView):
         # print(f"Current user ID: {request.user.id}")
         
         # Original query with debug
-        users = User.objects.filter(username__icontains(query).exclude(id=request.user.id)[:10])
-        #print(f"Found users for query '{query}': {[(user.username, user.id) for user in users]}")
+        #users = User.objects.filter(username__icontains(query).exclude(id=request.user.id))
+        users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)
+
+        print(f"Found users for query '{query}':")
+        print(f"Found users for query '{query}': {[(user.username, user.id) for user in users]}")
         
         user_data = [{
             'id': user.id,
@@ -521,6 +524,8 @@ class SearchUsersView(APIView):
             'email': user.email,
             'first_name': user.first_name
         } for user in users]
+
+        print(user_data)
         
         return Response(user_data)
 

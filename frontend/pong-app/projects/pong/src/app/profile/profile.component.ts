@@ -221,32 +221,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
   {
     this.http.get<User[]>(`${this.API_URL}/accounts/users/search/?query=${this.searchQuery.trim()}`).subscribe({
       next: (results) => {
-        this.searchResults = results;
-        this.loadFriendRequests();
-        this.loadFriends(this.currentUsername);
-        let notrepeated = [];
-        for (let user of this.searchResults)
-        {
-          for (let fr of this.friendRequests)
-          {
-            if (user.username != fr.from_user.username || user.username != fr.to_user.username)
-            {
-              notrepeated.push(user);
-            }
+        const filteredUsers = this.searchResults.filter(user => {
+          const inFriends = this.friends.some(friend => friend.id === user.id);
+          const inFriendRequests = this.friendRequests.some(
+            fr => fr.from_user.id === user.id || fr.to_user.id === user.id
+          );
+        
+          if (inFriends || inFriendRequests) {
+            console.log(`Excluded user: ${user.username}`);
           }
-        }
-
-        for (let user of this.searchResults)
-          {
-            for (let fr of this.friends)
-            {
-              if (user.username != fr.username || user.username != fr.username)
-              {
-                notrepeated.push(user);
-              }
-            }
-          }
-          this.searchResults = notrepeated;
+        
+          return !inFriends && !inFriendRequests;
+        });
       },
       error: (error) => {
         console.error('Error searching users:', error);

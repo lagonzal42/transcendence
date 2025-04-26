@@ -41,7 +41,7 @@ export class MultiplayerComponent implements OnInit, AfterViewInit{
 
   // Score
   public leftPlayerScore: number = 0;
-  public rightPlayerScore: number = 9;
+  public rightPlayerScore: number = 0;
   public upPlayerScore: number = 0;
   public downPlayerScore: number = 0;
   private winningScore: number = 10;
