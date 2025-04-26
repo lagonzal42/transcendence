@@ -1,264 +1,245 @@
-<!-- <div class="tournamentNameArea container-fluid d-flex justify-content-center align-items-center">
-  <div *ngIf="!formSubmitted">
-    <h2 class="tournamentFormTitle text-center mb-4">{{ 'tournament.nameSelection' | translate }}</h2>
-    <form [formGroup]="tournamentForm" (ngSubmit)="onSubmit()">
-      <div class="formGroup">
-        <label for="player1">{{ 'tournament.player1' | translate }}</label>
-        <input id="player1" formControlName="player1">
-        <div *ngIf="tournamentForm.get('player1')?.touched && tournamentForm.get('player1')?.invalid">
-          <small class="text-danger">{{ 'tournament.invalidName' | translate }}</small>
-        </div>
+<!-- Match Preparation Screen -->
+<div class="match-preparation" *ngIf="showMatchPreparation">
+  <div class="match-preparation-content">
+    <h2 class="text-center mb-4">{{ 'tournament.nextMatch' | translate }}</h2>
+    <div class="players-display">
+      <div class="player">
+        <h3>{{currentMatch?.player1}}</h3>
+        <div class="vs">VS</div>
+        <h3>{{currentMatch?.player2}}</h3>
       </div>
-      <div class="formGroup">
-        <label for="player2">{{ 'tournament.player2' | translate }}</label>
-        <input id="player2" formControlName="player2">
-        <div *ngIf="tournamentForm.get('player2')?.touched && tournamentForm.get('player2')?.invalid">
-          <small class="text-danger">{{ 'tournament.invalidName' | translate }}</small>
-        </div>
-      </div>
-      <div class="formGroup">
-        <label for="player3">{{ 'tournament.player3' | translate }}</label>
-        <input id="player3" formControlName="player3">
-        <div *ngIf="tournamentForm.get('player3')?.touched && tournamentForm.get('player3')?.invalid">
-          <small class="text-danger">{{ 'tournament.invalidName' | translate }}</small>
-        </div>
-      </div>
-      <div class="formGroup">
-        <label for="player4">{{ 'tournament.player4' | translate }}</label>
-        <input id="player4" formControlName="player4">
-        <div *ngIf="tournamentForm.get('player4')?.touched && tournamentForm.get('player4')?.invalid">
-          <small class="text-danger">{{ 'tournament.invalidName' | translate }}</small>
-        </div>
-      </div>
-      <button class="submit-login-btn" type="submit">{{ 'tournament.ready' | translate }}</button>
-      <div *ngIf="tournamentForm.errors?.['nonUniquePlayers'] && tournamentForm.get('player4')?.touched && tournamentForm.get('player3')?.touched && tournamentForm.get('player2')?.touched && tournamentForm.get('player1')?.touched">
-        <small class="text-danger">{{ 'tournament.playerNamesMustBeUnique' | translate }}</small>
-      </div>
-    </form>
-    <div>
-      <button (click)="resetTournament()">{{ 'tournament.resetTournament' | translate }}</button>
     </div>
-  </div> -->
-  <div class="tournamentNameArea container-fluid d-flex justify-content-center align-items-center">
+    <div class="countdown">
+      <h4>{{ 'tournament.matchStartsIn' | translate }}</h4>
+      <div class="countdown-number">{{matchPreparationCountdown}}</div>
+    </div>
+    <button class="skip-btn" (click)="skipCountdown()">{{ 'tournament.skipCountdown' | translate }}</button>
+  </div>
+</div>
+
+<!-- Tournament Name Selection Area -->
+<div class="tournamentNameArea container-fluid d-flex justify-content-center align-items-center" *ngIf="!formSubmitted && !showMatchPreparation">
   <div class="localPlayNameArea container">
     <h2 class="localPlayFormTitle text-center mb-4">{{ 'multiplayer.nameselection' | translate }}</h2>
     <form [formGroup]="tournamentForm" (ngSubmit)="onSubmit()">
-        <div class="row justify-content-center">
-            <!-- Player 1 Box -->
-            <div class="col-12 col-md-6 col-lg-3 mb-3">
-                <div class="player-box">
-                    <div class="formGroup">
-                        <label for="player1">{{ 'multiplayer.player1' | translate }}</label>
-                        <input class="form-control" id="player1" formControlName="player1">
-                        <div *ngIf="tournamentForm.get('player1')?.touched && tournamentForm.get('player1')?.invalid">
-                            <small class="text-danger">{{ 'multiplayer.invalidname' | translate }}</small>
-                        </div>
-                    </div>
-                </div>
+      <div class="row">
+        <!-- Player 1 Box -->
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
+          <div class="player-box">
+            <div class="formGroup">
+              <label for="player1">{{ 'multiplayer.player1' | translate }}</label>
+              <input class="form-control" id="player1" formControlName="player1">
+              <div *ngIf="tournamentForm.get('player1')?.touched && tournamentForm.get('player1')?.invalid">
+                <small class="text-danger">{{ 'multiplayer.invalidname' | translate }}</small>
+              </div>
             </div>
-
-            <!-- Player 2 Box -->
-            <!-- <div class="col-12 col-md-6 col-lg-3 mb-3"> -->
-                <div class="player-box">
-                    <div class="formGroup">
-                        <label>{{ 'multiplayer.player2type' | translate }}</label>
-                        <div class="player2-options">
-                            <label>
-                                <input type="radio" formControlName="player2Type" value="guest" (change)="onPlayer2TypeChange('guest')" i18n>
-                                {{ 'multiplayer.playasguest' | translate }}
-                            </label>
-                            <label>
-                                <input type="radio" formControlName="player2Type" value="registered" (change)="onPlayer2TypeChange('registered')" i18n>
-                                {{ 'multiplayer.playasregistereduser' | translate }}
-                            </label>
-                        </div>
-
-                        <div *ngIf="!showPlayer2Auth">
-                            <label for="player2">{{ 'multiplayer.player2name' | translate }}</label>
-                            <input class="form-control" id="player2" formControlName="player2">
-                            <div *ngIf="tournamentForm.get('player2')?.touched && tournamentForm.get('player2')?.invalid">
-                                <small class="text-danger">{{ 'multiplayer.invalidname' | translate }}</small>
-                            </div>
-                        </div>
-
-                        <div *ngIf="showPlayer2Auth" class="auth-form" [formGroup]="player2AuthForm">
-                            <div class="formGroup">
-                                <label for="username2">{{ 'multiplayer.username' | translate }}</label>
-                                <input class="form-control" id="username2" formControlName="username">
-                            </div>
-                            <div class="formGroup">
-                                <label for="password2">{{ 'multiplayer.password' | translate }}</label>
-                                <input class="form-control" id="password2" type="password" formControlName="password">
-                            </div>
-                            <button type="button" class="btn btn-primary" (click)="authenticatePlayer2()">
-                                {{ 'multiplayer.verifyplayer2' | translate }}
-                            </button>
-                            <div *ngIf="player2AuthStatus !== 'none'"
-                                [ngClass]="{'auth-success': player2AuthStatus === 'success',
-                                        'auth-error': player2AuthStatus === 'error'}"  
-                                class="auth-message">
-                                {{ player2AuthMessage }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <!-- </div> -->
-
-            <!-- Player 3 Box -->
-            <!-- <div class="col-12 col-md-6 col-lg-3 mb-3"> -->
-                <div class="player-box">
-                    <div class="formGroup">
-                        <label>{{ 'multiplayer.player3type' | translate }}</label>
-                        <div class="player2-options">
-                            <label>
-                                <input type="radio" formControlName="player3Type" value="guest" (change)="onPlayer3TypeChange('guest')" i18n>
-                                {{ 'multiplayer.playasguest' | translate }}
-                            </label>
-                            <label>
-                                <input type="radio" formControlName="player3Type" value="registered" (change)="onPlayer3TypeChange('registered')" i18n>
-                                {{ 'multiplayer.playasregistereduser' | translate }}
-                            </label>
-                        </div>
-                    </div>
-
-                    <div *ngIf="!showPlayer3Auth">
-                        <label for="player3">{{ 'multiplayer.player3name' | translate }}</label>
-                        <input id="player3" formControlName="player3">
-                        <div *ngIf="tournamentForm.get('player3')?.touched && tournamentForm.get('player3')?.invalid">
-                            <small class="text-danger">{{ 'multiplayer.invalidname' | translate }}</small>
-                        </div>
-                    </div>
-
-                    <div *ngIf="showPlayer3Auth" class="auth-form" [formGroup]="player3AuthForm">
-                        <div class="formGroup">
-                            <label for="username3">{{ 'multiplayer.username' | translate }}</label>
-                            <input id="username3" formControlName="username">
-                        </div>
-                        <div class="formGroup">
-                            <label for="password3">{{ 'multiplayer.password' | translate }}</label>
-                            <input id="password3" type="password" formControlName="password">
-                        </div>
-                        <button type="button" (click)="authenticatePlayer3()">{{ 'multiplayer.verifyplayer3' | translate }}</button>
-                        <div *ngIf="player3AuthStatus !== 'none'"
-                            [ngClass]="{'auth-success': player3AuthStatus === 'success',
-                                    'auth-error': player3AuthStatus === 'error'}"  
-                            class="auth-message">
-                            {{ player3AuthMessage }}
-                        </div>
-                    </div>
-                </div>
-            <!-- </div> -->
-
-            <!-- Player 4 Box -->
-            <!-- <div class="col-12 col-md-6 col-lg-3 mb-3"> -->
-                <div class="player-box">
-                    <div class="formGroup">
-                        <label>{{ 'multiplayer.player4type' | translate }}</label>
-                        <div class="player2-options">
-                            <label>
-                                <input type="radio" formControlName="player4Type" value="guest" (change)="onPlayer4TypeChange('guest')" i18n>
-                                {{ 'multiplayer.playasguest' | translate }}
-                            </label>
-                            <label>
-                                <input type="radio" formControlName="player4Type" value="registered" (change)="onPlayer4TypeChange('registered')" i18n>
-                                {{ 'multiplayer.playasregistereduser' | translate }}
-                            </label>
-                        </div>
-                    </div>
-
-                    <div *ngIf="!showPlayer4Auth">
-                        <label for="player4">{{ 'multiplayer.player4name' | translate }}</label>
-                        <input id="player4" formControlName="player4">
-                        <div *ngIf="tournamentForm.get('player4')?.touched && tournamentForm.get('player4')?.invalid">
-                            <small class="text-danger">{{ 'multiplayer.invalidname' | translate }}</small>
-                        </div>
-                    </div>
-
-                    <div *ngIf="showPlayer4Auth" class="auth-form" [formGroup]="player4AuthForm">
-                        <div class="formGroup">
-                            <label for="username4">{{ 'multiplayer.username' | translate }}</label>
-                            <input id="username4" formControlName="username">
-                        </div>
-                        <div class="formGroup">
-                            <label for="password4">{{ 'multiplayer.password' | translate }}</label>
-                            <input id="password4" type="password" formControlName="password">
-                        </div>
-                        <button type="button" (click)="authenticatePlayer4()">{{ 'multiplayer.verifyplayer4' | translate }}</button>
-                        <div *ngIf="player4AuthStatus !== 'none'"
-                            [ngClass]="{'auth-success': player4AuthStatus === 'success',
-                                    'auth-error': player4AuthStatus === 'error'}"  
-                            class="auth-message">
-                            {{ player4AuthMessage }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <!-- </div> -->
-
-        <div class="row justify-content-center">
-            <div class="col-12 text-center">
-                <button class="submit-login-btn" type="submit">{{ 'multiplayer.ready' | translate }}</button>
-                <div *ngIf="tournamentForm.errors?.['nonUniquePlayers']">
-                    <small class="text-danger">{{ 'multiplayer.playernamesmustbeunique' | translate }}</small>
-                </div>
-            </div>
+          </div>
         </div>
+
+        <!-- Player 2 Box -->
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
+          <div class="player-box">
+            <div class="formGroup">
+              <label>{{ 'multiplayer.player2type' | translate }}</label>
+              <div class="player-type-options">
+                <div class="radio-option">
+                  <input type="radio" id="player2-guest" name="player2Type" formControlName="player2Type" value="guest" (change)="onPlayer2TypeChange('guest')">
+                  <label for="player2-guest">{{ 'multiplayer.playasguest' | translate }}</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="player2-registered" name="player2Type" formControlName="player2Type" value="registered" (change)="onPlayer2TypeChange('registered')">
+                  <label for="player2-registered">{{ 'multiplayer.playasregistereduser' | translate }}</label>
+                </div>
+              </div>
+
+              <div *ngIf="!showPlayer2Auth">
+                <label for="player2">{{ 'multiplayer.player2name' | translate }}</label>
+                <input class="form-control" id="player2" formControlName="player2">
+                <div *ngIf="tournamentForm.get('player2')?.touched && tournamentForm.get('player2')?.invalid">
+                  <small class="text-danger">{{ 'multiplayer.invalidname' | translate }}</small>
+                </div>
+              </div>
+
+              <div *ngIf="showPlayer2Auth" class="auth-form" [formGroup]="player2AuthForm">
+                <div class="formGroup">
+                  <label for="username2">{{ 'multiplayer.username' | translate }}</label>
+                  <input class="form-control" id="username2" formControlName="username">
+                </div>
+                <div class="formGroup">
+                  <label for="password2">{{ 'multiplayer.password' | translate }}</label>
+                  <input class="form-control" id="password2" type="password" formControlName="password">
+                </div>
+                <button type="button" class="btn btn-primary" (click)="authenticatePlayer2()">
+                  {{ 'multiplayer.verifyplayer2' | translate }}
+                </button>
+                <div *ngIf="player2AuthStatus !== 'none'"
+                  [ngClass]="{'auth-success': player2AuthStatus === 'success',
+                          'auth-error': player2AuthStatus === 'error'}"  
+                  class="auth-message">
+                  {{ player2AuthMessage }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 3 Box -->
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
+          <div class="player-box">
+            <div class="formGroup">
+              <label>{{ 'multiplayer.player3type' | translate }}</label>
+              <div class="player-type-options">
+                <div class="radio-option">
+                  <input type="radio" id="player3-guest" name="player3Type" formControlName="player3Type" value="guest" (change)="onPlayer3TypeChange('guest')">
+                  <label for="player3-guest">{{ 'multiplayer.playasguest' | translate }}</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="player3-registered" name="player3Type" formControlName="player3Type" value="registered" (change)="onPlayer3TypeChange('registered')">
+                  <label for="player3-registered">{{ 'multiplayer.playasregistereduser' | translate }}</label>
+                </div>
+              </div>
+
+              <div *ngIf="!showPlayer3Auth">
+                <label for="player3">{{ 'multiplayer.player3name' | translate }}</label>
+                <input class="form-control" id="player3" formControlName="player3">
+                <div *ngIf="tournamentForm.get('player3')?.touched && tournamentForm.get('player3')?.invalid">
+                  <small class="text-danger">{{ 'multiplayer.invalidname' | translate }}</small>
+                </div>
+              </div>
+
+              <div *ngIf="showPlayer3Auth" class="auth-form" [formGroup]="player3AuthForm">
+                <div class="formGroup">
+                  <label for="username3">{{ 'multiplayer.username' | translate }}</label>
+                  <input class="form-control" id="username3" formControlName="username">
+                </div>
+                <div class="formGroup">
+                  <label for="password3">{{ 'multiplayer.password' | translate }}</label>
+                  <input class="form-control" id="password3" type="password" formControlName="password">
+                </div>
+                <button type="button" class="btn btn-primary" (click)="authenticatePlayer3()">
+                  {{ 'multiplayer.verifyplayer3' | translate }}
+                </button>
+                <div *ngIf="player3AuthStatus !== 'none'"
+                  [ngClass]="{'auth-success': player3AuthStatus === 'success',
+                          'auth-error': player3AuthStatus === 'error'}"  
+                  class="auth-message">
+                  {{ player3AuthMessage }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 4 Box -->
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
+          <div class="player-box">
+            <div class="formGroup">
+              <label>{{ 'multiplayer.player4type' | translate }}</label>
+              <div class="player-type-options">
+                <div class="radio-option">
+                  <input type="radio" id="player4-guest" name="player4Type" formControlName="player4Type" value="guest" (change)="onPlayer4TypeChange('guest')">
+                  <label for="player4-guest">{{ 'multiplayer.playasguest' | translate }}</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="player4-registered" name="player4Type" formControlName="player4Type" value="registered" (change)="onPlayer4TypeChange('registered')">
+                  <label for="player4-registered">{{ 'multiplayer.playasregistereduser' | translate }}</label>
+                </div>
+              </div>
+
+              <div *ngIf="!showPlayer4Auth">
+                <label for="player4">{{ 'multiplayer.player4name' | translate }}</label>
+                <input class="form-control" id="player4" formControlName="player4">
+                <div *ngIf="tournamentForm.get('player4')?.touched && tournamentForm.get('player4')?.invalid">
+                  <small class="text-danger">{{ 'multiplayer.invalidname' | translate }}</small>
+                </div>
+              </div>
+
+              <div *ngIf="showPlayer4Auth" class="auth-form" [formGroup]="player4AuthForm">
+                <div class="formGroup">
+                  <label for="username4">{{ 'multiplayer.username' | translate }}</label>
+                  <input class="form-control" id="username4" formControlName="username">
+                </div>
+                <div class="formGroup">
+                  <label for="password4">{{ 'multiplayer.password' | translate }}</label>
+                  <input class="form-control" id="password4" type="password" formControlName="password">
+                </div>
+                <button type="button" class="btn btn-primary" (click)="authenticatePlayer4()">
+                  {{ 'multiplayer.verifyplayer4' | translate }}
+                </button>
+                <div *ngIf="player4AuthStatus !== 'none'"
+                  [ngClass]="{'auth-success': player4AuthStatus === 'success',
+                          'auth-error': player4AuthStatus === 'error'}"  
+                  class="auth-message">
+                  {{ player4AuthMessage }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center mt-4">
+        <div class="col-12 text-center">
+          <button class="submit-login-btn" type="submit">{{ 'multiplayer.ready' | translate }}</button>
+          <div *ngIf="tournamentForm.errors?.['nonUniquePlayers']">
+            <small class="text-danger">{{ 'multiplayer.playernamesmustbeunique' | translate }}</small>
+          </div>
+        </div>
+      </div>
     </form>
+  </div>
 </div>
-</div>
 
-
-
-  <!-- Tournament Progress View -->
-  <div class="tournament-progress" *ngIf="formSubmitted">
-    <h3>{{ 'tournament.tournamentProgress' | translate }}</h3>
-    
-    <!-- First Round -->
-    <div class="round-1">
-      <h4>{{ 'tournament.semiFinals' | translate }}</h4>
-      <!-- First Match -->
-      <div class="match">
-        <p>{{ 'tournament.match' | translate }} 1: {{group1[0]}} vs {{group1[1]}}</p>
-        <div *ngIf="matchResults[0]" class="match-result">
-          <p>{{ 'tournament.winner' | translate }}: {{matchResults[0].winner}}</p>
-          <p class="score">{{ 'tournament.score' | translate }}: {{matchResults[0].score1}} - {{matchResults[0].score2}}</p>
-        </div>
-        <!-- Add start button for first match -->
+<!-- Tournament Progress View -->
+<div class="tournament-progress container" *ngIf="formSubmitted && !tournamentComplete && !showMatchPreparation">
+  <h3 class="text-center mb-4">{{ 'tournament.tournamentProgress' | translate }}</h3>
+  
+  <!-- First Round -->
+  <div class="round-1" *ngIf="currentRound === 1">
+    <h4 class="text-center mb-3">{{ 'tournament.semiFinals' | translate }}</h4>
+    <!-- First Match -->
+    <div class="match">
+      <p class="text-center">{{ 'tournament.match' | translate }} 1: {{group1[0].name}} vs {{group1[1].name}}</p>
+      <div *ngIf="matchResults[0]" class="match-result">
+        <p class="text-center">{{ 'tournament.winner' | translate }}: {{matchResults[0].winner}}</p>
+        <p class="score text-center">{{ 'tournament.score' | translate }}: {{matchResults[0].score1}} - {{matchResults[0].score2}}</p>
+      </div>
+      <div class="text-center">
         <button *ngIf="!matchResults[0]" 
-                (click)="startMatch(group1[0], group1[1])" 
+                (click)="startMatch(group1[0].name, group1[1].name)" 
                 class="submit-login-btn">
           {{ 'tournament.ready' | translate }}
         </button>
-      </div>
-      
-      <!-- Second Match -->
-      <div class="match">
-        <p>{{ 'tournament.match' | translate }} 2: {{group2[0]}} vs {{group2[1]}}</p>
-        <div *ngIf="matchResults[1]" class="match-result">
-          <p>{{ 'tournament.winner' | translate }}: {{matchResults[1].winner}}</p>
-          <p class="score">{{ 'tournament.score' | translate }}: {{matchResults[1].score1}} - {{matchResults[1].score2}}</p>
-        </div>
-        <!-- Add start button for second match that only shows after first match is completed -->
-        <button *ngIf="winners.length === 1 && !matchResults[1]" 
-                (click)="startMatch(group2[0], group2[1])" 
-                class="submit-login-btn">
-          {{ 'tournament.ready' | translate }}
-        </button>
-      </div>
-      <div>
-        <button (click)="resetTournament()">{{ 'tournament.resetTournament' | translate }}</button>
       </div>
     </div>
+    
+    <!-- Second Match -->
+    <div class="match">
+      <p class="text-center">{{ 'tournament.match' | translate }} 2: {{group2[0].name}} vs {{group2[1].name}}</p>
+      <div *ngIf="matchResults[1]" class="match-result">
+        <p class="text-center">{{ 'tournament.winner' | translate }}: {{matchResults[1].winner}}</p>
+        <p class="score text-center">{{ 'tournament.score' | translate }}: {{matchResults[1].score1}} - {{matchResults[1].score2}}</p>
+      </div>
+      <div class="text-center">
+        <button *ngIf="winners.length === 1 && !matchResults[1]" 
+                (click)="startMatch(group2[0].name, group2[1].name)" 
+                class="submit-login-btn">
+          {{ 'tournament.ready' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
 
-    <!-- Final Round - This part stays mostly the same -->
-    <div class="round-2" *ngIf="currentRound === 2">
-      <h4>{{ 'tournament.finals' | translate }}</h4>
-      <div class="match">
-        <p>{{winners[0]}} vs {{winners[1]}}</p>
-        <div *ngIf="matchResults[2]" class="match-result">
-          <p>{{ 'tournament.winner' | translate }}: {{matchResults[2].winner}}</p>
-          <p class="score">{{ 'tournament.score' | translate }}: {{matchResults[2].score1}} - {{matchResults[2].score2}}</p>
-        </div>
+  <!-- Final Round -->
+  <div class="round-2" *ngIf="currentRound === 2">
+    <h4 class="text-center mb-3">{{ 'tournament.finals' | translate }}</h4>
+    <div class="match">
+      <p class="text-center">{{winners[0]}} vs {{winners[1]}}</p>
+      <div *ngIf="matchResults[2]" class="match-result">
+        <p class="text-center">{{ 'tournament.winner' | translate }}: {{matchResults[2].winner}}</p>
+        <p class="score text-center">{{ 'tournament.score' | translate }}: {{matchResults[2].score1}} - {{matchResults[2].score2}}</p>
+      </div>
+      <div class="text-center">
         <button *ngIf="winners.length === 2 && !matchResults[2]" 
                 (click)="startFinalMatch()" 
                 class="submit-login-btn">
@@ -266,12 +247,14 @@
         </button>
       </div>
     </div>
-
-    <!-- Tournament Complete - This part stays the same -->
-    <div *ngIf="tournamentComplete" class="tournament-complete">
-      <h3>{{ 'tournament.tournamentComplete' | translate }}</h3>
-      <p>{{ 'tournament.winner' | translate }}: {{winners[2]}}</p>
-      <button (click)="resetTournament()" class="submit-login-btn">{{ 'tournament.startNewTournament' | translate }}</button>
-    </div>
   </div>
-<!-- </div> -->
+</div>
+
+<!-- Tournament Complete -->
+<div class="tournament-complete container" *ngIf="tournamentComplete && !showMatchPreparation">
+  <h3 class="text-center">{{ 'tournament.tournamentComplete' | translate }}</h3>
+  <p class="text-center">{{ 'tournament.winner' | translate }}: {{winners[2]}}</p>
+  <div class="text-center">
+    <button (click)="resetTournament()" class="submit-login-btn">{{ 'tournament.startNewTournament' | translate }}</button>
+  </div>
+</div>

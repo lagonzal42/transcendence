@@ -9,6 +9,8 @@ FROM grafana/grafana-enterprise
 COPY ./grafana/dashboards /var/lib/grafana/dashboards/
 COPY ./grafana/provisioning /etc/grafana/provisioning/
 
+EXPOSE 3000
+
 # Set correct permissions
 USER root
 RUN chown -R 472:472 /var/lib/grafana/dashboards

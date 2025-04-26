@@ -9,6 +9,11 @@ import { isPlatformBrowser } from '@angular/common';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
 
+interface Player {
+  name: string;
+  isAuthenticated: boolean;
+}
+
 @Component({
   selector: 'app-tournament',
   standalone: true,
@@ -19,8 +24,8 @@ import { AuthService } from '../auth/auth.service';
 
 export class TournamentComponent implements OnInit {
   tournamentForm: FormGroup;
-  group1: string[] = [];
-  group2: string[] = [];
+  group1: Player[] = [];
+  group2: Player[] = [];
   formSubmitted: boolean = false;
   currentRound: number = 1;
   winners: string[] = [];
@@ -37,6 +42,8 @@ export class TournamentComponent implements OnInit {
     score2: number;
   }[] = [];
   countdownSeconds: number = 0;
+  showMatchPreparation: boolean = false;
+  matchPreparationCountdown: number = 5;
 
     isLoggedIn: boolean = false;
     currentUser: string = '';
@@ -63,7 +70,7 @@ export class TournamentComponent implements OnInit {
     
   ) {
     this.tournamentForm = this.fb.group({
-      player1: ['', Validators.required],
+      player1: [{value: '', disabled: false}, Validators.required],
       player2: ['', Validators.required],
       player3: ['', Validators.required],
       player4: ['', Validators.required],
@@ -86,12 +93,6 @@ export class TournamentComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
-    this.tournamentForm = this.fb.group({
-      player1: ['', Validators.required],
-      player2: ['', Validators.required],
-      player3: ['', Validators.required],
-      player4: ['', Validators.required],
-    }, { validator: uniquePlayerNamesValidator(['player1', 'player2', 'player3', 'player4']) });
     
     // Only load state if we're in the browser
     if (isPlatformBrowser(this.platformId)) {
@@ -100,26 +101,32 @@ export class TournamentComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(() => {
-      if (isPlatformBrowser(this.platformId) && window.history.state.winner) {
-        // console.log("Winner from navigation: ", window.history.state.winner);
-        // console.log("left score: ", window.history.state.leftScore)
-        // console.log("right score: ", window.history.state.rightScore)
-        this.handleMatchComplete(window.history.state.winner, window.history.state);
-      }
-    })
-
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
         if (user) {
           this.isLoggedIn = true;
           this.currentUser = user.username;
-          this.tournamentForm.get('player1')?.setValue(user.username);
+          this.tournamentForm.patchValue({
+            player1: user.username
+          });
           this.tournamentForm.get('player1')?.disable();
+        } else {
+          this.isLoggedIn = false;
+          this.currentUser = '';
+          this.tournamentForm.get('player1')?.enable();
         }
       },
       error: (error) => {
+        console.error('Error getting current user:', error);
         this.isLoggedIn = false;
+        this.currentUser = '';
+        this.tournamentForm.get('player1')?.enable();
+      }
+    });
+
+    this.route.paramMap.subscribe(() => {
+      if (isPlatformBrowser(this.platformId) && window.history.state.winner) {
+        this.handleMatchComplete(window.history.state.winner, window.history.state);
       }
     });
   }
@@ -128,6 +135,8 @@ export class TournamentComponent implements OnInit {
     this.showPlayer2Auth = type === 'registered';
     if (type === 'guest') {
       this.player2AuthForm.reset();
+      this.player2AuthStatus = 'none';
+      this.player2AuthMessage = '';
     }
   }
 
@@ -135,6 +144,8 @@ export class TournamentComponent implements OnInit {
     this.showPlayer3Auth = type === 'registered';
     if (type === 'guest') {
       this.player3AuthForm.reset();
+      this.player3AuthStatus = 'none';
+      this.player3AuthMessage = '';
     }
   }
 
@@ -142,6 +153,8 @@ export class TournamentComponent implements OnInit {
     this.showPlayer4Auth = type === 'registered';
     if (type === 'guest') {
       this.player4AuthForm.reset();
+      this.player4AuthStatus = 'none';
+      this.player4AuthMessage = '';
     }
   }
 
@@ -220,6 +233,75 @@ export class TournamentComponent implements OnInit {
     }
   }
 
+  handleMatchComplete(winner: string, state: any) {
+    const leftScore = state?.leftScore || 0;
+    const rightScore = state?.rightScore || 0;
+
+    if (this.currentMatch) {
+      this.matchResults.push({
+        player1: this.currentMatch.player1,
+        player2: this.currentMatch.player2,
+        winner: winner,
+        score1: leftScore,
+        score2: rightScore
+      });
+    }
+
+    this.winners.push(winner);
+    this.currentMatch = null;
+
+    if (this.currentRound === 1) {
+      if (this.winners.length === 2) {
+        // Both semi-final matches are complete, move to finals
+        this.currentRound = 2;
+      }
+    } else if (this.currentRound === 2 && this.winners.length === 3) {
+      // Final match is complete
+      this.tournamentComplete = true;
+    }
+
+    this.saveTournamentState();
+  }
+
+  startFinalMatch() {
+    if (this.winners.length === 2) {
+      this.startMatch(this.winners[0], this.winners[1]);
+    }
+  }
+
+  resetTournament() {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('tournamentState');
+    }
+    this.formSubmitted = false;
+    this.group1 = [];
+    this.group2 = [];
+    this.currentRound = 1;
+    this.winners = [];
+    this.tournamentComplete = false;
+    this.currentMatch = null;
+    this.matchResults = [];
+    this.showMatchPreparation = false;
+    this.matchPreparationCountdown = 5;
+    this.tournamentForm.reset();
+    
+    // Reset authentication status
+    this.showPlayer2Auth = false;
+    this.showPlayer3Auth = false;
+    this.showPlayer4Auth = false;
+    this.player2AuthStatus = 'none';
+    this.player3AuthStatus = 'none';
+    this.player4AuthStatus = 'none';
+    this.player2AuthMessage = '';
+    this.player3AuthMessage = '';
+    this.player4AuthMessage = '';
+    
+    // Reset auth forms
+    this.player2AuthForm.reset();
+    this.player3AuthForm.reset();
+    this.player4AuthForm.reset();
+  }
+
   private loadTournamentState() {
     if (isPlatformBrowser(this.platformId)) {
       const savedState = localStorage.getItem('tournamentState');
@@ -233,6 +315,8 @@ export class TournamentComponent implements OnInit {
         this.tournamentComplete = state.tournamentComplete;
         this.currentMatch = state.currentMatch;
         this.matchResults = state.matchResults || [];
+        this.showMatchPreparation = false;
+        this.matchPreparationCountdown = 5;
       }
     }
   }
@@ -253,7 +337,7 @@ export class TournamentComponent implements OnInit {
     }
   }
 
-  shuffleArray(array: any[]) {
+  shuffleArray(array: Player[]): Player[] {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]]; // swap elements
@@ -263,7 +347,7 @@ export class TournamentComponent implements OnInit {
   
   onSubmit() {
     if (this.tournamentForm.valid) {
-      const players = [
+      const players: Player[] = [
         {
           name: this.tournamentForm.get('player1')?.value,
           isAuthenticated: this.isLoggedIn
@@ -290,126 +374,41 @@ export class TournamentComponent implements OnInit {
       this.formSubmitted = true;
       this.saveTournamentState();
   
-      this.startMatch(this.group1[0], this.group1[1]);
-      // You can also start the second match if needed
-      // this.startMatch(this.group2[0], this.group2[1]);
+      this.startMatch(this.group1[0].name, this.group1[1].name);
     } else {
       this.tournamentForm.markAllAsTouched();
     }
   }
 
-  // onSubmit() {
-  //   if (this.tournamentForm.valid) {
-  //     const players = {
-  //       player1Name: this.tournamentForm.get('player1')?.value,
-  //       player2Name: this.tournamentForm.get('player2')?.value,
-  //       player3Name: this.tournamentForm.get('player3')?.value,
-  //       player4Name: this.tournamentForm.get('player4')?.value,
-  //       isAuthenticated: {
-  //         player1: this.isLoggedIn,
-  //         player2: this.showPlayer2Auth && this.player2AuthForm.valid,
-  //         player3: this.showPlayer3Auth && this.player3AuthForm.valid,
-  //         player4: this.showPlayer4Auth && this.player4AuthForm.valid
-  //       }
-  //     };
-  //     // const shuffled = this.shuffleArray(players);
-  //     // this.group1 = [shuffled[0], shuffled[1]];
-  //     // this.group2 = [shuffled[2], shuffled[3]];
-
-  //     this.formSubmitted = true;
-  //     this.saveTournamentState();
-      
-  //     this.startMatch(this.group1[0], this.group1[1]);
-  //   } else {
-  //     this.tournamentForm.markAllAsTouched();
-  //   }
-  // }
-
-  handleMatchComplete(winner: string, state: any) {
-    const leftScore = state?.leftScore || 0;
-    const rightScore = state?.rightScore || 0;
-    // console.log("leftScore: ", leftScore);
-    // console.log("rightScore: ", rightScore);
-    if (this.currentMatch) {
-      this.matchResults.push({
-        player1: this.currentMatch.player1,
-        player2: this.currentMatch.player2,
-        winner: winner,
-        score1: leftScore,
-        score2: rightScore
-      });
-    }
-  
-    this.winners.push(winner);
-  
-    if (this.currentRound === 1) {
-      if (this.winners.length === 1) {
-        // First match complete
-        // Remove the countdown timer and automatic start of second match
-        this.currentMatch = null;
-        // Delete these lines:
-        // this.countdownSeconds = 8; // Start countdown from 8
-        // const countdownInterval = setInterval(() => {
-        //   this.countdownSeconds--;
-        //   if (this.countdownSeconds <= 0) {
-        //     clearInterval(countdownInterval);
-        //   }
-        // }, 1000);
-        
-        // Remove the automatic start of the second match
-        // setTimeout(() => {
-        //   this.startMatch(this.group2[0], this.group2[1]);
-        // }, 8000);
-      } else if (this.winners.length === 2) {
-        // After second match, prepare for finals
-        this.currentRound = 2;
-        this.currentMatch = null;
-        // Final match is already handled by button click
-      }
-    } else if (this.currentRound === 2 && this.winners.length === 3) {
-      this.tournamentComplete = true;
-      this.currentMatch = null;
-    } 
-    this.saveTournamentState();
-  }
-
-  startFinalMatch() {
-    if (this.winners.length === 2) {
-      this.startMatch(this.winners[0], this.winners[1]);
-    }
-  }
-
-  // Add a method to reset the tournament
-  resetTournament() {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('tournamentState');
-    }
-    this.formSubmitted = false;
-    this.group1 = [];
-    this.group2 = [];
-    this.currentRound = 1;
-    this.winners = [];
-    this.tournamentComplete = false;
-    this.currentMatch = null;
-    this.matchResults = [];
-    this.tournamentForm.reset();
-  }
-
   startMatch(player1: string, player2: string) {
     this.currentMatch = { player1, player2 };
-    this.saveTournamentState();
+    this.showMatchPreparation = true;
+    this.matchPreparationCountdown = 5;
+    
+    const countdownInterval = setInterval(() => {
+      this.matchPreparationCountdown--;
+      if (this.matchPreparationCountdown <= 0) {
+        clearInterval(countdownInterval);
+        this.showMatchPreparation = false;
+        this.saveTournamentState();
 
-    const navigationExtras: NavigationExtras =  {
-      state: {
-        players: {
-          leftPlayerName: player1,
-          rightPlayerName: player2,
-          isTournamentMatch: true,
-        }
+        const navigationExtras: NavigationExtras = {
+          state: {
+            players: {
+              leftPlayerName: player1,
+              rightPlayerName: player2,
+              isTournamentMatch: true,
+            }
+          }
+        };
+
+        this.router.navigate(['/pong-game'], navigationExtras);
       }
-    };
+    }, 1000);
+  }
 
-    this.router.navigate(['/pong-game'], navigationExtras);
+  skipCountdown() {
+    this.matchPreparationCountdown = 0;
   }
 
   // shuffleArray(array: Array<any>): Array<any> 
