@@ -98,7 +98,7 @@ services:
     restart: unless-stopped
     user: root
     volumes:
-      - /sgoinfre/students/abasante/transcendence/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -117,13 +117,37 @@ services:
       dockerfile: Dockerfile
     container_name: grafana
     restart: unless-stopped
-    ports:
-     - '3000:3000'
-    volumes:
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+    expose:
+     - '3000'
+    # volumes:
+    #   - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+    - GF_SECURITY_ADMIN_USER=admin
+    - GF_SECURITY_ADMIN_PASSWORD=admin
+    - GF_SERVER_ROOT_URL=https://localhost:8090
+    - GF_SERVER_DOMAIN=localhost
+    - GF_SERVER_PROTOCOL=http
+    # - GF_SERVER_ROOT_URL=https://localhost:8089/
+    # - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    # - GF_SERVER_DOMAIN=localhost
+    # - GF_SERVER_PROTOCOL=http
+    # - GF_SECURITY_ALLOW_EMBEDDING=true
+    # - GF_SECURITY_COOKIE_SECURE=true
+    # - GF_SECURITY_COOKIE_SAMESITE=none
+    networks:
+      - app-network
+    dns_search: .
+
+  grafana-nginx:
+    build:
+      context: .
+      dockerfile: grafana-nginx.Dockerfile
+    container_name: grafana-nginx
+    restart: unless-stopped
+    ports:
+      - '8090:443'
+    depends_on:
+      - grafana
     networks:
       - app-network
     dns_search: .

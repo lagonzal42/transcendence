@@ -601,7 +601,7 @@ class SendFriendRequestView(APIView):
 
             # Check if they're already friends
             if request.user.friends.filter(id=to_user.id).exists():
-                return Response({'error': 'Already friends'}, status=400)
+                return Response({'error': 'Already friends'}, status=200)
 
             # Check if there's a pending request in either direction
             existing_request = FriendRequest.objects.filter(
