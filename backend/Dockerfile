@@ -1,11 +1,5 @@
 FROM python:3.9
 
-# prevents Python from writing .pyc files
-ENV PYTHONDONTWRITEBYTECODE=1
-
-# Python output (stdout and stderr) is sent directly to the terminal (without being buffered)
-ENV PYTHONUNBUFFERED=1
-
 
 WORKDIR /code
 COPY requirements.txt /code/backend/

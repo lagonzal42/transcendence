@@ -73,7 +73,7 @@ class RegisterView(APIView):
             user_intra = serializer.save()
             #user = serializer.data
             # send_code_to_user(user['email'])
-            send_activation_email(user_intra, from_email="trascendence.simplepong@gmail.com")
+            send_activation_email(user_intra, from_email="${EMAIL_HOST_USER}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
