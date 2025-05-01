@@ -211,14 +211,14 @@
     <h4 class="text-center mb-3">{{ 'tournament.semiFinals' | translate }}</h4>
     <!-- First Match -->
     <div class="match">
-      <p class="text-center">{{ 'tournament.match' | translate }} 1: {{group1[0].name}} vs {{group1[1].name}}</p>
+      <p class="text-center">{{ 'tournament.match' | translate }} 1: {{group1[0].tournamentName}} vs {{group1[1].tournamentName}}</p>
       <div *ngIf="matchResults[0]" class="match-result">
         <p class="text-center">{{ 'tournament.winner' | translate }}: {{matchResults[0].winner}}</p>
         <p class="score text-center">{{ 'tournament.score' | translate }}: {{matchResults[0].score1}} - {{matchResults[0].score2}}</p>
       </div>
       <div class="text-center">
         <button *ngIf="!matchResults[0]" 
-                (click)="startMatch(group1[0].name, group1[1].name)" 
+                (click)="startMatch(group1[0].tournamentName, group1[1].tournamentName)" 
                 class="submit-login-btn">
           {{ 'tournament.ready' | translate }}
         </button>
@@ -227,7 +227,7 @@
     
     <!-- Second Match -->
     <div class="match">
-      <p class="text-center">{{ 'tournament.match' | translate }} 2: {{group2[0].name}} vs {{group2[1].name}}</p>
+      <p class="text-center">{{ 'tournament.match' | translate }} 2: {{group2[0].tournamentName}} vs {{group2[1].tournamentName}}</p>
       <div *ngIf="matchResults[1]" class="match-result">
         <p class="text-center">{{ 'tournament.winner' | translate }}: {{matchResults[1].winner}}</p>
         <p class="score text-center">{{ 'tournament.score' | translate }}: {{matchResults[1].score1}} - {{matchResults[1].score2}}</p>

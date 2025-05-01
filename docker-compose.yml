@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:17
+    image: postgres
     container_name: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -12,6 +12,8 @@ services:
       - app-network
     env_file:
       - .env
+    ports:
+      - "5432:5432"
 
   backend:
     container_name: backend
@@ -19,9 +21,11 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     volumes:
-      - ./backend:/code/backend
-    expose:
-      - "8000"
+      - .:/code
+    ports:
+      - "8000:8000" 
+    # expose:
+    #   - "8000"
     # environment:
     #   - DB_NAME=postgres
     #   - DB_USER=postgres
@@ -48,19 +52,19 @@ services:
     container_name: frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile.prod
-    # volumes:
-    #   - ./frontend:/usr/src/app  # Montar el directorio local en el contenedor
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/usr/src/app  # Montar el directorio local en el contenedor
     ports:
-      - "8089:443"
+      - "4200:4200"
+      - "4201:4201"
+      - "4202:4202"
     depends_on:
       - backend
-      - grafana
     networks:
       - app-network
     env_file:
       - .env
-    dns_search: .
 
   # adminer:
   #   container_name: adminer
@@ -74,102 +78,101 @@ services:
   #   depends_on:
   #     - db
 
-  node-exporter:
-    image: prom/node-exporter
-    container_name: node-exporter
-    restart: unless-stopped
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-    expose: 
-      - 9100
-    networks:
-      - app-network
+  # node-exporter:
+  #   image: prom/node-exporter
+  #   container_name: node-exporter
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /:/rootfs:ro
+  #   command:
+  #     - '--path.procfs=/host/proc'
+  #     - '--path.rootfs=/rootfs'
+  #     - '--path.sysfs=/host/sys'
+  #     - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+  #   expose: 
+  #     - 9100
+  #   networks:
+  #     - app-network
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    restart: unless-stopped
-    user: root
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.enable-lifecycle'
-    ports:
-      - '9090:9090'
-    networks:
-      - app-network
-  
-  grafana:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: grafana
-    restart: unless-stopped
-    expose:
-     - '3000'
-    # volumes:
-    #   - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
-    environment:
-    - GF_SECURITY_ADMIN_USER=admin
-    - GF_SECURITY_ADMIN_PASSWORD=admin
-    - GF_SERVER_ROOT_URL=https://localhost:8090
-    - GF_SERVER_DOMAIN=localhost
-    - GF_SERVER_PROTOCOL=http
-    # - GF_SERVER_ROOT_URL=https://localhost:8089/
-    # - GF_SERVER_SERVE_FROM_SUB_PATH=true
-    # - GF_SERVER_DOMAIN=localhost
-    # - GF_SERVER_PROTOCOL=http
-    # - GF_SECURITY_ALLOW_EMBEDDING=true
-    # - GF_SECURITY_COOKIE_SECURE=true
-    # - GF_SECURITY_COOKIE_SAMESITE=none
-    networks:
-      - app-network
-    dns_search: .
+  # prometheus:
+  #   image: prom/prometheus
+  #   container_name: prometheus
+  #   restart: unless-stopped
+  #   user: root
 
-  grafana-nginx:
-    build:
-      context: .
-      dockerfile: grafana-nginx.Dockerfile
-    container_name: grafana-nginx
-    restart: unless-stopped
-    ports:
-      - '8090:443'
-    depends_on:
-      - grafana
-    networks:
-      - app-network
-    dns_search: .
+  #   volumes:
+  #     #- /sgoinfre/students/abasante/transcendence/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #     - prometheus_data:/prometheus
+  #     - ./grafana/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--web.console.libraries=/etc/prometheus/console_libraries'
+  #     - '--web.console.templates=/etc/prometheus/consoles'
+  #     - '--web.enable-lifecycle'
+  #   ports:
+  #     - '9090:9090'
+  #   networks:
+  #     - app-network
   
-  pg_exporter:
-    image: wrouesnel/postgres_exporter
-    container_name: pg-exporter
-    restart: always
-    ports:
-      - '9187:9187'
-    environment:
-      - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres:5432/postgres?sslmode=disable
-    networks:
-      - app-network
+  # alertmanager:
+  #   image: prom/alertmanager
+  #   user: root
+  #   container_name: alertmanager
+  #   ports:
+  #     - "9093:9093"
+  #   volumes:
+  #     - ./grafana/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+  #   networks:
+  #     - app-network
+  
+  # grafana:
+  #   #image: grafana/grafana-enterprise
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: grafana
+  #   restart: unless-stopped
+  #   ports:
+  #    - '3000:3000'
+  #   #volumes:
+  #     #- grafana-storage:/var/lib/grafana
+  #     # - ./grafana/dashboards:/var/lib/grafana/dashboards
+  #     # - ./grafana/provisioning:/etc/grafana/provisioning
+  #   environment:
+  #   - GF_SECURITY_ADMIN_USER=admin
+  #   - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   networks:
+  #     - app-network
+  
+  # pg_exporter:
+  #   image: wrouesnel/postgres_exporter
+  #   container_name: pg-exporter
+  #   restart: always
+  #   ports:
+  #     - '9187:9187'
+  #   environment:
+  #     - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres:5432/postgres?sslmode=disable
+  #   networks:
+  #     - app-network
 
 networks:
   app-network:
     driver: bridge
 
 volumes:
+  # frontend-app:
+  #   name: frontend-app
+  #   driver_opts:
+  #     device: './frontend'
+  #     o: bind
+  #     type: none
   postgres-data:
     name: postgres_data
     driver: local
-  # grafana-storage: {}
+  #grafana-storage: {}
   prometheus_data: {}
+  grafana-provisioning: {}

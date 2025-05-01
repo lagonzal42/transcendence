@@ -17,6 +17,17 @@ interface Player {
   tournamentName: string;
 }
 
+interface MatchResult {
+  player1: string;           // Tournament name
+  player2: string;           // Tournament name
+  winner: string;            // Tournament name
+  score1: number;
+  score2: number;
+  player1Username?: string;  // Real username
+  player2Username?: string;  // Real username
+  winnerUsername?: string;   // Real username
+}
+
 @Component({
   selector: 'app-tournament',
   standalone: true,
@@ -37,13 +48,7 @@ export class TournamentComponent implements OnInit {
     player1: string;
     player2: string;
   } | null = null;
-  matchResults: {
-    player1: string;
-    player2: string;
-    winner: string;
-    score1: number;
-    score2: number;
-  }[] = [];
+  matchResults: MatchResult[] = [];
   countdownSeconds: number = 0;
   showMatchPreparation: boolean = false;
   matchPreparationCountdown: number = 5;
@@ -248,6 +253,10 @@ export class TournamentComponent implements OnInit {
     }
   }
 
+  findPlayerByTournamentName(tournamentName: string): Player | undefined {
+    return [...this.group1, ...this.group2].find(p => p && p.tournamentName === tournamentName);
+  }
+
   handleMatchComplete(winner: string, state: any) {
     const leftScore = state?.leftScore || 0;
     const rightScore = state?.rightScore || 0;
@@ -259,6 +268,11 @@ export class TournamentComponent implements OnInit {
     );
   
     if (this.currentMatch && isNewResult) {
+      // Find player objects
+      const player1 = this.findPlayerByTournamentName(this.currentMatch.player1);
+      const player2 = this.findPlayerByTournamentName(this.currentMatch.player2);
+      const winnerPlayer = this.findPlayerByTournamentName(winner);
+  
       this.matchResults.push({
         player1: this.currentMatch.player1,
         player2: this.currentMatch.player2,
@@ -266,6 +280,22 @@ export class TournamentComponent implements OnInit {
         score1: leftScore,
         score2: rightScore
       });
+      
+      // Save match to backend if it's not already saved (by the game component)
+      if (!state.matchSaved) {
+        // Get the real player objects
+        const player1 = this.findPlayerByTournamentName(this.currentMatch.player1);
+        const player2 = this.findPlayerByTournamentName(this.currentMatch.player2);
+        
+        this.saveMatchToBackend(
+          this.currentMatch.player1,  // Tournament name of player1
+          this.currentMatch.player2,  // Tournament name of player2
+          leftScore,                 // player1_score
+          rightScore,                // player2_score
+          winner,                    // Tournament name of winner
+          'tournament'               // match_type
+        );
+      }
       
       // Only add to winners array if it's a new match
       if (!this.winners.includes(winner)) {
@@ -293,6 +323,43 @@ export class TournamentComponent implements OnInit {
     }
   
     this.saveTournamentState();
+  }
+  
+  // Add this method to save match results to the backend
+  saveMatchToBackend(player1TournamentName: string, player2TournamentName: string, score1: number, score2: number, winnerTournamentName: string, matchType: string) {
+    // Find the actual player objects
+    const player1Obj = this.findPlayerByTournamentName(player1TournamentName);
+    const player2Obj = this.findPlayerByTournamentName(player2TournamentName);
+    const winnerObj = this.findPlayerByTournamentName(winnerTournamentName);
+    
+    // Use the player's real name (not tournament name) for authenticated players
+    const player1Username = player1Obj?.isAuthenticated ? player1Obj.name : player1TournamentName;
+    const player2Username = player2Obj?.isAuthenticated ? player2Obj.name : player2TournamentName;
+    
+    // For the winner, use the corresponding player's username
+    let winnerUsername = winnerTournamentName;
+    if (winnerTournamentName === player1TournamentName && player1Obj?.isAuthenticated) {
+      winnerUsername = player1Obj.name;
+    } else if (winnerTournamentName === player2TournamentName && player2Obj?.isAuthenticated) {
+      winnerUsername = player2Obj.name;
+    }
+    
+    // Only send the request if at least one player is authenticated
+    if (player1Obj?.isAuthenticated || player2Obj?.isAuthenticated) {
+      this.http.post(`${environment.backendURL}accounts/matches/`, {
+        player1_username: player1Username,
+        player2_username: player2Username,
+        player1_score: score1,
+        player2_score: score2,
+        winner_username: winnerUsername,
+        match_type: matchType,
+      }).subscribe({
+        next: (response) => console.log('Tournament match saved to backend:', response),
+        error: (error) => console.error('Error saving tournament match:', error)
+      });
+    } else {
+      console.log('Match not saved: neither player is authenticated');
+    }
   }
 
   startFinalMatch() {
