@@ -8,10 +8,13 @@ import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
+import { environment } from '../../environment/environment';
+import { HttpClient } from '@angular/common/http';
 
 interface Player {
   name: string;
   isAuthenticated: boolean;
+  tournamentName: string;
 }
 
 @Component({
@@ -66,6 +69,7 @@ export class TournamentComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
     
   ) {
@@ -95,7 +99,7 @@ export class TournamentComponent implements OnInit {
     });
     
     // Only load state if we're in the browser
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId)){
       this.loadTournamentState();
     }
   }
@@ -125,8 +129,19 @@ export class TournamentComponent implements OnInit {
     });
 
     this.route.paramMap.subscribe(() => {
-      if (isPlatformBrowser(this.platformId) && window.history.state.winner) {
+      if (isPlatformBrowser(this.platformId) && window.history.state && window.history.state.winner) {
+        console.log('Received game state:', window.history.state);
         this.handleMatchComplete(window.history.state.winner, window.history.state);
+
+        // Clear navigation state to prevent processing it again
+        this.router.navigate(
+          [], 
+          {
+            relativeTo: this.route,
+            queryParams: {},
+            replaceUrl: true
+          }
+        );
       }
     });
   }
@@ -236,8 +251,14 @@ export class TournamentComponent implements OnInit {
   handleMatchComplete(winner: string, state: any) {
     const leftScore = state?.leftScore || 0;
     const rightScore = state?.rightScore || 0;
-
-    if (this.currentMatch) {
+  
+    // Check if this is a new match result
+    const isNewResult = !this.matchResults.some(mr => 
+      mr.player1 === this.currentMatch?.player1 && 
+      mr.player2 === this.currentMatch?.player2
+    );
+  
+    if (this.currentMatch && isNewResult) {
       this.matchResults.push({
         player1: this.currentMatch.player1,
         player2: this.currentMatch.player2,
@@ -245,21 +266,32 @@ export class TournamentComponent implements OnInit {
         score1: leftScore,
         score2: rightScore
       });
+      
+      // Only add to winners array if it's a new match
+      if (!this.winners.includes(winner)) {
+        this.winners.push(winner);
+      }
     }
-
-    this.winners.push(winner);
+  
     this.currentMatch = null;
-
+  
+    console.log('Match completed:', {
+      winners: this.winners.length,
+      matchResults: this.matchResults.length,
+      currentRound: this.currentRound
+    });
+  
+    // Only advance to finals when both semi-final matches are complete
     if (this.currentRound === 1) {
-      if (this.winners.length === 2) {
+      if (this.matchResults.length >= 2) { // Check matchResults.length instead of winners.length
         // Both semi-final matches are complete, move to finals
         this.currentRound = 2;
       }
-    } else if (this.currentRound === 2 && this.winners.length === 3) {
+    } else if (this.currentRound === 2 && this.matchResults.length === 3) {
       // Final match is complete
       this.tournamentComplete = true;
     }
-
+  
     this.saveTournamentState();
   }
 
@@ -270,36 +302,8 @@ export class TournamentComponent implements OnInit {
   }
 
   resetTournament() {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('tournamentState');
-    }
-    this.formSubmitted = false;
-    this.group1 = [];
-    this.group2 = [];
-    this.currentRound = 1;
-    this.winners = [];
-    this.tournamentComplete = false;
-    this.currentMatch = null;
-    this.matchResults = [];
-    this.showMatchPreparation = false;
-    this.matchPreparationCountdown = 5;
-    this.tournamentForm.reset();
-    
-    // Reset authentication status
-    this.showPlayer2Auth = false;
-    this.showPlayer3Auth = false;
-    this.showPlayer4Auth = false;
-    this.player2AuthStatus = 'none';
-    this.player3AuthStatus = 'none';
-    this.player4AuthStatus = 'none';
-    this.player2AuthMessage = '';
-    this.player3AuthMessage = '';
-    this.player4AuthMessage = '';
-    
-    // Reset auth forms
-    this.player2AuthForm.reset();
-    this.player3AuthForm.reset();
-    this.player4AuthForm.reset();
+    localStorage.removeItem('tournamentState');
+    window.location.reload();
   }
 
   private loadTournamentState() {
@@ -347,36 +351,87 @@ export class TournamentComponent implements OnInit {
   
   onSubmit() {
     if (this.tournamentForm.valid) {
+      // Create players array
       const players: Player[] = [
         {
           name: this.tournamentForm.get('player1')?.value,
-          isAuthenticated: this.isLoggedIn
+          isAuthenticated: this.isLoggedIn,
+          tournamentName: this.tournamentForm.get('player1')?.value // Default to name
         },
         {
           name: this.tournamentForm.get('player2')?.value,
-          isAuthenticated: this.showPlayer2Auth && this.player2AuthForm.valid
+          isAuthenticated: this.showPlayer2Auth && this.player2AuthForm.valid,
+          tournamentName: this.tournamentForm.get('player2')?.value // Default to name
         },
         {
           name: this.tournamentForm.get('player3')?.value,
-          isAuthenticated: this.showPlayer3Auth && this.player3AuthForm.valid
+          isAuthenticated: this.showPlayer3Auth && this.player3AuthForm.valid,
+          tournamentName: this.tournamentForm.get('player3')?.value // Default to name
         },
         {
           name: this.tournamentForm.get('player4')?.value,
-          isAuthenticated: this.showPlayer4Auth && this.player4AuthForm.valid
+          isAuthenticated: this.showPlayer4Auth && this.player4AuthForm.valid,
+          tournamentName: this.tournamentForm.get('player4')?.value // Default to name
         }
       ];
-  
-      const shuffled = this.shuffleArray(players);
-  
-      this.group1 = [shuffled[0], shuffled[1]];
-      this.group2 = [shuffled[2], shuffled[3]];
-  
-      this.formSubmitted = true;
-      this.saveTournamentState();
-  
-      this.startMatch(this.group1[0].name, this.group1[1].name);
+
+      // Create an array of promises to fetch tournament names for all players
+      const namePromises = players.map(player => {
+        if (player.isAuthenticated) {
+          // Only fetch tournament names for authenticated players
+          return this.getTournamentName(player.name)
+            .then(tournamentName => {
+              player.tournamentName = tournamentName;
+              return player;
+            });
+        } else {
+          // For guest players, use their name as tournament name
+          return Promise.resolve(player);
+        }
+      });
+
+      // Wait for all tournament names to be fetched
+      Promise.all(namePromises)
+        .then(playersWithNames => {
+          // Shuffle the players for random matchups
+          const shuffled = this.shuffleArray(playersWithNames);
+          
+          // Divide into two groups
+          this.group1 = [shuffled[0], shuffled[1]];
+          this.group2 = [shuffled[2], shuffled[3]];
+          
+          // Set form as submitted and save state
+          this.formSubmitted = true;
+          this.saveTournamentState();
+          
+          // Start the first match
+          console.log("Starting tournament with players:", this.group1, this.group2);
+          this.startTournament();
+        })
+        .catch(error => {
+          console.error('Error fetching tournament names:', error);
+          // Fallback: proceed without tournament names
+          const shuffled = this.shuffleArray(players);
+          this.group1 = [shuffled[0], shuffled[1]];
+          this.group2 = [shuffled[2], shuffled[3]];
+          this.formSubmitted = true;
+          this.saveTournamentState();
+          this.startTournament();
+        });
     } else {
       this.tournamentForm.markAllAsTouched();
+    }
+  }
+
+  startTournament() {
+    if (this.matchResults.length === 0 && this.winners.length === 0) {
+      this.startMatch(this.group1[0].tournamentName, this.group1[1].tournamentName);
+    }
+  }
+
+  startSecondMatch() {
+    if (this.winners.length === 1 && this.group2.length >= 2) {
+      this.startMatch(this.group2[0].tournamentName, this.group2[1].tournamentName);
     }
   }
 
@@ -411,9 +466,16 @@ export class TournamentComponent implements OnInit {
     this.matchPreparationCountdown = 0;
   }
 
-  // shuffleArray(array: Array<any>): Array<any> 
-  // {
-  //   const shuffled = array.sort(() => Math.random() - 0.5);
-  //   return shuffled;
-  // }
+  private getTournamentName(username: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      this.http.get<{tournament_name: string}>(`${environment.apiUrl}/accounts/tournament-name/${username}/`)
+        .subscribe({
+          next: (response) => resolve(response?.tournament_name || username),
+          error: (error) => {
+            console.error('Error fetching tournament name:', error);
+            resolve(username); // Fallback to username on error
+          }
+        });
+    });
+  }
 }

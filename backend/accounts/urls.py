@@ -1,9 +1,9 @@
 from django.urls import path
 from . import views
 from django.urls import path, include
-from accounts.views import UpdateProfileView
+from accounts.views import UpdateProfileView, GetTournamentNameView  # Add GetTournamentNameView here
 from rest_framework.routers import DefaultRouter
-from .views import ListFriendsView, AcceptFriendRequestView, ActivateAccountView#, AddFriendView, 
+from .views import ListFriendsView, AcceptFriendRequestView, ActivateAccountView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -41,6 +41,8 @@ urlpatterns = [
     path('blocked-users/', views.BlockedUsersListView.as_view(), name='blocked_users_list'),
     path('activation/', views.ActivateAccountView.as_view(), name='activate_account'),
 
+    # Add tournament name endpoint
+    path('tournament-name/<str:username>/', views.GetTournamentNameView.as_view(), name='get-tournament-name'),
 ]
 
 if settings.DEBUG:

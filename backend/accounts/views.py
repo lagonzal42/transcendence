@@ -754,3 +754,22 @@ def validate_credentials(request):
         return Response({'valid': True})
     else:
         return Response({'valid': False})
+
+# Add this view class to your views.py file
+class GetTournamentNameView(APIView):
+    """
+    View to retrieve a user's tournament name.
+    """
+    permission_classes = [AllowAny]  # Allow anonymous access for tournament purposes
+    
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            return Response({
+                'tournament_name': user.tournament_name or username
+            }, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({
+                'tournament_name': username,  # Return the username as fallback
+                'error': 'User not found'
+            }, status=status.HTTP_404_NOT_FOUND)

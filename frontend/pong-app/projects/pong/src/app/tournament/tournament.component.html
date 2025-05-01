@@ -194,6 +194,18 @@
 <div class="tournament-progress container" *ngIf="formSubmitted && !tournamentComplete && !showMatchPreparation">
   <h3 class="text-center mb-4">{{ 'tournament.tournamentProgress' | translate }}</h3>
   
+  <!-- Add this debugging div temporarily -->
+  <div *ngIf="formSubmitted" style="background-color: #f8f9fa; padding: 10px; margin: 10px 0; font-size: 12px;">
+    <details>
+      <summary>Tournament State</summary>
+      <div>Winners: {{winners.length}} - {{winners | json}}</div>
+      <div>Match Results: {{matchResults.length}} - {{matchResults | json}}</div>
+      <div>Current Round: {{currentRound}}</div>
+      <div>Current Match: {{currentMatch | json}}</div>
+      <div>Button should show: {{winners.length === 1 && matchResults.length === 1 && !currentMatch}}</div>
+    </details>
+  </div>
+
   <!-- First Round -->
   <div class="round-1" *ngIf="currentRound === 1">
     <h4 class="text-center mb-3">{{ 'tournament.semiFinals' | translate }}</h4>
@@ -220,9 +232,11 @@
         <p class="text-center">{{ 'tournament.winner' | translate }}: {{matchResults[1].winner}}</p>
         <p class="score text-center">{{ 'tournament.score' | translate }}: {{matchResults[1].score1}} - {{matchResults[1].score2}}</p>
       </div>
+      
+      <!-- Add this button -->
       <div class="text-center">
-        <button *ngIf="winners.length === 1 && !matchResults[1]" 
-                (click)="startMatch(group2[0].name, group2[1].name)" 
+        <button *ngIf="matchResults.length === 1 && !matchResults[1] && !currentMatch" 
+                (click)="startSecondMatch()" 
                 class="submit-login-btn">
           {{ 'tournament.ready' | translate }}
         </button>
