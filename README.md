@@ -33,6 +33,6 @@ It is a full-stack web application built with **Django**, **PostgreSQL**, **Angu
    git clone git@github.com:lagonzal42/transcendence.git
    cd transcendence
    make
-  ```
+  ```bash
 2. The project will be waiting in the localhost:8089 and monitorization in localhost:8090
 
